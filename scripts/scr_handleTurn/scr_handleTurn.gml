@@ -1,3 +1,3 @@
-function scr_handleTurn(){
+function handleTurn(){
 
 }
