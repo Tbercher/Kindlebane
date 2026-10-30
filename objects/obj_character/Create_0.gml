@@ -1,0 +1,1 @@
+newHealth = 1000;

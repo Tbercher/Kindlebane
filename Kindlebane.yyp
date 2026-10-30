@@ -10,7 +10,9 @@
   },
   "defaultScriptType":1,
   "Folders":[
+    {"$GMFolder":"","%Name":"Scripts","folderPath":"folders/Scripts.yy","name":"Scripts","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Objects","folderPath":"folders/Objects.yy","name":"Objects","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Parents","folderPath":"folders/Objects/Parents.yy","name":"Parents","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
   "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[],
@@ -22,12 +24,15 @@
   "name":"Kindlebane",
   "resources":[
     {"id":{"name":"obj_character","path":"objects/obj_character/obj_character.yy",},},
-    {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"id":{"name":"obj_team","path":"objects/obj_team/obj_team.yy",},},
+    {"id":{"name":"battle_room","path":"rooms/battle_room/battle_room.yy",},},
+    {"id":{"name":"scr_chooseTurn","path":"scripts/scr_chooseTurn/scr_chooseTurn.yy",},},
+    {"id":{"name":"scr_handleTurn","path":"scripts/scr_handleTurn/scr_handleTurn.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"roomId":{"name":"battle_room","path":"rooms/battle_room/battle_room.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[

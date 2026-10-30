@@ -1,0 +1,2 @@
+isKindlingReady = false;
+squad = [];
