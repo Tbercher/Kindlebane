@@ -37,6 +37,7 @@
     {"id":{"name":"obj_slotNumber","path":"objects/obj_slotNumber/obj_slotNumber.yy",},},
     {"id":{"name":"obj_team","path":"objects/obj_team/obj_team.yy",},},
     {"id":{"name":"battle_room","path":"rooms/battle_room/battle_room.yy",},},
+    {"id":{"name":"scr_gameSaving","path":"scripts/scr_gameSaving/scr_gameSaving.yy",},},
     {"id":{"name":"scr_turnHandling","path":"scripts/scr_turnHandling/scr_turnHandling.yy",},},
     {"id":{"name":"spr_bonfireProgression","path":"sprites/spr_bonfireProgression/spr_bonfireProgression.yy",},},
     {"id":{"name":"spr_placeholderAbility","path":"sprites/spr_placeholderAbility/spr_placeholderAbility.yy",},},

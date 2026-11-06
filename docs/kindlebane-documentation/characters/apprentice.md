@@ -4,9 +4,17 @@
 
 Apprentice
 
+## Village
+
+Stonehearth
+
+## Class Name
+
+Apprentice
+
 ## Description
 
-A young mage in training.
+An Apprentice from Stonehearth.
 
 ## Attack
 
@@ -23,6 +31,14 @@ A young mage in training.
 ## Magic Defense
 
 25
+
+## My Health
+
+100
+
+## Is Placeholder
+
+Yes
 
 ## Abilities
 
