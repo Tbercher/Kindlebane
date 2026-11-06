@@ -19,6 +19,7 @@ characters = {
         defense: 50,
         magicAttack: 0,
         magicDefense: 25,
+        myHealth: 100,
         abilities: [
             abilities.kindleshooter
         ],
