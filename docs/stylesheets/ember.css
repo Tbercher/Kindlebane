@@ -171,10 +171,50 @@ a:hover {
 }
 
 .rst-content h3 {
+  border-left: 2px solid var(--ember);
   color: var(--ember-bright);
   font-size: 1.05rem;
   letter-spacing: -0.01em;
-  margin-top: 1.75rem;
+  margin: 0.9rem 0 0.2rem 1rem;
+  padding-left: 0.65rem;
+}
+
+.rst-content h4,
+.rst-content h5,
+.rst-content h6 {
+  border-left: 1px solid var(--line);
+  color: var(--ink);
+  letter-spacing: 0;
+  line-height: 1.25;
+  margin-bottom: 0.15rem;
+  margin-top: 0.55rem;
+  padding-left: 0.65rem;
+}
+
+.rst-content h4 {
+  margin-left: 2rem;
+}
+
+.rst-content h5 {
+  margin-left: 3rem;
+}
+
+.rst-content h6 {
+  margin-left: 4rem;
+  color: var(--muted);
+}
+
+.rst-content h3 + p,
+.rst-content h4 + p,
+.rst-content h5 + p,
+.rst-content h6 + p {
+  margin-bottom: 0.35rem;
+  margin-top: 0.1rem;
+  padding-left: 0.65rem;
+}
+
+.rst-content h3 ~ h3 {
+  margin-top: 0.7rem;
 }
 
 .rst-content p,

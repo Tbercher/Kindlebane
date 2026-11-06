@@ -3,8 +3,8 @@ function save_game(){
         playerTeam: []
     }
 
-    for (var i = 0; i < array_length(obj_gameplayInfo.playerTeam.members); i++) {
-        var member = obj_gameplayInfo.playerTeam.members[i];
+    for (var i = 0; i < array_length(obj_battleController.playerTeam.members); i++) {
+        var member = obj_battleController.playerTeam.members[i];
         array_push(game_data.playerTeam, string_lower(member.name));
     }
     
@@ -35,11 +35,11 @@ function load_game(){
 
     var game_data = json_parse(json);
 
-    obj_gameplayInfo.playerTeam.members = [];
+    obj_battleController.playerTeam.members = [];
     for (var i = 0; i < array_length(game_data.playerTeam); i++) {
         var member_name = game_data.playerTeam[i];
         var member = variable_struct_get(obj_gameInfo.characters, member_name);
-        array_push(obj_gameplayInfo.playerTeam.members, member);
+        array_push(obj_battleController.playerTeam.members, member);
     }
 
     var village_keys= variable_struct_get_names(obj_gameInfo.villages);

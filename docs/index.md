@@ -5,12 +5,12 @@ stats, and other game information.
 
 ## Documentation
 
-### Teams
+### Villages
 
-- [Lumenhall Team](kindlebane-documentation/teams/lumenhallteam.md)
-- [Lawhold Team](kindlebane-documentation/teams/lawholdteam.md)
-- [Stonehearth Team](kindlebane-documentation/teams/stonehearthteam.md)
-- [Loamvale Team](kindlebane-documentation/teams/loamvaleteam.md)
+- [Lumenhall](kindlebane-documentation/villages/lumenhall.md)
+- [Lawhold](kindlebane-documentation/villages/lawhold.md)
+- [Stonehearth](kindlebane-documentation/villages/stonehearth.md)
+- [Loamvale](kindlebane-documentation/villages/loamvale.md)
 
 ### Characters
 

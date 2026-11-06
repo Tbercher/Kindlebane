@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import re
+import posixpath
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +16,12 @@ LOREM = (
     "Integer vitae sem sed arcu consequat dignissim."
 )
 STAT_KEYS = {"attack", "defense", "magicAttack", "magicDefense"}
+
+
+class DocumentedReference(dict):
+    def __init__(self, value: dict, node: dict):
+        super().__init__(value)
+        self.node = node
 
 
 def slugify(value: str) -> str:
@@ -189,7 +196,7 @@ def parse_entries(body: str, resolve_reference) -> dict:
     return entries
 
 
-def create_reference_resolver(source: str):
+def create_reference_resolver(source: str, documented_references: dict[str, dict]):
     assignments = {}
     for match in re.finditer(r"\b([A-Za-z_]\w*)\s*=\s*\{", source):
         opening_brace = source.index("{", match.start())
@@ -208,6 +215,9 @@ def create_reference_resolver(source: str):
             if not isinstance(value, dict) or part not in value:
                 return None
             value = value[part]
+        node = documented_references.get(reference)
+        if node and isinstance(value, dict):
+            return DocumentedReference(value, node)
         return value
 
     return resolve
@@ -224,30 +234,43 @@ def validate_node(node: dict, data: dict) -> None:
             raise ValueError(f"{node['title']} {stat} must be an integer between 0 and 100")
 
 
+def document_link(node: dict, target: dict) -> str:
+    current = Path(node["relative_file"]).parent
+    target_path = Path(target["relative_file"])
+    relative = posixpath.relpath(target_path.as_posix(), current.as_posix())
+    return f"[{target['title']}]({relative})"
+
+
 def write_page(node: dict, data: dict) -> None:
     page_path = GENERATED_DIR / node["relative_file"]
     page_path.parent.mkdir(parents=True, exist_ok=True)
     lines = [f"# {node['title']}", ""]
     for key, value in data.items():
-        lines.extend(render_field(key, value, level=2))
+        lines.extend(render_field(key, value, level=2, page_node=node))
     lines.append("")
     page_path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def render_field(key: str, value, level: int) -> list[str]:
+def render_field(key: str, value, level: int, page_node: dict) -> list[str]:
     heading = "#" * level
     lines = [f"{heading} {titleize(key)}", ""]
-    if isinstance(value, dict):
+    if isinstance(value, DocumentedReference):
+        lines += [document_link(page_node, value.node), ""]
+    elif isinstance(value, dict):
         for child_key, child_value in value.items():
-            lines += render_field(child_key, child_value, level + 1)
+            lines += render_field(child_key, child_value, level + 1, page_node)
     elif isinstance(value, list):
         for item in value:
-            if isinstance(item, dict):
+            if isinstance(item, DocumentedReference):
+                lines += [f"- {document_link(page_node, item.node)}"]
+            elif isinstance(item, dict):
                 item_title = item.get("name", item.get("id", "Item"))
                 lines += [f"{'#' * (level + 1)} {item_title}", ""]
                 for child_key, child_value in item.items():
                     if child_key != "name":
-                        lines += render_field(child_key, child_value, level + 2)
+                        lines += render_field(
+                            child_key, child_value, level + 2, page_node
+                        )
             else:
                 lines += [f"- {format_value(item)}"]
         lines.append("")
@@ -307,7 +330,12 @@ stats, and other game information.
 def main() -> None:
     source = SOURCE_FILE.read_text(encoding="utf-8")
     nodes = declaration_nodes(source)
-    resolve_reference = create_reference_resolver(source)
+    documented_references = {
+        ".".join((*node["path"][:-1], node["name"])): node
+        for node in nodes
+        if not node["is_section"]
+    }
+    resolve_reference = create_reference_resolver(source, documented_references)
     ids = {node["id"] for node in nodes}
     for node in nodes:
         if node["parent"] and node["parent"] not in ids:

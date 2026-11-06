@@ -42,14 +42,5 @@ Yes
 
 ## Abilities
 
-### Kindleshooter Fire Flame
-
-#### Description
-
-Shoots a flame that ignites enemies.
-
-#### Damage
-
-30
-
+- [Kindleshooter](../abilities/kindleshooter.md)
 
