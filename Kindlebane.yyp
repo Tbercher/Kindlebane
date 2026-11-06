@@ -25,6 +25,7 @@
   },
   "name":"Kindlebane",
   "resources":[
+    {"id":{"name":"obj_abilityImage","path":"objects/obj_abilityImage/obj_abilityImage.yy",},},
     {"id":{"name":"obj_bonfireProgressionMeter","path":"objects/obj_bonfireProgressionMeter/obj_bonfireProgressionMeter.yy",},},
     {"id":{"name":"obj_character","path":"objects/obj_character/obj_character.yy",},},
     {"id":{"name":"obj_headshotImage","path":"objects/obj_headshotImage/obj_headshotImage.yy",},},
@@ -32,6 +33,7 @@
     {"id":{"name":"battle_room","path":"rooms/battle_room/battle_room.yy",},},
     {"id":{"name":"scr_chooseTurn","path":"scripts/scr_chooseTurn/scr_chooseTurn.yy",},},
     {"id":{"name":"scr_handleTurn","path":"scripts/scr_handleTurn/scr_handleTurn.yy",},},
+    {"id":{"name":"spr_placeholderAbility","path":"sprites/spr_placeholderAbility/spr_placeholderAbility.yy",},},
     {"id":{"name":"spr_placeholderHeadshot","path":"sprites/spr_placeholderHeadshot/spr_placeholderHeadshot.yy",},},
     {"id":{"name":"spr_test","path":"sprites/spr_test/spr_test.yy",},},
     {"id":{"name":"spr_UIBase","path":"sprites/spr_UIBase/spr_UIBase.yy",},},
