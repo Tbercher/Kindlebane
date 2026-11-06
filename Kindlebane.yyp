@@ -32,6 +32,7 @@
     {"id":{"name":"battle_room","path":"rooms/battle_room/battle_room.yy",},},
     {"id":{"name":"scr_chooseTurn","path":"scripts/scr_chooseTurn/scr_chooseTurn.yy",},},
     {"id":{"name":"scr_handleTurn","path":"scripts/scr_handleTurn/scr_handleTurn.yy",},},
+    {"id":{"name":"spr_placeholderHeadshot","path":"sprites/spr_placeholderHeadshot/spr_placeholderHeadshot.yy",},},
     {"id":{"name":"spr_test","path":"sprites/spr_test/spr_test.yy",},},
     {"id":{"name":"spr_UIBase","path":"sprites/spr_UIBase/spr_UIBase.yy",},},
   ],
