@@ -2,7 +2,7 @@
   "$GMProject":"v1",
   "%Name":"Kindlebane",
   "AudioGroups":[
-    {"$GMAudioGroup":"","%Name":"audiogroup_default","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
   "configs":{
     "children":[],
@@ -26,16 +26,17 @@
   "name":"Kindlebane",
   "resources":[
     {"id":{"name":"obj_abilityImage","path":"objects/obj_abilityImage/obj_abilityImage.yy",},},
+    {"id":{"name":"obj_battleController","path":"objects/obj_battleController/obj_battleController.yy",},},
     {"id":{"name":"obj_bonfireProgression","path":"objects/obj_bonfireProgression/obj_bonfireProgression.yy",},},
     {"id":{"name":"obj_character","path":"objects/obj_character/obj_character.yy",},},
+    {"id":{"name":"obj_gameInformation","path":"objects/obj_gameInformation/obj_gameInformation.yy",},},
     {"id":{"name":"obj_headshotImage","path":"objects/obj_headshotImage/obj_headshotImage.yy",},},
     {"id":{"name":"obj_legacyBonfireProgression","path":"objects/obj_legacyBonfireProgression/obj_legacyBonfireProgression.yy",},},
     {"id":{"name":"obj_placeholderCharacter","path":"objects/obj_placeholderCharacter/obj_placeholderCharacter.yy",},},
     {"id":{"name":"obj_slotNumber","path":"objects/obj_slotNumber/obj_slotNumber.yy",},},
     {"id":{"name":"obj_team","path":"objects/obj_team/obj_team.yy",},},
     {"id":{"name":"battle_room","path":"rooms/battle_room/battle_room.yy",},},
-    {"id":{"name":"scr_chooseTurn","path":"scripts/scr_chooseTurn/scr_chooseTurn.yy",},},
-    {"id":{"name":"scr_handleTurn","path":"scripts/scr_handleTurn/scr_handleTurn.yy",},},
+    {"id":{"name":"scr_turnHandling","path":"scripts/scr_turnHandling/scr_turnHandling.yy",},},
     {"id":{"name":"spr_bonfireProgression","path":"sprites/spr_bonfireProgression/spr_bonfireProgression.yy",},},
     {"id":{"name":"spr_placeholderAbility","path":"sprites/spr_placeholderAbility/spr_placeholderAbility.yy",},},
     {"id":{"name":"spr_placeholderBackground","path":"sprites/spr_placeholderBackground/spr_placeholderBackground.yy",},},

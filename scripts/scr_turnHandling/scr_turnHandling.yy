@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"scr_handleTurn",
+  "%Name":"scr_turnHandling",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"scr_handleTurn",
+  "name":"scr_turnHandling",
   "parent":{
     "name":"Scripts",
     "path":"folders/Scripts.yy",

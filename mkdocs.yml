@@ -1,0 +1,8 @@
+site_name: Kindlebane Documentation
+site_description: Internal game reference for Kindlebane
+
+theme:
+  name: readthedocs
+
+extra_css:
+  - stylesheets/ember.css
