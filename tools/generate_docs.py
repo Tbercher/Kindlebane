@@ -1,27 +1,29 @@
-"""Generate the curated Kindlebane documentation pages from GameMaker data."""
+"""Generate curated documentation from marked GameMaker dictionaries."""
 
 from pathlib import Path
 import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_FILE = ROOT / "objects" / "obj_gameInformation" / "Create_0.gml"
+SOURCE_FILE = ROOT / "objects" / "obj_gameInfo" / "Create_0.gml"
 DOCS_DIR = ROOT / "docs"
-CHARACTERS_DIR = DOCS_DIR / "characters"
 ASSETS_DIR = DOCS_DIR / "assets"
+GENERATED_DIR = DOCS_DIR / "kindlebane-documentation"
 
 LOREM = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
     "Integer vitae sem sed arcu consequat dignissim."
 )
+STAT_KEYS = {"attack", "defense", "magicAttack", "magicDefense"}
 
 
 def slugify(value: str) -> str:
     return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", value.lower())).strip("-")
 
 
-def extract_braced_block(source: str, opening_brace: int) -> str:
-    return source[opening_brace + 1:find_braced_end(source, opening_brace)]
+def titleize(value: str) -> str:
+    value = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", value)
+    return " ".join(word.capitalize() for word in value.replace("_", " ").split())
 
 
 def find_braced_end(source: str, opening_brace: int) -> int:
@@ -48,196 +50,288 @@ def find_braced_end(source: str, opening_brace: int) -> int:
     raise ValueError("Unclosed GameMaker struct")
 
 
+def extract_braced_block(source: str, opening_brace: int) -> str:
+    return source[opening_brace + 1 : find_braced_end(source, opening_brace)]
+
+
 def parse_marked_declarations(source: str) -> list[dict]:
     marker_pattern = re.compile(
-        r"^\s*///\s*@\s*doc-(section|character|parent)\s+(.+?)\s*$"
+        r"^\s*///\s*@\s*(doc-[a-z0-9-]+)(?:\s+(.+?))?\s*$",
+        re.IGNORECASE,
     )
     declaration_pattern = re.compile(
         r"^\s*(?:([A-Za-z_]\w*)\s*=\s*|([A-Za-z_]\w*)\s*:\s*)\{"
     )
     declarations = []
-    pending = {}
-    lines = source.splitlines(keepends=True)
+    pending = None
     offset = 0
-    for line in lines:
+    for line in source.splitlines(keepends=True):
         marker = marker_pattern.match(line)
         if marker:
-            pending[marker.group(1)] = marker.group(2).strip()
+            pending = {
+                "marker": marker.group(1).lower(),
+                "title": marker.group(2).strip() if marker.group(2) else None,
+            }
         elif line.strip():
             declaration = declaration_pattern.match(line)
             if declaration:
                 if pending:
                     name = declaration.group(1) or declaration.group(2)
+                    opening_brace = offset + declaration.end() - 1
                     declarations.append(
                         {
                             "name": name,
-                            "metadata": pending,
-                            "opening_brace": offset + declaration.end() - 1,
-                            "end_brace": find_braced_end(
-                                source, offset + declaration.end() - 1
-                            ),
+                            "path": marker_path(pending["marker"]),
+                            "title": pending["title"],
+                            "opening_brace": opening_brace,
+                            "end_brace": find_braced_end(source, opening_brace),
                         }
                     )
-                pending = {}
+                pending = None
             elif not line.lstrip().startswith("//"):
-                pending = {}
+                pending = None
         offset += len(line)
     return declarations
 
 
-def discover_character_data(source: str, declarations: list[dict]) -> dict[str, dict]:
-    sections = {
-        slugify(declaration["metadata"]["section"]): declaration
-        for declaration in declarations
-        if "section" in declaration["metadata"]
-    }
-    data = {}
-    character_declarations = [
-        declaration
-        for declaration in declarations
-        if "character" in declaration["metadata"]
-    ]
-    for declaration in character_declarations:
-        character_name = declaration["metadata"]["character"]
-        character_id = slugify(character_name)
-        character_body = extract_braced_block(source, declaration["opening_brace"])
-        stats = dict(
-            re.findall(
-                r"\b(attack|defense|magicAttack|magicDefense)\s*:\s*(\d+)\s*,",
-                character_body,
-            )
-        )
-        stats = {
+def marker_path(marker: str) -> tuple[str, ...]:
+    value = marker.removeprefix("doc-").strip()
+    return tuple(slugify(part) for part in value.split("-") if slugify(part))
+
+
+def declaration_nodes(source: str) -> list[dict]:
+    declarations = parse_marked_declarations(source)
+    nodes = []
+    for declaration in declarations:
+        path = declaration["path"]
+        if not path:
+            raise ValueError("Documentation marker must contain a name")
+        body = extract_braced_block(source, declaration["opening_brace"])
+        is_root = len(path) == 1
+        parent_path = path[:-1] if not is_root else ()
+        node_path = path if is_root else (*path, slugify(declaration["name"]))
+        nodes.append(
             {
-                "attack": "attack",
-                "defense": "defense",
-                "magicAttack": "magic_attack",
-                "magicDefense": "magic_defense",
-            }[name]: value
-            for name, value in stats.items()
-        }
-        abilities_match = re.search(r"\babilities\s*:\s*\[", character_body)
-        if abilities_match is None:
-            raise ValueError(f"{character_id} must define an abilities array")
-        abilities_start = character_body.index("[", abilities_match.start())
-        abilities_source = character_body[:abilities_start] + "{"
-        abilities_source += character_body[abilities_start + 1:]
-        abilities_source = abilities_source.replace("]", "}", 1)
-        abilities_body = extract_braced_block(abilities_source, abilities_start)
-        abilities = re.findall(
-            r'\{\s*name\s*:\s*"([^"]+)"\s*,\s*description\s*:\s*"([^"]+)"\s*\}',
-            abilities_body,
+                **declaration,
+                "id": "-".join(node_path),
+                "relative_file": "/".join((*path[:-1], slugify(declaration["name"])))
+                + ".md",
+                "parent": "-".join(parent_path) or None,
+                "is_section": is_root,
+                "title": declaration["title"]
+                or titleize(path[-1] if is_root else declaration["name"]),
+                "body": body,
+            }
         )
-        expected_stats = {"attack", "defense", "magic_attack", "magic_defense"}
-        if set(stats) != expected_stats:
-            raise ValueError(f"{character_id} must define all four stats")
-        if len(abilities) != 4:
-            raise ValueError(f"{character_id} must define exactly four abilities")
-        for stat, value in stats.items():
-            if not 0 <= int(value) <= 100:
-                raise ValueError(f"{character_id} {stat} must be between 0 and 100")
-        parent_value = declaration["metadata"].get("parent")
-        parent = slugify(parent_value) if parent_value else None
-        if parent is None:
-            containing_sections = [
-                section_id
-                for section_id, section in sections.items()
-                if section["opening_brace"] < declaration["opening_brace"]
-                and section["end_brace"] > declaration["opening_brace"]
-            ]
-            if len(containing_sections) == 1:
-                parent = containing_sections[0]
-        if parent and parent not in sections:
-            raise ValueError(f"{character_name} references unknown section {parent_value}")
-        data[character_id] = {
-            "name": character_name,
-            "stats": stats,
-            "abilities": abilities,
-            "parent": parent,
-        }
-    return sections, data
+    return nodes
 
 
-def write_character_page(character_id: str, character_data: dict) -> None:
-    display_name = character_data["name"]
-    stats = character_data["stats"]
-    stat_rows = "\n".join(
-        f"| {stat.replace('_', ' ').title()} | {stats[stat]} |"
-        for stat in ("attack", "defense", "magic_attack", "magic_defense")
-    )
-    abilities = "\n\n".join(
-        f"### {name}\n\n{description}"
-        for name, description in character_data["abilities"]
-    )
-    page = f"""# {display_name}
-
-![no image yet](../assets/no-image-yet.svg)
-
-## Overview
-
-{LOREM}
-
-## Stats
-
-| Stat | Value |
-| --- | ---: |
-{stat_rows}
-
-## Abilities
-
-{abilities}
-
-## Story
-
-{LOREM}
-"""
-    (CHARACTERS_DIR / f"{character_id}.md").write_text(page, encoding="utf-8")
+def split_top_level(value: str) -> list[str]:
+    parts = []
+    start = 0
+    depth = 0
+    in_string = False
+    escaped = False
+    for index, character in enumerate(value):
+        if in_string:
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == '"':
+                in_string = False
+        elif character == '"':
+            in_string = True
+        elif character in "[{":
+            depth += 1
+        elif character in "]}":
+            depth -= 1
+        elif character == "," and depth == 0:
+            if value[start:index].strip():
+                parts.append(value[start:index].strip())
+            start = index + 1
+    if value[start:].strip():
+        parts.append(value[start:].strip())
+    return parts
 
 
-def write_index(sections: dict[str, dict], character_data: dict[str, dict]) -> None:
-    section_blocks = []
-    for section_id, section in sections.items():
-        title = section["metadata"]["section"]
-        links = "\n".join(
-            f"- [{data['name']}](characters/{character_id}.md)"
-            for character_id, data in character_data.items()
-            if data["parent"] == section_id
-        )
-        section_blocks.append(f"## {title}\n\n{links or '- No pages are available yet.'}")
-    ungrouped = [
-        character_id
-        for character_id, data in character_data.items()
-        if data["parent"] is None
-    ]
-    if ungrouped:
-        section_blocks.append(
-            "## Characters\n\n"
-            + "\n".join(
-                f"- [{data['name']}](characters/{character_id}.md)"
-                for character_id, data in character_data.items()
-                if character_id in ungrouped
+def parse_value(raw: str, resolve_reference):
+    raw = raw.strip()
+    if raw.startswith('"') and raw.endswith('"'):
+        return raw[1:-1]
+    if raw == "true":
+        return True
+    if raw == "false":
+        return False
+    if re.fullmatch(r"\d+", raw):
+        return int(raw)
+    if raw.startswith("[") and raw.endswith("]"):
+        return [
+            parse_value(item, resolve_reference)
+            for item in split_top_level(raw[1:-1])
+        ]
+    if raw.startswith("{") and raw.endswith("}"):
+        return parse_entries(raw[1:-1], resolve_reference)
+    if re.fullmatch(r"[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*", raw):
+        resolved = resolve_reference(raw)
+        if resolved is not None:
+            return resolved
+    return raw
+
+
+def parse_entries(body: str, resolve_reference) -> dict:
+    body = re.sub(r"^\s*///.*$", "", body, flags=re.MULTILINE)
+    entries = {}
+    for item in split_top_level(body):
+        match = re.match(r"([A-Za-z_]\w*)\s*:\s*(.*)", item, re.DOTALL)
+        if match:
+            entries[match.group(1)] = parse_value(match.group(2), resolve_reference)
+    return entries
+
+
+def create_reference_resolver(source: str):
+    assignments = {}
+    for match in re.finditer(r"\b([A-Za-z_]\w*)\s*=\s*\{", source):
+        opening_brace = source.index("{", match.start())
+        assignments[match.group(1)] = extract_braced_block(source, opening_brace)
+    cache = {}
+
+    def resolve(reference: str):
+        parts = reference.split(".")
+        root = parts[0]
+        if root not in assignments:
+            return None
+        if root not in cache:
+            cache[root] = parse_entries(assignments[root], resolve)
+        value = cache[root]
+        for part in parts[1:]:
+            if not isinstance(value, dict) or part not in value:
+                return None
+            value = value[part]
+        return value
+
+    return resolve
+
+
+def parse_struct_data(body: str, resolve_reference) -> dict:
+    return parse_entries(body, resolve_reference)
+
+
+def validate_node(node: dict, data: dict) -> None:
+    for stat in STAT_KEYS.intersection(data):
+        value = data[stat]
+        if not isinstance(value, int) or not 0 <= value <= 100:
+            raise ValueError(f"{node['title']} {stat} must be an integer between 0 and 100")
+
+
+def write_page(node: dict, data: dict) -> None:
+    page_path = GENERATED_DIR / node["relative_file"]
+    page_path.parent.mkdir(parents=True, exist_ok=True)
+    lines = [f"# {node['title']}", ""]
+    for key, value in data.items():
+        lines.extend(render_field(key, value, level=2))
+    lines.append("")
+    page_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def render_field(key: str, value, level: int) -> list[str]:
+    heading = "#" * level
+    lines = [f"{heading} {titleize(key)}", ""]
+    if isinstance(value, dict):
+        for child_key, child_value in value.items():
+            lines += render_field(child_key, child_value, level + 1)
+    elif isinstance(value, list):
+        for item in value:
+            if isinstance(item, dict):
+                item_title = item.get("name", item.get("id", "Item"))
+                lines += [f"{'#' * (level + 1)} {item_title}", ""]
+                for child_key, child_value in item.items():
+                    if child_key != "name":
+                        lines += render_field(child_key, child_value, level + 2)
+            else:
+                lines += [f"- {format_value(item)}"]
+        lines.append("")
+    elif isinstance(value, str) and len(value) > 100:
+        lines += [value, ""]
+    else:
+        lines += [format_value(value), ""]
+    return lines
+
+
+def format_value(value) -> str:
+    if isinstance(value, bool):
+        return "Yes" if value else "No"
+    if isinstance(value, (dict, list)):
+        return "Structured data"
+    return str(value)
+
+
+def write_index(nodes: list[dict]) -> None:
+    sections = [node for node in reversed(nodes) if node["is_section"]]
+    pages = [node for node in reversed(nodes) if not node["is_section"]]
+    by_parent = {}
+    for node in pages:
+        by_parent.setdefault(node["parent"], []).append(node)
+
+    def render_pages(parent: str, depth: int = 0) -> list[str]:
+        lines = []
+        for node in by_parent.get(parent, []):
+            indent = "  " * depth
+            lines.append(
+                f"{indent}- [{node['title']}]"
+                f"(kindlebane-documentation/{node['relative_file']})"
             )
-        )
-    sections_text = "\n\n".join(section_blocks) or "- No documentation is available yet."
-    page = f"""# Kindlebane Documentation
+            lines.extend(render_pages(node["id"], depth + 1))
+        return lines
+
+    page = """# Kindlebane Documentation
 
 This is the internal reference for Kindlebane's characters, abilities, stories,
 stats, and other game information.
 
-{sections_text}
+## Documentation
+
 """
-    (DOCS_DIR / "index.md").write_text(page, encoding="utf-8")
+    sections_text = []
+    for section in sections:
+        sections_text.append(f"### {section['title']}")
+        sections_text.append("")
+        sections_text.extend(
+            render_pages(section["id"]) or ["- No pages are available yet."]
+        )
+        sections_text.append("")
+    page += "\n".join(sections_text) or "- No documentation is available yet."
+    (DOCS_DIR / "index.md").write_text(page.rstrip() + "\n", encoding="utf-8")
 
 
 def main() -> None:
     source = SOURCE_FILE.read_text(encoding="utf-8")
-    declarations = parse_marked_declarations(source)
-    sections, character_data = discover_character_data(source, declarations)
-    CHARACTERS_DIR.mkdir(parents=True, exist_ok=True)
+    nodes = declaration_nodes(source)
+    resolve_reference = create_reference_resolver(source)
+    ids = {node["id"] for node in nodes}
+    for node in nodes:
+        if node["parent"] and node["parent"] not in ids:
+            raise ValueError(
+                f"{node['title']} references missing parent {node['parent']}"
+            )
+        data = parse_struct_data(node["body"], resolve_reference)
+        validate_node(node, data)
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
-    write_index(sections, character_data)
-    for character_id in character_data:
-        write_character_page(character_id, character_data[character_id])
+    for generated_page in GENERATED_DIR.rglob("*.md"):
+        generated_page.unlink()
+    legacy_pages_dir = DOCS_DIR / "pages"
+    if legacy_pages_dir.exists():
+        for generated_page in legacy_pages_dir.rglob("*.md"):
+            generated_page.unlink()
+    legacy_pages_dir = DOCS_DIR / "characters"
+    if legacy_pages_dir.exists():
+        for generated_page in legacy_pages_dir.rglob("*.md"):
+            generated_page.unlink()
+    for node in nodes:
+        if node["is_section"]:
+            continue
+        write_page(node, parse_struct_data(node["body"], resolve_reference))
+    write_index(nodes)
 
 
 if __name__ == "__main__":

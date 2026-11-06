@@ -100,6 +100,20 @@ a:hover {
   color: var(--muted);
 }
 
+.wy-menu-vertical li.toctree-l3,
+.wy-menu-vertical li.toctree-l3 > a,
+.wy-menu-vertical li.toctree-l3.current,
+.wy-menu-vertical li.toctree-l3.current > a {
+  background: var(--forest-900) !important;
+  color: var(--muted) !important;
+}
+
+.wy-menu-vertical li.toctree-l3 > a:hover,
+.wy-menu-vertical li.toctree-l3.current > a:hover {
+  background: var(--ember-hover) !important;
+  color: var(--ink) !important;
+}
+
 .wy-menu-vertical .current-section p {
   background: var(--ember-hover) !important;
   color: var(--ink) !important;
