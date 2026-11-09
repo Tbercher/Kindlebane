@@ -6,6 +6,6 @@ function spawnCharacters(){
     for (var i = 0; i < count; i++){
         var slot = instance_find(obj_slotNumber, i);
         // Spawn a character at the slot's position
-        instance_create_layer(slot.x, slot.y, "instances", obj_character);
+        instance_create_layer(slot.x, slot.y, "Instances", obj_character);
     }
 }
