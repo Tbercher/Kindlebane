@@ -15,10 +15,11 @@ function spawnCharacters(){
             }
             var character = obj_battleController.playerTeam.members[slotNumber - 1];
         } else {
-            if (slotNumber > array_length(obj_gameInfo.villages[$obj_gameInfo.currentVillage].team)) {
+            //continue; //TEMPORARY: Disable enemy spawning for now
+            if (slotNumber > array_length(obj_battleController.village.team)) {
                 continue; // Skip if the slot number exceeds the number of enemies in the current village
             }
-            var character = obj_gameInfo.villages[$obj_gameInfo.currentVillage].team[slotNumber - 1];
+            var character = obj_battleController.village.team[slotNumber - 1];
         }
         var targetHeight = 160;
         var scale = targetHeight / sprite_get_height(character.sprite);
@@ -28,5 +29,6 @@ function spawnCharacters(){
         });
         characterInstance.image_xscale = scale;
         characterInstance.image_yscale = scale;
+        character.instance = characterInstance;
     }
 }

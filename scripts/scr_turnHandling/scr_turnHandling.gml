@@ -8,7 +8,20 @@ function playGame(){
 	}
 }
 
-function chooseTurn(playerTurn){
+function highlightCharacters(playerTurn){
+	var team;
+	if (playerTurn){
+		team = obj_battleController.playerTeam.members;
+	} else {
+		team = obj_battleController.village.team;
+	}
+	for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			team[characterIndex].instance.clickable = true;
+			// Highlight characters
+	}
+}
+
+function chooseCharacter(playerTurn){
 	var team;
 	if (playerTurn){
 			
