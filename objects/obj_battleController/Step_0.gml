@@ -4,4 +4,6 @@ if (is_undefined(info) && instance_exists(obj_gameInfo)) {
     playerTeam = {
         members: [info.characters.apprentice]
     };
+	village = obj_gameInfo.currentVillage;
+	spawnCharacters()
 }

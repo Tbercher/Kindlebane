@@ -24,6 +24,7 @@ characters = {
         myHealth: 100,
         isPlaceholder: true,
         abilities: [abilities.kindleshooter],
+		sprite: spr_placeholderCharacter
     },
     /// @doc-characters-character Apprentice
     apprentice: {
@@ -38,6 +39,7 @@ characters = {
         myHealth: 100,
         isPlaceholder: true,
         abilities: [abilities.kindleshooter],
+		sprite: spr_placeholderCharacter
     },
     /// @doc-characters-character Condemned
     condemned: {
@@ -118,3 +120,8 @@ villages = {
         ],
     },
 };
+
+// Current Game Info
+
+//Should start as undefined and be changed when you select a village in the menu
+currentVillage = "loamvale";
