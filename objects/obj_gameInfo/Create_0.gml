@@ -6,6 +6,7 @@ abilities = {
         name: "Kindleshooter Fire Flame",
         description: "Shoots a flame that ignites enemies.",
         damage: 30,
+        sprite: spr_placeholderAbilitySpecific
     },
 }
 

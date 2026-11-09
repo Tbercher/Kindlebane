@@ -25,6 +25,7 @@
   },
   "name":"Kindlebane",
   "resources":[
+    {"id":{"name":"obj_ability","path":"objects/obj_ability/obj_ability.yy",},},
     {"id":{"name":"obj_abilityImage","path":"objects/obj_abilityImage/obj_abilityImage.yy",},},
     {"id":{"name":"obj_battleController","path":"objects/obj_battleController/obj_battleController.yy",},},
     {"id":{"name":"obj_bonfireProgression","path":"objects/obj_bonfireProgression/obj_bonfireProgression.yy",},},
@@ -32,6 +33,7 @@
     {"id":{"name":"obj_clickable","path":"objects/obj_clickable/obj_clickable.yy",},},
     {"id":{"name":"obj_gameInfo","path":"objects/obj_gameInfo/obj_gameInfo.yy",},},
     {"id":{"name":"obj_headshotImage","path":"objects/obj_headshotImage/obj_headshotImage.yy",},},
+    {"id":{"name":"obj_infoText","path":"objects/obj_infoText/obj_infoText.yy",},},
     {"id":{"name":"obj_legacyBonfireProgression","path":"objects/obj_legacyBonfireProgression/obj_legacyBonfireProgression.yy",},},
     {"id":{"name":"obj_placeholderCharacter","path":"objects/obj_placeholderCharacter/obj_placeholderCharacter.yy",},},
     {"id":{"name":"obj_slotNumber","path":"objects/obj_slotNumber/obj_slotNumber.yy",},},
@@ -42,6 +44,7 @@
     {"id":{"name":"scr_turnHandling","path":"scripts/scr_turnHandling/scr_turnHandling.yy",},},
     {"id":{"name":"spr_bonfireProgression","path":"sprites/spr_bonfireProgression/spr_bonfireProgression.yy",},},
     {"id":{"name":"spr_placeholderAbility","path":"sprites/spr_placeholderAbility/spr_placeholderAbility.yy",},},
+    {"id":{"name":"spr_placeholderAbilitySpecific","path":"sprites/spr_placeholderAbilitySpecific/spr_placeholderAbilitySpecific.yy",},},
     {"id":{"name":"spr_placeholderBackground","path":"sprites/spr_placeholderBackground/spr_placeholderBackground.yy",},},
     {"id":{"name":"spr_placeholderCharacter","path":"sprites/spr_placeholderCharacter/spr_placeholderCharacter.yy",},},
     {"id":{"name":"spr_placeholderHeadshot","path":"sprites/spr_placeholderHeadshot/spr_placeholderHeadshot.yy",},},
