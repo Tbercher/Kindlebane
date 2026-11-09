@@ -27,6 +27,7 @@
   "resources":[
     {"id":{"name":"obj_ability","path":"objects/obj_ability/obj_ability.yy",},},
     {"id":{"name":"obj_abilityImage","path":"objects/obj_abilityImage/obj_abilityImage.yy",},},
+    {"id":{"name":"obj_attributeText","path":"objects/obj_attributeText/obj_attributeText.yy",},},
     {"id":{"name":"obj_battleController","path":"objects/obj_battleController/obj_battleController.yy",},},
     {"id":{"name":"obj_bonfireProgression","path":"objects/obj_bonfireProgression/obj_bonfireProgression.yy",},},
     {"id":{"name":"obj_character","path":"objects/obj_character/obj_character.yy",},},
@@ -48,6 +49,7 @@
     {"id":{"name":"spr_placeholderBackground","path":"sprites/spr_placeholderBackground/spr_placeholderBackground.yy",},},
     {"id":{"name":"spr_placeholderCharacter","path":"sprites/spr_placeholderCharacter/spr_placeholderCharacter.yy",},},
     {"id":{"name":"spr_placeholderHeadshot","path":"sprites/spr_placeholderHeadshot/spr_placeholderHeadshot.yy",},},
+    {"id":{"name":"spr_placeholderSpecificHeadshot","path":"sprites/spr_placeholderSpecificHeadshot/spr_placeholderSpecificHeadshot.yy",},},
     {"id":{"name":"spr_slotNumberPlaceholder","path":"sprites/spr_slotNumberPlaceholder/spr_slotNumberPlaceholder.yy",},},
     {"id":{"name":"spr_test","path":"sprites/spr_test/spr_test.yy",},},
     {"id":{"name":"spr_UIBase","path":"sprites/spr_UIBase/spr_UIBase.yy",},},

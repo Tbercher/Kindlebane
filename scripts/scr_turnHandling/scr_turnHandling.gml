@@ -43,6 +43,11 @@ function handleSelection(){
 	var hoveredClickable = collision_point(mouse_x, mouse_y, obj_clickable, true, true);
 	if (hoveredClickable != noone && object_is_ancestor(hoveredClickable.object_index, obj_clickable)) {
 		obj_battleController.hoveredInfo = hoveredClickable.info
+		if (hoveredClickable.object_index == obj_character) {
+			obj_battleController.hoveredStats = hoveredClickable.stats
+			obj_headshotImage.sprite_index = hoveredClickable.character.headshot;
+		}
+		obj_battleController.isHovering = true;
 
 		if (hoveredClickable.clickable){
 			window_set_cursor(cr_handpoint);
@@ -54,7 +59,14 @@ function handleSelection(){
 	}
 	else{
 		window_set_cursor(cr_default);
-		obj_battleController.hoveredInfo = undefined;
+		obj_battleController.isHovering = false;
+		if (obj_battleController.hoveredStats != undefined && !obj_battleController.characterSelected){
+			obj_battleController.hoveredStats = undefined;
+			obj_battleController.hoveredInfo = undefined;
+		}
+		if (!obj_battleController.characterSelected){
+			obj_headshotImage.sprite_index = spr_placeholderHeadshot;
+		}
 	}
 }
 

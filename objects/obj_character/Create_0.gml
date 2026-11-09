@@ -3,8 +3,15 @@ event_inherited()
 if (!variable_instance_exists(id, "character")) {
     character = undefined;
 }
-newHealth = 1000;
+newHealth = character.myHealth;
 sprite_index = character.sprite;
 selected = false;
 renderedAbilities = false;
 info = character.description
+stats =
+    "Name: " + character.name
+    + "\nHealth: " + string(character.myHealth)
+    + "\nAttack: " + string(character.attack)
+    + "\nDefense: " + string(character.defense)
+    + "\nMagic Attack: " + string(character.magicAttack)
+    + "\nMagic Defense: " + string(character.magicDefense);
