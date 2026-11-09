@@ -22,3 +22,26 @@ if (clickable && !hovered){
 else{
 	draw_self()	
 }
+
+// Draw Health Bar
+var bar_width = 80;
+var bar_height = 8;
+
+var bar_x = x - bar_width / 2;
+var bar_y = y - 100;
+
+var health_percent = clamp((newHealth / character.myHealth) * 100, 0, 100);
+
+draw_healthbar(
+    bar_x,
+    bar_y,
+    bar_x + bar_width,
+    bar_y + bar_height,
+    health_percent,
+    c_black,
+    c_red,
+    c_lime,
+    0,
+    true,
+    true
+);
