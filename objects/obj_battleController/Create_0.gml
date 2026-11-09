@@ -5,4 +5,5 @@ charactersSpawned = false;
 hoveredInfo = undefined;
 hoveredStats = undefined;
 isHovering = false;
-characterSelected = false;
+characterSelected = undefined;
+abilitySelected = undefined

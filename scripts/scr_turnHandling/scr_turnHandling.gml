@@ -54,22 +54,32 @@ function handleSelection(){
 			if (mouse_check_button_pressed(mb_left)) {
 				// Set the clickable's selected state to true, handle the click event in the clickable object. 
 				hoveredClickable.selected = true;
+				if (hoveredClickable.object_index == obj_abilityImage){
+					obj_battleController.abilitySelected = hoveredClickable.ability;
+				}
+				else{
+					obj_battleController.abilitySelected = undefined;
+				}
 	    	}
 		}
 	}
 	else{
 		window_set_cursor(cr_default);
 		obj_battleController.isHovering = false;
-		if (obj_battleController.hoveredStats != undefined && !obj_battleController.characterSelected){
+		if (obj_battleController.hoveredStats != undefined && is_undefined(obj_battleController.characterSelected)){
 			obj_battleController.hoveredStats = undefined;
 			obj_battleController.hoveredInfo = undefined;
 		}
-		if (!obj_battleController.characterSelected){
+		if (is_undefined(obj_battleController.characterSelected)){
 			obj_headshotImage.sprite_index = spr_placeholderHeadshot;
 		}
 	}
 }
 
-function handleTurn(){
+function handleTurn(isUserTurn, ability){
+	if (!isUserTurn){
+		// AI Turn Handling
+	}
+	
 
 }
