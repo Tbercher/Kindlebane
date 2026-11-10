@@ -8,18 +8,22 @@ function spawnCharacters(){
         var slotNumber = slot.number
         var isEnemy = slot.isEnemy;
 
+        var character;
         // Find the character corresponding to the slot number
         if (!isEnemy){
             if (slotNumber > array_length(obj_battleController.playerTeam.members)) {
                 continue; // Skip if the slot number exceeds the number of player team members
             }
-            var character = obj_battleController.playerTeam.members[slotNumber - 1];
+            var sourceCharacter = obj_battleController.playerTeam.members[slotNumber - 1];
+            character = variable_clone(sourceCharacter);
+            obj_battleController.playerTeam.members[slotNumber - 1] = character; // Update the player team member with the cloned character
         } else {
-            //continue; //TEMPORARY: Disable enemy spawning for now
             if (slotNumber > array_length(obj_battleController.village.team)) {
                 continue; // Skip if the slot number exceeds the number of enemies in the current village
             }
-            var character = obj_battleController.village.team[slotNumber - 1];
+            var sourceCharacter = obj_battleController.village.team[slotNumber - 1];
+            character = variable_clone(sourceCharacter);
+            obj_battleController.village.team[slotNumber - 1] = character; // Update the village team member with the cloned character
         }
         var targetHeight = 160;
         var scale = targetHeight / sprite_get_height(character.sprite);
@@ -30,5 +34,6 @@ function spawnCharacters(){
         characterInstance.image_xscale = scale;
         characterInstance.image_yscale = scale;
         character.instance = characterInstance;
+        characterInstance.isEnemy = isEnemy;
     }
 }

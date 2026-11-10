@@ -1,4 +1,5 @@
 event_inherited()
+isEnemy = false;
 /* Adding this to get the compiler to shut up about an unrecognized character variable */
 if (!variable_instance_exists(id, "character")) {
     character = undefined;

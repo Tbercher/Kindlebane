@@ -7,3 +7,5 @@ hoveredStats = undefined;
 isHovering = false;
 characterSelected = undefined;
 abilitySelected = undefined
+enemySelected = undefined;
+isPlayerTurn = true;

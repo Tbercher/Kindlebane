@@ -6,8 +6,10 @@ if (is_undefined(info) && instance_exists(obj_gameInfo)) {
     };
 	village = info.villages[$obj_gameInfo.currentVillage];
 	spawnCharacters()
-	highlightCharacters(true);
-	show_debug_message(obj_character.clickable)
 }
 
-handleSelection();
+if (!is_undefined(info)){
+    playGame();
+}
+
+
