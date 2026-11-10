@@ -23,6 +23,24 @@ else{
 	draw_self()	
 }
 
+if (selected && isEnemy){
+    gpu_set_blendmode(bm_subtract);
+
+	draw_sprite_ext(
+    sprite_index, 
+    image_index,  
+    x,            
+    y,            
+    image_xscale,  
+    image_yscale, 
+    image_angle,   
+    make_color_rgb(0, 255, 255),      // subtract aqua create red tint
+    .15       // Alpha/opacity: 1 = fully visible
+	);
+
+    gpu_set_blendmode(bm_normal);
+}
+
 // Draw Health Bar
 var bar_width = 80;
 var bar_height = 8;

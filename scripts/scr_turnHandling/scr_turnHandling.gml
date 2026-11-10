@@ -109,9 +109,14 @@ function preparePlayerTurn(){
 function playGame(){
 	if (obj_battleController.isPlayerTurn){
 		preparePlayerTurn();
-		if (!is_undefined(obj_battleController.abilitySelected)){
+		if (is_undefined(obj_battleController.enemySelected) && !is_undefined(obj_battleController.abilitySelected)){
 			toggleHighlightTeam(obj_battleController.village.team, true);
 			toggleHighlightTeam(obj_battleController.playerTeam.members, false);
+		}
+		else if (!is_undefined(obj_battleController.enemySelected)){
+			toggleHighlightTeam(obj_battleController.village.team, false);
+			toggleHighlightTeam(obj_battleController.playerTeam.members, false);
+			obj_battleController.enemySelected.instance.selected = true;
 		}
 	}
 	else{

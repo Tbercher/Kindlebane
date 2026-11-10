@@ -1,3 +1,8 @@
 if (instance_exists(obj_battleController) && !is_undefined(obj_battleController.abilitySelected) && obj_battleController.abilitySelected.instance != id){
 		selected = false;
 	}
+if (is_undefined(obj_battleController.characterSelected)){
+	ability = undefined;
+	info = undefined;
+	sprite_index = spr_placeholderAbility;
+}
