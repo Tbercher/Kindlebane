@@ -191,7 +191,7 @@ function handleTurn(isUserTurn){
 
 function handleAutoCharacterSelection(){
 	// Find the character for the current turn
-	var characterInstance = obj_battleController.playerTeam.members[obj_battleController.turnSlot - 1].instance;
+	var characterInstance = obj_battleController.playerTeam.members[obj_battleController.playerTurnSlot].instance;
 	selectCharacter(characterInstance)
 }
 

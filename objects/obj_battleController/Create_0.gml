@@ -9,5 +9,6 @@ characterSelected = undefined;
 abilitySelected = undefined
 enemySelected = undefined;
 isPlayerTurn = true;
-turnSlot = 1;
+enemyTurnSlot = 0;
+playerTurnSlot = 0;
 aiTurnStarted = false;

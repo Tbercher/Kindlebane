@@ -29,7 +29,7 @@ if (selected){
     var isAttackingAI = !obj_battleController.isPlayerTurn && isEnemy;
 
     if (!obj_battleController.isPlayerTurn && isEnemy){
-        aiAttackCharacter = obj_battleController.village.team[obj_battleController.turnSlot - 1].instance.character;
+        aiAttackCharacter = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance.character;
     }
 
     var ring_color = (isEnemy || !obj_battleController.isPlayerTurn) ? c_red : c_yellow;

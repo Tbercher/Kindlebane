@@ -1,4 +1,4 @@
-var characterInstance = obj_battleController.village.team[obj_battleController.turnSlot - 1].instance;
+var characterInstance = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance;
 
 // Get all possible damage values for each ability against each enemy
 var highestDamage = 0;
@@ -27,3 +27,20 @@ obj_battleController.abilitySelected = undefined;
 obj_battleController.enemySelected = undefined;
 obj_battleController.isPlayerTurn = true;
 obj_battleController.aiTurnStarted = false;
+
+// Handle turn slot incrementing. 
+var playerTeamSize = array_length(obj_battleController.playerTeam.members);
+var enemyTeamSize = array_length(obj_battleController.village.team);
+
+if (obj_battleController.enemyTurnSlot >= enemyTeamSize - 1){
+    obj_battleController.enemyTurnSlot = 0;
+}
+else{
+    obj_battleController.enemyTurnSlot++;
+}
+if (obj_battleController.playerTurnSlot >= playerTeamSize - 1){
+    obj_battleController.playerTurnSlot = 0;
+}
+else{
+    obj_battleController.playerTurnSlot++;
+}

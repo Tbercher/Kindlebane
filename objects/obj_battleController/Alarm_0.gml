@@ -1,4 +1,4 @@
-var characterInstance = obj_battleController.village.team[obj_battleController.turnSlot - 1].instance;
+var characterInstance = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance;
 
 
 selectCharacter(characterInstance)
