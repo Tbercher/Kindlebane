@@ -159,9 +159,13 @@ function handleTurn(isUserTurn){
 		}
 		aiTurnStarted = true;
 
+		var selectedCharacter = obj_battleController.characterSelected;
+
 		// Get rid of all the selected variables for the player turn
 		if (!is_undefined(obj_battleController.characterSelected)){
-			obj_battleController.characterSelected.instance.selected = false;
+			if (instance_exists(obj_battleController.characterSelected.instance)){
+				obj_battleController.characterSelected.instance.selected = false;
+			}
 			obj_battleController.characterSelected = undefined;
 			toggleHighlightTeam(obj_battleController.village.team, false);
 			handleSelection();
@@ -190,9 +194,27 @@ function handleTurn(isUserTurn){
 }
 
 function handleAutoCharacterSelection(){
-	// Find the character for the current turn
-	var characterInstance = obj_battleController.playerTeam.members[obj_battleController.playerTurnSlot].instance;
-	selectCharacter(characterInstance)
+	var playerCount = array_length(obj_battleController.playerTeam.members);
+
+    if (playerCount <= 0) {
+        obj_battleController.isPlayerTurn = false;
+        obj_battleController.alarm[0] = -1;
+        obj_battleController.alarm[1] = -1;
+
+        // Replace with defeat/game-over handling? Might want to handle it somewhere else
+        show_debug_message("Player team defeated.");
+        return;
+    }
+
+    obj_battleController.playerTurnSlot = clamp(
+        obj_battleController.playerTurnSlot,
+        0,
+        playerCount - 1
+    );
+
+    var characterInstance = obj_battleController.playerTeam.members[obj_battleController.playerTurnSlot].instance;
+
+    selectCharacter(characterInstance);
 }
 
 function preparePlayerTurn(){

@@ -44,3 +44,4 @@ if (obj_battleController.playerTurnSlot >= playerTeamSize - 1){
 else{
     obj_battleController.playerTurnSlot++;
 }
+

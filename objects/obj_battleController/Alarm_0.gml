@@ -1,14 +1,25 @@
-if (array_length(obj_battleController.village.team) <= 0) {
-    obj_battleController.alarm[1] = -1;
-    obj_battleController.isPlayerTurn = false;
+var playerCount = array_length(obj_battleController.playerTeam.members);
 
-    // Replace this with your battle-win handling.
-    show_debug_message("Enemy team defeated.");
+if (playerCount <= 0) {
+    alarm[0] = -1;
+    alarm[1] = -1;
+    isPlayerTurn = false;
+    aiTurnStarted = false;
+
+    //show_debug_message("Player team defeated.");
     exit;
 }
 
-var characterInstance = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance;
+var enemyCount = array_length(obj_battleController.village.team);
 
+if (enemyCount <= 0) {
+    alarm[1] = -1;
+    exit;
+}
+
+enemyTurnSlot = clamp(enemyTurnSlot, 0, enemyCount - 1);
+
+var characterInstance = village.team[enemyTurnSlot].instance;
 
 selectCharacter(characterInstance)
 obj_battleController.characterSelected = characterInstance.character;

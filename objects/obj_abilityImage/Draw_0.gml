@@ -1,6 +1,6 @@
 draw_self()
 
-if (hovered){
+if (hovered && !is_undefined(ability)){
     var padding = 12;
     var box_width = sprite_width;
     var box_height = sprite_height;
