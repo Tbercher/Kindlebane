@@ -33,3 +33,7 @@ else{
 if (selected){
 	obj_battleController.characterSelected = character;	
 }
+
+if (newHealth <= 0){
+    instance_destroy();
+}

@@ -1,3 +1,12 @@
+if (array_length(obj_battleController.village.team) <= 0) {
+    obj_battleController.alarm[1] = -1;
+    obj_battleController.isPlayerTurn = false;
+
+    // Replace this with your battle-win handling.
+    show_debug_message("Enemy team defeated.");
+    exit;
+}
+
 var characterInstance = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance;
 
 
