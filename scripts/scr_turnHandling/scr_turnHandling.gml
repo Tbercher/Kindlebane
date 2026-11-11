@@ -65,6 +65,9 @@ function handleSelection(){
 	/* Selection and Click Handling */
 	// Check if the cursor is currently in contact with a hoverable.
 	var hoveredClickable = collision_point(mouse_x, mouse_y, obj_clickable, true, true);
+	if (hoveredClickable != noone && !hoveredClickable.clickable){
+		hoveredClickable = noone;
+	}
 	
 	// If the object is a character or an ability
 	if (hoveredClickable != noone && object_is_ancestor(hoveredClickable.object_index, obj_clickable) && variable_instance_exists(hoveredClickable, "info")) {
