@@ -39,6 +39,17 @@ if (selected && isEnemy){
 	);
 
     gpu_set_blendmode(bm_normal);
+    var ability = obj_battleController.abilitySelected;
+	var enemy = obj_battleController.enemySelected;
+    var damage = calculateDamage(ability, enemy, character);
+
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+
+    draw_text(x, y - 120, "Damage: " + string(damage));
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
 }
 
 // Draw Health Bar

@@ -12,7 +12,7 @@ info = character.description
 stats =
     "Name: " + character.name
     + "\nHealth: " + string(character.myHealth)
-    + "\nAttack: " + string(character.attack)
+    + "\nAttack Multiplier: " + string(character.attack)
     + "\nDefense: " + string(character.defense)
-    + "\nMagic Attack: " + string(character.magicAttack)
+    + "\nMagic Attack Multiplier: " + string(character.magicAttack)
     + "\nMagic Defense: " + string(character.magicDefense);

@@ -98,11 +98,23 @@ function handleSelection(){
 	}
 }
 
+function calculateDamage(ability, enemy, character){
+	var physicalDamage = ability.attack * character.attack;
+	var magicalDamage = ability.magicAttack * character.magicAttack;
+
+	return max((physicalDamage - enemy.defense), 0) + max((magicalDamage - enemy.magicDefense), 0);
+}
+
 function handleTurn(isUserTurn){
 	if (!isUserTurn){
 		// AI Turn Handling
 	}
-	show_debug_message("Turn handling started");
+	var ability = obj_battleController.abilitySelected;
+	var enemy = obj_battleController.enemySelected;
+	var character = obj_battleController.characterSelected;
+
+	enemy.instance.newHealth -= calculateDamage(ability, enemy, character);
+
 }
 
 function preparePlayerTurn(){

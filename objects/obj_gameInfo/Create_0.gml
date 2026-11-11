@@ -7,6 +7,8 @@ abilities = {
         description: "A basic physical attack with a sword.",
         cost: 0,
         strength: 1,
+        attack: 50,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Flurry
@@ -15,6 +17,8 @@ abilities = {
         description: "Makes consecutive attacks against a single enemy that deal large physical damage.",
         cost: 2,
         strength: 2,
+        attack: 100,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Cleave
@@ -23,6 +27,8 @@ abilities = {
         description: "Attacks a single enemy and hits adjacent enemies for 75% damage.",
         cost: 3,
         strength: 3,
+        attack: 150,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Stab
@@ -31,6 +37,8 @@ abilities = {
         description: "Attacks one enemy for physical damage and causes Bleed.",
         cost: 2,
         strength: 1,
+        attack: 50,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Reckless Strike
@@ -40,6 +48,8 @@ abilities = {
         cost: 0,
         strength: 3,
         isUltimate: true,
+        attack: 150,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Dropkick
@@ -48,6 +58,8 @@ abilities = {
         description: "A basic physical attack with a shield.",
         cost: 0,
         strength: 1,
+        attack: 50,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Charge
@@ -56,6 +68,8 @@ abilities = {
         description: "Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main target.",
         cost: 2,
         strength: 2,
+        attack: 100,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Counter
@@ -64,6 +78,8 @@ abilities = {
         description: "Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.",
         cost: 2,
         strength: 3,
+        attack: 150,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Taunt
@@ -72,6 +88,8 @@ abilities = {
         description: "Taunts a single enemy and reduces all damage taken for 2 turns.",
         cost: 1,
         strength: 1,
+        attack: 0,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Battle Cry
@@ -81,6 +99,8 @@ abilities = {
         cost: 0,
         strength: 3,
         isUltimate: true,
+        attack: 0,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Magic Bolt
@@ -89,6 +109,8 @@ abilities = {
         description: "A basic magic attack with a grimoire.",
         cost: 0,
         strength: 1,
+        attack: 0,
+        magicAttack: 50,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Fire Ball
@@ -97,6 +119,8 @@ abilities = {
         description: "Shoots a fireball at a single enemy for magic damage and causes Burn.",
         cost: 2,
         strength: 2,
+        attack: 0,
+        magicAttack: 100,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Lightning Bolt
@@ -105,6 +129,8 @@ abilities = {
         description: "Fires a lightning bolt at a single enemy that deals massive magic damage.",
         cost: 3,
         strength: 3,
+        attack: 0,
+        magicAttack: 150,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Spell Charge
@@ -113,6 +139,8 @@ abilities = {
         description: "Prepares a spell and increases its damage.",
         cost: 1,
         strength: 1,
+        attack: 0,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Quake
@@ -122,6 +150,8 @@ abilities = {
         cost: 0,
         strength: 3,
         isUltimate: true,
+        attack: 0,
+        magicAttack: 150,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Punch
@@ -130,6 +160,8 @@ abilities = {
         description: "A basic physical attack.",
         cost: 0,
         strength: 1,
+        attack: 50,
+        magicAttack: 0,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Heal
@@ -138,6 +170,8 @@ abilities = {
         description: "Heals a single ally.",
         cost: 2,
         strength: 2,
+        attack: 0,
+        magicAttack: 100,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Curse
@@ -146,6 +180,8 @@ abilities = {
         description: "Silences a single target and reduces its defences for 1 turn.",
         cost: 2,
         strength: 2,
+        attack: 0,
+        magicAttack: 100,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Enhance
@@ -154,6 +190,8 @@ abilities = {
         description: "Buffs a single ally's damage for 2 turns.",
         cost: 2,
         strength: 2,
+        attack: 0,
+        magicAttack: 100,
         sprite: spr_placeholderAbilitySpecific
     },
     /// @doc-abilities-ability Vigorate
@@ -163,6 +201,8 @@ abilities = {
         cost: 0,
         strength: 3,
         isUltimate: true,
+        attack: 0,
+        magicAttack: 150,
         sprite: spr_placeholderAbilitySpecific
     },
 }
@@ -174,7 +214,7 @@ characters = {
         name: "Apprentice",
         className: "Apprentice",
         description: "A sword-wielding apprentice.",
-        attack: 50,
+        attack: 1,
         defense: 50,
         magicAttack: 0,
         magicDefense: 25,
@@ -192,7 +232,7 @@ characters = {
         name: "The Woodsman",
         className: "Woodsman",
         description: "A shield-bearing woodsman.",
-        attack: 50,
+        attack: 1,
         defense: 50,
         magicAttack: 0,
         magicDefense: 25,
@@ -210,9 +250,9 @@ characters = {
         name: "Mage",
         className: "Mage",
         description: "A spellcaster wielding a grimoire.",
-        attack: 50,
+        attack: 1,
         defense: 50,
-        magicAttack: 50,
+        magicAttack: 1,
         magicDefense: 25,
         myHealth: 100,
         isPlaceholder: true,
@@ -228,9 +268,9 @@ characters = {
         name: "Cleric",
         className: "Cleric",
         description: "A support character who empowers and heals allies.",
-        attack: 50,
+        attack: 1,
         defense: 50,
-        magicAttack: 25,
+        magicAttack: 0.5,
         magicDefense: 25,
         myHealth: 100,
         isPlaceholder: true,
@@ -247,7 +287,7 @@ characters = {
         village: "Stonehearth",
         className: "Apprentice",
         description: "An Apprentice from Stonehearth.",
-        attack: 50,
+        attack: 1,
         defense: 50,
         magicAttack: 0,
         magicDefense: 25,
@@ -263,7 +303,7 @@ characters = {
         village: "Lawhold",
         className: "Condemned",
         description: "A Condemned survivor from Lawhold.",
-        attack: 50,
+        attack: 1,
         defense: 50,
         magicAttack: 0,
         magicDefense: 25,
@@ -279,7 +319,7 @@ characters = {
         village: "Lumenhall",
         className: "Lamplighter",
         description: "A Lamplighter from Lumenhall.",
-        attack: 50,
+        attack: 1,
         defense: 50,
         magicAttack: 0,
         magicDefense: 25,
