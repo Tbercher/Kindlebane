@@ -16,6 +16,11 @@ function highlightCharacters(playerTurn){
 	}
 }
 
+function selectCharacter(characterInstance){
+	characterInstance.selected = true;
+	obj_battleController.characterSelected = characterInstance.character;
+}
+
 function chooseCharacter(playerTurn){
 	var team;
 	if (playerTurn){
@@ -30,7 +35,7 @@ function chooseCharacter(playerTurn){
 	// Listen for character and move selection.
 	
 	// Once move selected call handleTurn
-	handleTurn()
+	//handleTurn()
 }
 
 function handleSelection(){
@@ -73,7 +78,7 @@ function handleSelection(){
 
 					// Unhighlight the enemy characters until an ability is selected
 					toggleHighlightTeam(obj_battleController.village.team, false);
-					
+
 					// if there is an enemy selected while clicking on a player character
 					if (!is_undefined(obj_battleController.enemySelected)) {
 						obj_battleController.enemySelected.instance.selected = false;
@@ -147,26 +152,53 @@ function calculateDamage(ability, enemy, character){
 function handleTurn(isUserTurn){
 	if (!isUserTurn){
 		// AI Turn Handling
+		if (!is_undefined(obj_battleController.characterSelected)){
+			obj_battleController.characterSelected.instance.selected = false;
+			obj_battleController.characterSelected = undefined;
+			toggleHighlightTeam(obj_battleController.village.team, false);
+			handleSelection();
+		}
+		// Get all possible damage values for each ability against each enemy
+		show_debug_message("AI Turn: " + string(obj_battleController.characterSelected));
 	}
-	var ability = obj_battleController.abilitySelected;
-	var enemy = obj_battleController.enemySelected;
-	var character = obj_battleController.characterSelected;
+	else{
+		// Player Turn Handling
+		var ability = obj_battleController.abilitySelected;
+		var enemy = obj_battleController.enemySelected;
+		var character = obj_battleController.characterSelected;
 
-	enemy.instance.newHealth -= calculateDamage(ability, enemy, character);
+		enemy.instance.newHealth -= calculateDamage(ability, enemy, character);
+		obj_battleController.enemySelected.instance.selected = false;
+		obj_battleController.enemySelected = undefined;
+		obj_battleController.abilitySelected.instance.selected = false
+		obj_battleController.abilitySelected = undefined;
+		obj_battleController.characterSelected.instance.selected = false;
+		obj_battleController.characterSelected = undefined;
+		obj_battleController.isPlayerTurn = false;
+		show_debug_message(string(obj_battleController.characterSelected))
+	}
+}
 
+function handleAutoCharacterSelection(){
+	// Find the character for the current turn
+	var characterInstance = obj_battleController.playerTeam.members[obj_battleController.turnSlot - 1].instance;
+	selectCharacter(characterInstance)
 }
 
 function preparePlayerTurn(){
-	highlightCharacters(true);
 	handleSelection();
+	handleAutoCharacterSelection();
 }
 function playGame(){
 	if (obj_battleController.isPlayerTurn){
 		preparePlayerTurn();
+
+		// If the player has selected an ability but not an enemy, highlight the enemies and unhighlight the player characters
 		if (is_undefined(obj_battleController.enemySelected) && !is_undefined(obj_battleController.abilitySelected)){
 			toggleHighlightTeam(obj_battleController.village.team, true);
-			toggleHighlightTeam(obj_battleController.playerTeam.members, false);
+			//toggleHighlightTeam(obj_battleController.playerTeam.members, false);
 		}
+		// If the player has selected an enemy, tell the enemy instance that it's selected.
 		else if (!is_undefined(obj_battleController.enemySelected)){
 			//toggleHighlightTeam(obj_battleController.village.team, false);
 			toggleHighlightTeam(obj_battleController.playerTeam.members, false);

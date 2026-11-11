@@ -9,3 +9,4 @@ characterSelected = undefined;
 abilitySelected = undefined
 enemySelected = undefined;
 isPlayerTurn = true;
+turnSlot = 1;

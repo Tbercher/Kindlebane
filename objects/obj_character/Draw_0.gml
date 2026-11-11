@@ -1,3 +1,4 @@
+// If the character is clickable and not being hovered over, draw a pulsing effect to indicate interactivity
 if (clickable && !hovered){
     draw_self();
 
@@ -23,37 +24,40 @@ else{
 	draw_self()	
 }
 
-if (selected && isEnemy
-    && !is_undefined(obj_battleController.abilitySelected)
-    && !is_undefined(obj_battleController.enemySelected)
-    && !is_undefined(obj_battleController.characterSelected)
-    ){
-    gpu_set_blendmode(bm_subtract);
+// If the character is selected and it is an enemy, draw a red tint to indicate selection
+if (selected){
+    var ring_color = isEnemy ? c_red : c_yellow;
+    var ring_y = y + 75;
+    var pulse = 2 + sin(current_time / 180);
 
-	draw_sprite_ext(
-    sprite_index, 
-    image_index,  
-    x,            
-    y,            
-    image_xscale,  
-    image_yscale, 
-    image_angle,   
-    make_color_rgb(0, 255, 255),      // subtract aqua create red tint
-    .15       // Alpha/opacity: 1 = fully visible
-	);
+    draw_set_color(ring_color);
+    draw_set_alpha(0.35);
+    draw_ellipse(x - 70 - pulse, ring_y - 16, x + 70 + pulse, ring_y + 16, true);
+
+    draw_set_alpha(0.8);
+    draw_ellipse(x - 64, ring_y - 12, x + 64, ring_y + 12, true);
+
+    draw_set_color(c_white);
+    draw_set_alpha(1);
 
     gpu_set_blendmode(bm_normal);
-    var ability = obj_battleController.abilitySelected;
-	var enemy = obj_battleController.enemySelected;
-    var damage = calculateDamage(ability, enemy, character);
 
-    draw_set_halign(fa_center);
-    draw_set_valign(fa_middle);
+    if (!is_undefined(obj_battleController.abilitySelected)
+    && !is_undefined(obj_battleController.enemySelected)
+    && !is_undefined(obj_battleController.characterSelected)){
+        var ability = obj_battleController.abilitySelected;
+        var enemy = obj_battleController.enemySelected;
+        var damage = calculateDamage(ability, enemy, character);
 
-    draw_text(x, y - 120, "Damage: " + string(damage));
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
 
-    draw_set_halign(fa_left);
-    draw_set_valign(fa_top);
+        draw_text(x, y - 120, "Damage: " + string(damage));
+
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+    }
+
 }
 
 // Draw Health Bar
