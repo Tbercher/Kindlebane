@@ -36,9 +36,11 @@ function chooseCharacter(playerTurn){
 function handleSelection(){
 	function handleHoverAndClick(hoveredClickable, clickFunction){
 		if (hoveredClickable.clickable){
+			hoveredClickable.hovered = true;
 			window_set_cursor(cr_handpoint);
 			clickFunction(hoveredClickable);
 		}
+		
 	}
 	function handleCharacterAndAbilityClick(hoveredClickable){
 			if (mouse_check_button_pressed(mb_left)) {
@@ -60,6 +62,11 @@ function handleSelection(){
 				event_user(0);
 			}
 		}
+	}
+
+	//Reset all clickables' hovered variable
+	with (obj_clickable){
+		hovered = false;
 	}
 
 	/* Selection and Click Handling */
