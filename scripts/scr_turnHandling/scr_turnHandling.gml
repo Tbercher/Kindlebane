@@ -44,15 +44,37 @@ function handleSelection(){
 	}
 	function handleCharacterAndAbilityClick(hoveredClickable){
 			if (mouse_check_button_pressed(mb_left)) {
-				// Set the clickable's selected state to true, handle the click event in the clickable object. 
-				hoveredClickable.selected = true;
-				if (hoveredClickable.object_index != obj_character || !hoveredClickable.isEnemy){
-					if (hoveredClickable.object_index == obj_abilityImage){
-					obj_battleController.abilitySelected = hoveredClickable.ability;
+				// Clickable is an enemy character
+				if (hoveredClickable.object_index == obj_character
+					&& hoveredClickable.isEnemy
+					&& !is_undefined(obj_battleController.characterSelected)
+    				&& !is_undefined(obj_battleController.abilitySelected)
+					) {
+					// If there is already an enemy selected, deselect it
+					if (!is_undefined(obj_battleController.enemySelected)
+						&& obj_battleController.enemySelected.instance != hoveredClickable) {
+						obj_battleController.enemySelected.instance.selected = false;
+					}
+
+					hoveredClickable.selected = true;
+					obj_battleController.enemySelected = hoveredClickable.character;
 				}
+
+				// Is either a player character a not a character at all like an ability image
+				if (hoveredClickable.object_index != obj_character || !hoveredClickable.isEnemy){
+					// clickable is an ability image object
+					if (hoveredClickable.object_index == obj_abilityImage){
+						obj_battleController.abilitySelected = hoveredClickable.ability;
+					}
+					// clickable is a player character object
 					else if (hoveredClickable.object_index == obj_character
 					&& !hoveredClickable.isEnemy) {
+					hoveredClickable.selected = true;
 
+					// Unhighlight the enemy characters until an ability is selected
+					toggleHighlightTeam(obj_battleController.village.team, false);
+					
+					// if there is an enemy selected while clicking on a player character
 					if (!is_undefined(obj_battleController.enemySelected)) {
 						obj_battleController.enemySelected.instance.selected = false;
 					}
@@ -146,7 +168,7 @@ function playGame(){
 			toggleHighlightTeam(obj_battleController.playerTeam.members, false);
 		}
 		else if (!is_undefined(obj_battleController.enemySelected)){
-			toggleHighlightTeam(obj_battleController.village.team, false);
+			//toggleHighlightTeam(obj_battleController.village.team, false);
 			toggleHighlightTeam(obj_battleController.playerTeam.members, false);
 			obj_battleController.enemySelected.instance.selected = true;
 		}
