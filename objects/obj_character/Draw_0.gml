@@ -23,7 +23,11 @@ else{
 	draw_self()	
 }
 
-if (selected && isEnemy){
+if (selected && isEnemy
+    && !is_undefined(obj_battleController.abilitySelected)
+    && !is_undefined(obj_battleController.enemySelected)
+    && !is_undefined(obj_battleController.characterSelected)
+    ){
     gpu_set_blendmode(bm_subtract);
 
 	draw_sprite_ext(

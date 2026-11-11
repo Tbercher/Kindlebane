@@ -5,4 +5,5 @@ if (is_undefined(obj_battleController.characterSelected)){
 	ability = undefined;
 	info = undefined;
 	sprite_index = spr_placeholderAbility;
+	clickable = false;
 }

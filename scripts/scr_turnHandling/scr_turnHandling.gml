@@ -50,6 +50,16 @@ function handleSelection(){
 					if (hoveredClickable.object_index == obj_abilityImage){
 					obj_battleController.abilitySelected = hoveredClickable.ability;
 				}
+					else if (hoveredClickable.object_index == obj_character
+					&& !hoveredClickable.isEnemy) {
+
+					if (!is_undefined(obj_battleController.enemySelected)) {
+						obj_battleController.enemySelected.instance.selected = false;
+					}
+
+					obj_battleController.enemySelected = undefined;
+					obj_battleController.abilitySelected = undefined;
+				}
 					else{
 						obj_battleController.abilitySelected = undefined;
 					}
