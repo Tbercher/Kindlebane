@@ -24,15 +24,22 @@ else{
 	draw_self()	
 }
 
-// If the character is selected and it is an enemy, draw a red tint to indicate selection
+// If the character is selected and it is an enemy, draw a circle to indicate selection
 if (selected){
-    var ring_color = isEnemy ? c_red : c_yellow;
+    var isAttackingAI = !obj_battleController.isPlayerTurn && isEnemy;
+
+    if (!obj_battleController.isPlayerTurn && isEnemy){
+        aiAttackCharacter = obj_battleController.village.team[obj_battleController.turnSlot - 1].instance.character;
+    }
+
+    var ring_color = (isEnemy || !obj_battleController.isPlayerTurn) ? c_red : c_yellow;
     var ring_y = y + 75;
     var pulse = 2 + sin(current_time / 180);
 
     draw_set_color(ring_color);
     draw_set_alpha(0.35);
     draw_ellipse(x - 70 - pulse, ring_y - 16, x + 70 + pulse, ring_y + 16, true);
+    
 
     draw_set_alpha(0.8);
     draw_ellipse(x - 64, ring_y - 12, x + 64, ring_y + 12, true);
@@ -42,9 +49,12 @@ if (selected){
 
     gpu_set_blendmode(bm_normal);
 
+    //Draw the damage value if an ability and enemy are selected
     if (!is_undefined(obj_battleController.abilitySelected)
     && !is_undefined(obj_battleController.enemySelected)
-    && !is_undefined(obj_battleController.characterSelected)){
+    && !is_undefined(obj_battleController.characterSelected)
+    && (isEnemy || (!obj_battleController.isPlayerTurn && !isEnemy))
+    ){
         var ability = obj_battleController.abilitySelected;
         var enemy = obj_battleController.enemySelected;
         var damage = calculateDamage(ability, enemy, character);

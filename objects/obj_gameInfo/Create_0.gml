@@ -218,7 +218,7 @@ characters = {
         defense: 50,
         magicAttack: 0,
         magicDefense: 25,
-        myHealth: 100,
+        myHealth: 1000,
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.seekerSlash,

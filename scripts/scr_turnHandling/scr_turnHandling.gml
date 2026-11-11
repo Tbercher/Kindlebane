@@ -152,14 +152,25 @@ function calculateDamage(ability, enemy, character){
 function handleTurn(isUserTurn){
 	if (!isUserTurn){
 		// AI Turn Handling
+
+		// Make sure AI turn handling is only handled once per turn
+		if (aiTurnStarted == true){
+			return;
+		}
+		aiTurnStarted = true;
+
+		// Get rid of all the selected variables for the player turn
 		if (!is_undefined(obj_battleController.characterSelected)){
 			obj_battleController.characterSelected.instance.selected = false;
 			obj_battleController.characterSelected = undefined;
 			toggleHighlightTeam(obj_battleController.village.team, false);
 			handleSelection();
 		}
-		// Get all possible damage values for each ability against each enemy
-		show_debug_message("AI Turn: " + string(obj_battleController.characterSelected));
+		
+		// Call the battle controllers alarm 0 for character selection.
+		if (obj_battleController.alarm[0] < 0){
+			obj_battleController.alarm[0] = room_speed / 6;
+		}
 	}
 	else{
 		// Player Turn Handling
@@ -175,7 +186,6 @@ function handleTurn(isUserTurn){
 		obj_battleController.characterSelected.instance.selected = false;
 		obj_battleController.characterSelected = undefined;
 		obj_battleController.isPlayerTurn = false;
-		show_debug_message(string(obj_battleController.characterSelected))
 	}
 }
 
