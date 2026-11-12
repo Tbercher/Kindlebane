@@ -32,7 +32,9 @@ if (selected){
         aiAttackCharacter = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance.character;
     }
 
-    var ring_color = (isEnemy || !obj_battleController.isPlayerTurn) ? c_red : c_yellow;
+
+
+    var ring_color = ((isEnemy || !obj_battleController.isPlayerTurn) && !isAttackingAI) ? c_red : c_yellow;
     var ring_y = y + 75;
     var pulse = 2 + sin(current_time / 180);
 

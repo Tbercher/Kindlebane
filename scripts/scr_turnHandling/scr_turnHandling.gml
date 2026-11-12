@@ -109,8 +109,29 @@ function handleSelection(){
 	/* Selection and Click Handling */
 	// Check if the cursor is currently in contact with a hoverable.
 	var hoveredClickable = collision_point(mouse_x, mouse_y, obj_clickable, true, true);
-	if (hoveredClickable != noone && !hoveredClickable.clickable){
+	if (hoveredClickable != noone && (!hoveredClickable.clickable || !hoveredClickable.visible)){
+		// create a list of all instances under the mouse cursor
+		var hitList = ds_list_create();
+
+		// Get all instances of obj_clickable under the mouse cursor
+		var hitCount = collision_point_list(
+        	mouse_x, mouse_y, obj_clickable, true, true, hitList, false
+		);
+		
+		// Set hoveredClickable to noone initially. If we find a valid clickable obj then we will set it to that instance.
 		hoveredClickable = noone;
+
+		for (var i = 0; i < hitCount; i++) {
+			// Just indexing into the list to get the current clickable object under the mouse cursor. ds_lists use this indexing syntax to differentiate itself from regular lists
+			var candidate = hitList[| i];
+
+			if (candidate.visible && candidate.clickable) {
+				hoveredClickable = candidate;
+				break;
+			}
+		}
+
+		ds_list_destroy(hitList);
 	}
 	
 	// If the object is a character or an ability
@@ -137,7 +158,7 @@ function handleSelection(){
 			obj_battleController.hoveredInfo = undefined;
 		}
 		if (is_undefined(obj_battleController.characterSelected)){
-			obj_headshotImage.sprite_index = spr_placeholderHeadshot;
+			obj_headshotImage.sprite_index = obj_gameInfo.headshotSprites.nonSpecific;
 		}
 	}
 }
@@ -161,8 +182,10 @@ function handleTurn(isUserTurn){
 
 		var selectedCharacter = obj_battleController.characterSelected;
 
-		// Get rid of all the selected variables for the player turn
+		// Get rid of all the selected variables from the player turn
 		if (!is_undefined(obj_battleController.characterSelected)){
+			obj_battleController.abilitySelected.instance.selected = false;
+			obj_battleController.abilitySelected = undefined;
 			if (instance_exists(obj_battleController.characterSelected.instance)){
 				obj_battleController.characterSelected.instance.selected = false;
 			}
@@ -200,9 +223,6 @@ function handleAutoCharacterSelection(){
         obj_battleController.isPlayerTurn = false;
         obj_battleController.alarm[0] = -1;
         obj_battleController.alarm[1] = -1;
-
-        // Replace with defeat/game-over handling? Might want to handle it somewhere else
-        show_debug_message("Player team defeated.");
         return;
     }
 
@@ -221,7 +241,33 @@ function preparePlayerTurn(){
 	handleSelection();
 	handleAutoCharacterSelection();
 }
+
+function handleWin(){
+	// Handle win condition
+	
+}
+
+function handleLose(){
+	// Handle lose condition
+	
+}
+
 function playGame(){
+	if (obj_battleController.hasWon != undefined){
+		show_debug_message("Game has ended. Restart the game to play again.");
+		toggleHighlightTeam(obj_battleController.playerTeam.members, false);
+		toggleHighlightTeam(obj_battleController.village.team, false);
+		if (obj_battleController.hasWon){
+			// Win condition
+			handleWin();
+		}
+		else{
+			// Lose condition
+			handleLose();
+		}
+		handleSelection();
+		return;
+	}
 	if (obj_battleController.isPlayerTurn){
 		preparePlayerTurn();
 

@@ -45,3 +45,7 @@ else{
     obj_battleController.playerTurnSlot++;
 }
 
+if (playerTeamSize <= 0){
+    obj_battleController.hasWon = false;
+}
+

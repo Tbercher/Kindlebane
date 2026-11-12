@@ -1,4 +1,33 @@
 // General Game Information
+dynamicUISprites = {
+    winner: spr_placeholderWinner,
+    loser: spr_placeholderLoser
+};
+
+abilitySprites = {
+    nonSpecific: spr_placeholderAbility,
+    seekerSlash: spr_placeholderAbilitySpecific,
+    flurry: spr_placeholderAbilitySpecific,
+    cleave: spr_placeholderAbilitySpecific,
+    stab: spr_placeholderAbilitySpecific,
+    recklessStrike: spr_placeholderAbilitySpecific,
+    woodsmanDropkick: spr_placeholderAbilitySpecific,
+    charge: spr_placeholderAbilitySpecific,
+    counter: spr_placeholderAbilitySpecific,
+    taunt: spr_placeholderAbilitySpecific,
+    battleCry: spr_placeholderAbilitySpecific,
+    magicBolt: spr_placeholderAbilitySpecific,
+    fireBall: spr_placeholderAbilitySpecific,
+    lightningBolt: spr_placeholderAbilitySpecific,
+    spellCharge: spr_placeholderAbilitySpecific,
+    quake: spr_placeholderAbilitySpecific,
+    punch: spr_placeholderAbilitySpecific,
+    heal: spr_placeholderAbilitySpecific,
+    curse: spr_placeholderAbilitySpecific,
+    enhance: spr_placeholderAbilitySpecific,
+    vigorate: spr_placeholderAbilitySpecific
+};
+
 /// @doc-abilities
 abilities = {
     /// @doc-abilities-ability Slash
@@ -9,7 +38,7 @@ abilities = {
         strength: 1,
         attack: 50,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.seekerSlash
     },
     /// @doc-abilities-ability Flurry
     flurry: {
@@ -19,7 +48,7 @@ abilities = {
         strength: 2,
         attack: 100,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.flurry
     },
     /// @doc-abilities-ability Cleave
     cleave: {
@@ -29,7 +58,7 @@ abilities = {
         strength: 3,
         attack: 150,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.cleave
     },
     /// @doc-abilities-ability Stab
     stab: {
@@ -39,7 +68,7 @@ abilities = {
         strength: 1,
         attack: 50,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.stab
     },
     /// @doc-abilities-ability Reckless Strike
     recklessStrike: {
@@ -50,7 +79,7 @@ abilities = {
         isUltimate: true,
         attack: 150,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.recklessStrike
     },
     /// @doc-abilities-ability Dropkick
     woodsmanDropkick: {
@@ -60,7 +89,7 @@ abilities = {
         strength: 1,
         attack: 50,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.woodsmanDropkick
     },
     /// @doc-abilities-ability Charge
     charge: {
@@ -70,7 +99,7 @@ abilities = {
         strength: 2,
         attack: 100,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.charge
     },
     /// @doc-abilities-ability Counter
     counter: {
@@ -80,7 +109,7 @@ abilities = {
         strength: 3,
         attack: 150,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.counter
     },
     /// @doc-abilities-ability Taunt
     taunt: {
@@ -90,7 +119,7 @@ abilities = {
         strength: 1,
         attack: 0,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.taunt
     },
     /// @doc-abilities-ability Battle Cry
     battleCry: {
@@ -101,7 +130,7 @@ abilities = {
         isUltimate: true,
         attack: 0,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.battleCry
     },
     /// @doc-abilities-ability Magic Bolt
     magicBolt: {
@@ -111,7 +140,7 @@ abilities = {
         strength: 1,
         attack: 0,
         magicAttack: 50,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.magicBolt
     },
     /// @doc-abilities-ability Fire Ball
     fireBall: {
@@ -121,7 +150,7 @@ abilities = {
         strength: 2,
         attack: 0,
         magicAttack: 100,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.fireBall
     },
     /// @doc-abilities-ability Lightning Bolt
     lightningBolt: {
@@ -131,7 +160,7 @@ abilities = {
         strength: 3,
         attack: 0,
         magicAttack: 150,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.lightningBolt
     },
     /// @doc-abilities-ability Spell Charge
     spellCharge: {
@@ -141,7 +170,7 @@ abilities = {
         strength: 1,
         attack: 0,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.spellCharge
     },
     /// @doc-abilities-ability Quake
     quake: {
@@ -152,7 +181,7 @@ abilities = {
         isUltimate: true,
         attack: 0,
         magicAttack: 150,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.quake
     },
     /// @doc-abilities-ability Punch
     punch: {
@@ -162,7 +191,7 @@ abilities = {
         strength: 1,
         attack: 50,
         magicAttack: 0,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.punch
     },
     /// @doc-abilities-ability Heal
     heal: {
@@ -172,7 +201,7 @@ abilities = {
         strength: 2,
         attack: 0,
         magicAttack: 100,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.heal
     },
     /// @doc-abilities-ability Curse
     curse: {
@@ -182,7 +211,7 @@ abilities = {
         strength: 2,
         attack: 0,
         magicAttack: 100,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.curse
     },
     /// @doc-abilities-ability Enhance
     enhance: {
@@ -192,7 +221,7 @@ abilities = {
         strength: 2,
         attack: 0,
         magicAttack: 100,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.enhance
     },
     /// @doc-abilities-ability Vigorate
     vigorate: {
@@ -203,9 +232,30 @@ abilities = {
         isUltimate: true,
         attack: 0,
         magicAttack: 150,
-        sprite: spr_placeholderAbilitySpecific
+        sprite: abilitySprites.vigorate
     },
 }
+
+characterSprites = {
+    seeker: spr_placeholderCharacter,
+    woodsman: spr_placeholderCharacter,
+    mage: spr_placeholderCharacter,
+    cleric: spr_placeholderCharacter,
+    apprentice: spr_placeholderCharacter,
+    condemned: spr_placeholderCharacter,
+    lamplighter: spr_placeholderCharacter
+};
+
+headshotSprites = {
+    nonSpecific: spr_placeholderHeadshot,
+    seeker: spr_placeholderSpecificHeadshot,
+    woodsman: spr_placeholderSpecificHeadshot,
+    mage: spr_placeholderSpecificHeadshot,
+    cleric: spr_placeholderSpecificHeadshot,
+    apprentice: spr_placeholderSpecificHeadshot,
+    condemned: spr_placeholderSpecificHeadshot,
+    lamplighter: spr_placeholderSpecificHeadshot
+};
 
 /// @doc-characters
 characters = {
@@ -224,8 +274,8 @@ characters = {
         basicAttack: abilities.seekerSlash,
         abilities: [abilities.flurry, abilities.cleave, abilities.stab],
         ultimate: abilities.recklessStrike,
-		sprite: spr_placeholderCharacter,
-        headshot: spr_placeholderSpecificHeadshot
+		sprite: characterSprites.seeker,
+        headshot: headshotSprites.seeker
     },
     /// @doc-characters-character Woodsman
     woodsman: {
@@ -242,8 +292,8 @@ characters = {
         basicAttack: abilities.woodsmanDropkick,
         abilities: [abilities.charge, abilities.counter, abilities.taunt],
         ultimate: abilities.battleCry,
-		sprite: spr_placeholderCharacter,
-        headshot: spr_placeholderSpecificHeadshot
+		sprite: characterSprites.woodsman,
+        headshot: headshotSprites.woodsman
     },
     /// @doc-characters-character Mage
     mage: {
@@ -260,8 +310,8 @@ characters = {
         basicAttack: abilities.magicBolt,
         abilities: [abilities.fireBall, abilities.lightningBolt, abilities.spellCharge],
         ultimate: abilities.quake,
-        sprite: spr_placeholderCharacter,
-        headshot: spr_placeholderSpecificHeadshot
+        sprite: characterSprites.mage,
+        headshot: headshotSprites.mage
     },
     /// @doc-characters-character Cleric
     cleric: {
@@ -278,8 +328,8 @@ characters = {
         basicAttack: abilities.punch,
         abilities: [abilities.heal, abilities.curse, abilities.enhance],
         ultimate: abilities.vigorate,
-        sprite: spr_placeholderCharacter,
-        headshot: spr_placeholderSpecificHeadshot
+        sprite: characterSprites.cleric,
+        headshot: headshotSprites.cleric
     },
     /// @doc-characters-character Apprentice
     apprentice: {
@@ -294,8 +344,8 @@ characters = {
         myHealth: 100,
         isPlaceholder: true,
         abilities: [abilities.magicBolt],
-        sprite: spr_placeholderCharacter,
-        headshot: spr_placeholderSpecificHeadshot
+        sprite: characterSprites.apprentice,
+        headshot: headshotSprites.apprentice
     },
     /// @doc-characters-character Condemned
     condemned: {
@@ -310,8 +360,8 @@ characters = {
         myHealth: 100,
         isPlaceholder: true,
         abilities: [abilities.magicBolt],
-        sprite: spr_placeholderCharacter,
-        headshot: spr_placeholderSpecificHeadshot
+        sprite: characterSprites.condemned,
+        headshot: headshotSprites.condemned
     },
     /// @doc-characters-character Lamplighter
     lamplighter: {
@@ -326,8 +376,8 @@ characters = {
         myHealth: 100,
         isPlaceholder: true,
         abilities: [abilities.magicBolt],
-        sprite: spr_placeholderCharacter,
-        headshot: spr_placeholderSpecificHeadshot
+        sprite: characterSprites.lamplighter,
+        headshot: headshotSprites.lamplighter
     }
 };
 
@@ -381,7 +431,7 @@ villages = {
     },
 };
 
-// Current Game Info
+
 
 //Should start as undefined and be changed when you select a village in the menu
 currentVillage = "loamvale";

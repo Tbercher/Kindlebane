@@ -1,5 +1,9 @@
+if (newHealth <= 0){
+    instance_destroy();
+}
+
 if (selected &&!renderedAbilities && (!obj_battleController.isHovering || obj_battleController.hoveredInfo == info)){
-    if (!isEnemy){
+    if (!isEnemy && obj_battleController.isPlayerTurn){
         // Display all character abilities and make them clickable.
         var count = instance_number(obj_abilityImage);
         for (var i = 0; i < count; i++){
@@ -23,6 +27,11 @@ if (selected &&!renderedAbilities && (!obj_battleController.isHovering || obj_ba
         }
         renderedAbilities = true;
     }
+    else if (!isEnemy && !obj_battleController.isPlayerTurn){
+        obj_headshotImage.sprite_index = obj_gameInfo.headshotSprites.nonSpecific;
+        obj_battleController.hoveredStats = undefined;
+        obj_battleController.hoveredInfo = undefined;
+    }
     else{
         obj_battleController.enemySelected = character;
     }
@@ -30,10 +39,7 @@ if (selected &&!renderedAbilities && (!obj_battleController.isHovering || obj_ba
 else{
     renderedAbilities = false;
 }
+
 if (selected){
 	obj_battleController.characterSelected = character;	
-}
-
-if (newHealth <= 0){
-    instance_destroy();
 }
