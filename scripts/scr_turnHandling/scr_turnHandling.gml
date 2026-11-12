@@ -184,7 +184,10 @@ function handleTurn(isUserTurn){
 
 		// Get rid of all the selected variables from the player turn
 		if (!is_undefined(obj_battleController.characterSelected)){
-			obj_battleController.abilitySelected.instance.selected = false;
+			if (!is_undefined(obj_battleController.abilitySelected)
+			&& instance_exists(obj_battleController.abilitySelected.instance)){
+				obj_battleController.abilitySelected.instance.selected = false;
+			}
 			obj_battleController.abilitySelected = undefined;
 			if (instance_exists(obj_battleController.characterSelected.instance)){
 				obj_battleController.characterSelected.instance.selected = false;

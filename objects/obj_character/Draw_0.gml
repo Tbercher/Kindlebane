@@ -1,5 +1,5 @@
-// If the character is clickable and not being hovered over, draw a pulsing effect to indicate interactivity
-if (clickable && !hovered){
+// If the character is clickable and not being hovered over and not already selected, draw a pulsing effect to indicate interactivity
+if (clickable && !hovered && !selected){
     draw_self();
 
     var pulse = 0.15 + ((sin(current_time / 400) + 1) * 0.5) * 0.35;
