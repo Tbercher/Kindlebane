@@ -83,6 +83,24 @@ if (selected || hasNeighborSelected){
     }
 }
 
+if (stunnedTurns > 0){
+    var stunPulse = 0.2 + ((sin(current_time / 180) + 1) * 0.5) * 0.35;
+
+    gpu_set_blendmode(bm_add);
+    draw_sprite_ext(
+        sprite_index,
+        image_index,
+        x,
+        y,
+        image_xscale,
+        image_yscale,
+        image_angle,
+        c_aqua,
+        stunPulse
+    );
+    gpu_set_blendmode(bm_normal);
+}
+
 // Draw Health Bar
 var bar_width = 80;
 var bar_height = 8;

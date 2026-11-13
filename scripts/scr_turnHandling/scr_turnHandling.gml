@@ -249,12 +249,12 @@ function handleDamage(ability, attacker, defender){
 
 	// Reckless Strike: Deals massive physical damage to a single enemy while lowering its defences for 1 turn.
 	if (variable_struct_exists(ability, "lowersDefense") && ability.lowersDefense){
-		attacker.instance.defenseLowered = true;
 		attacker.instance.loweredDefenseTurns = 1;
-		show_debug_message("Defense lowered for " + string(attacker.instance) + " for " + string(attacker.instance.loweredDefenseTurns) + " turns.");
 	}
 	// Charge: Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main target.
-
+	if (variable_struct_exists(ability, "stuns") && ability.stuns){
+		defender.instance.stunnedTurns = 1;
+	}
 	// Counter: Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.
 
 	// Battle Cry: Taunts all enemies while reducing enemy damage.
@@ -323,16 +323,35 @@ function applyLingeringEffects(){
 	}
 }
 
-function specialAbilityCleanup(){
+function getAllCharacters(){
+	return array_union(obj_battleController.playerTeam.members, obj_battleController.village.team);
+}
+
+function handleSpecialAbilityCleanup(isBeforeAI){
 	// Special Ability Cleanups
 	// Lingering effects: Apply damage over multiple turns. (in the User section and in the AI alarm event)
-	applyLingeringEffects();
-	// Reckless Strike: Deals massive physical damage to one enemy and lowers its defences for 1 turn.
-	// Decrement loweredDefenseTurns for all characters with lowered defenses
+	if (!isBeforeAI){
+		applyLingeringEffects();
+	}
+	// Decrement any specialAbility durations for all characters
+		for (var i = 0; i < array_length(getAllCharacters()); i++){
+			var characterInstance = getAllCharacters()[i].instance;
+
+			// Reckless Strike: Deals massive physical damage to one enemy and lowers its defences for 1 turn.
+			if (!isBeforeAI){
+				if (characterInstance.loweredDefenseTurns > 0){
+					characterInstance.loweredDefenseTurns -= 1;
+				}
+			}
+			
+			if (isBeforeAI){
+				// Charge: Hits one enemy and adjacent enemies, and stuns the main target.
+				if (characterInstance.stunnedTurns > 0){
+					characterInstance.stunnedTurns -= 1;
+				}
+			}
+		}
 	
-
-	// Charge: Hits one enemy and adjacent enemies, and stuns the main target.
-
 	// Counter: Readies a defensive stance and increases next turn's physical damage based on attacks received.
 
 	// Battle Cry: Taunts all enemies and reduces their damage.
@@ -464,6 +483,11 @@ function playGame(){
 	}
 	if (obj_battleController.isPlayerTurn){
 		preparePlayerTurn();
+		if (obj_battleController.characterSelected.instance.stunnedTurns > 0){
+			// Handle stunned character (skip turn or show message)
+			obj_battleController.isPlayerTurn = false;
+			handleSpecialAbilityCleanup();
+		}
 
 		// If the player has selected an ability but not an enemy, highlight the enemies and unhighlight the player characters
 		if (is_undefined(obj_battleController.enemySelected) && !is_undefined(obj_battleController.abilitySelected)){

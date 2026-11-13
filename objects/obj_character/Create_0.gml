@@ -24,3 +24,4 @@ loweredDefenseTurns = 0;
 isBleeding = false; 
 isBurning = false;
 attackBuff = 1;
+stunnedTurns = 0;

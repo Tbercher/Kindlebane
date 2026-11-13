@@ -1,4 +1,5 @@
-handleSpecialAbilityCleanup();
+// Handle cleanup that should run before AI turn
+handleSpecialAbilityCleanup(true);
 
 var characterInstance = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance;
 
@@ -51,3 +52,5 @@ if (playerTeamSize <= 0){
     obj_battleController.hasWon = false;
 }
 
+// Handle cleanup that should run after AI turn
+handleSpecialAbilityCleanup(false);

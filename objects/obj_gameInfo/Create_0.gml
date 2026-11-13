@@ -116,7 +116,8 @@ abilities = {
         attack: _chargeAttack,
         magicAttack: 0,
         spray: _chargeAttack * 0.5,
-        sprite: abilitySprites.charge
+        sprite: abilitySprites.charge,
+        stuns: true
     },
     /// @doc-abilities-ability Counter
     counter: {
@@ -320,7 +321,8 @@ characters = {
         isPlaceholder: true,
         weapon: "Big Ass Shield",
         basicAttack: abilities.woodsmanDropkick,
-        abilities: [abilities.charge, abilities.counter, abilities.taunt],
+        abilities: [abilities.charge], //fake abilities for testing
+        //abilities: [abilities.charge, abilities.counter, abilities.taunt],
         ultimate: abilities.battleCry,
 		sprite: characterSprites.woodsman,
         headshot: headshotSprites.woodsman
