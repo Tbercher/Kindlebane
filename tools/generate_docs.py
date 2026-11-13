@@ -1,8 +1,12 @@
 """Generate curated documentation from marked GameMaker dictionaries."""
 
 from pathlib import Path
+import ast
+import math
+import operator
 import re
 import posixpath
+import shutil
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -10,12 +14,29 @@ SOURCE_FILE = ROOT / "objects" / "obj_gameInfo" / "Create_0.gml"
 DOCS_DIR = ROOT / "docs"
 ASSETS_DIR = DOCS_DIR / "assets"
 GENERATED_DIR = DOCS_DIR / "kindlebane-documentation"
+GAME_SPRITES_DIR = ROOT / "sprites"
+DOC_GAME_SPRITES_DIR = ASSETS_DIR / "game-sprites"
 
 LOREM = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
     "Integer vitae sem sed arcu consequat dignissim."
 )
 STAT_KEYS = {"attack", "defense", "magicAttack", "magicDefense"}
+STAT_MAXIMUMS = {
+    "attack": 150,
+    "defense": 100,
+    "magicAttack": 150,
+    "magicDefense": 100,
+}
+IMAGE_FIELDS = {"sprite", "headshot"}
+NUMERIC_OPERATORS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Mod: operator.mod,
+}
 
 
 class DocumentedReference(dict):
@@ -172,6 +193,8 @@ def parse_value(raw: str, resolve_reference):
         return False
     if re.fullmatch(r"\d+", raw):
         return int(raw)
+    if re.fullmatch(r"\d+\.\d+", raw):
+        return float(raw)
     if raw.startswith("[") and raw.endswith("]"):
         return [
             parse_value(item, resolve_reference)
@@ -183,7 +206,48 @@ def parse_value(raw: str, resolve_reference):
         resolved = resolve_reference(raw)
         if resolved is not None:
             return resolved
+    evaluated = evaluate_numeric_expression(raw, resolve_reference)
+    if evaluated is not None:
+        return evaluated
     return raw
+
+
+def evaluate_numeric_expression(expression: str, resolve_reference):
+    try:
+        syntax = ast.parse(expression, mode="eval").body
+    except SyntaxError:
+        return None
+
+    def evaluate(node):
+        if isinstance(node, ast.Constant) and type(node.value) in (int, float):
+            return node.value
+        if isinstance(node, ast.Name):
+            value = resolve_reference(node.id)
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                return value
+            raise ValueError("Not a numeric name")
+        if isinstance(node, ast.BinOp) and type(node.op) in NUMERIC_OPERATORS:
+            return NUMERIC_OPERATORS[type(node.op)](
+                evaluate(node.left), evaluate(node.right)
+            )
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.UAdd, ast.USub)):
+            value = evaluate(node.operand)
+            return value if isinstance(node.op, ast.UAdd) else -value
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "floor"
+            and len(node.args) == 1
+            and not node.keywords
+        ):
+            return math.floor(evaluate(node.args[0]))
+        raise ValueError("Unsupported numeric expression")
+
+    try:
+        value = evaluate(syntax)
+    except (ArithmeticError, ValueError):
+        return None
+    return value if math.isfinite(value) else None
 
 
 def parse_entries(body: str, resolve_reference) -> dict:
@@ -201,9 +265,22 @@ def create_reference_resolver(source: str, documented_references: dict[str, dict
     for match in re.finditer(r"\b([A-Za-z_]\w*)\s*=\s*\{", source):
         opening_brace = source.index("{", match.start())
         assignments[match.group(1)] = extract_braced_block(source, opening_brace)
+    constants = {
+        match.group(1): match.group(2).strip()
+        for match in re.finditer(
+            r"\bvar\s+([A-Za-z_]\w*)\s*=\s*([^;\r\n]+);", source
+        )
+    }
     cache = {}
+    constant_cache = {}
 
     def resolve(reference: str):
+        if reference in constants:
+            if reference not in constant_cache:
+                constant_cache[reference] = parse_value(
+                    constants[reference], resolve
+                )
+            return constant_cache[reference]
         parts = reference.split(".")
         root = parts[0]
         if root not in assignments:
@@ -230,8 +307,16 @@ def parse_struct_data(body: str, resolve_reference) -> dict:
 def validate_node(node: dict, data: dict) -> None:
     for stat in STAT_KEYS.intersection(data):
         value = data[stat]
-        if not isinstance(value, int) or not 0 <= value <= 100:
-            raise ValueError(f"{node['title']} {stat} must be an integer between 0 and 100")
+        maximum = STAT_MAXIMUMS[stat]
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or not 0 <= value <= maximum
+        ):
+            raise ValueError(
+                f"{node['title']} {stat} must be a number between 0 and {maximum}"
+            )
 
 
 def document_link(node: dict, target: dict) -> str:
@@ -241,24 +326,34 @@ def document_link(node: dict, target: dict) -> str:
     return f"[{target['title']}]({relative})"
 
 
-def write_page(node: dict, data: dict) -> None:
+def write_page(node: dict, data: dict, image_paths: dict[str, str]) -> None:
     page_path = GENERATED_DIR / node["relative_file"]
     page_path.parent.mkdir(parents=True, exist_ok=True)
     lines = [f"# {node['title']}", ""]
     for key, value in data.items():
-        lines.extend(render_field(key, value, level=2, page_node=node))
+        lines.extend(
+            render_field(key, value, level=2, page_node=node, image_paths=image_paths)
+        )
     lines.append("")
     page_path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def render_field(key: str, value, level: int, page_node: dict) -> list[str]:
+def render_field(
+    key: str, value, level: int, page_node: dict, image_paths: dict[str, str]
+) -> list[str]:
     heading = "#" * level
     lines = [f"{heading} {titleize(key)}", ""]
-    if isinstance(value, DocumentedReference):
+    if key in IMAGE_FIELDS and value in image_paths:
+        current = Path("kindlebane-documentation") / Path(page_node["relative_file"]).parent
+        relative = posixpath.relpath(image_paths[value], current.as_posix())
+        lines += [f"![{titleize(key)}]({relative})", ""]
+    elif isinstance(value, DocumentedReference):
         lines += [document_link(page_node, value.node), ""]
     elif isinstance(value, dict):
         for child_key, child_value in value.items():
-            lines += render_field(child_key, child_value, level + 1, page_node)
+            lines += render_field(
+                child_key, child_value, level + 1, page_node, image_paths
+            )
     elif isinstance(value, list):
         for item in value:
             if isinstance(item, DocumentedReference):
@@ -269,7 +364,7 @@ def render_field(key: str, value, level: int, page_node: dict) -> list[str]:
                 for child_key, child_value in item.items():
                     if child_key != "name":
                         lines += render_field(
-                            child_key, child_value, level + 2, page_node
+                            child_key, child_value, level + 2, page_node, image_paths
                         )
             else:
                 lines += [f"- {format_value(item)}"]
@@ -279,6 +374,37 @@ def render_field(key: str, value, level: int, page_node: dict) -> list[str]:
     else:
         lines += [format_value(value), ""]
     return lines
+
+
+def collect_image_assets(value) -> set[str]:
+    assets = set()
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if (
+                key in IMAGE_FIELDS
+                and isinstance(child, str)
+                and re.fullmatch(r"spr_[A-Za-z0-9_]+", child)
+            ):
+                assets.add(child)
+            else:
+                assets.update(collect_image_assets(child))
+    elif isinstance(value, list):
+        for child in value:
+            assets.update(collect_image_assets(child))
+    return assets
+
+
+def copy_documented_images(asset_names: set[str]) -> dict[str, str]:
+    DOC_GAME_SPRITES_DIR.mkdir(parents=True, exist_ok=True)
+    image_paths = {}
+    for asset_name in sorted(asset_names):
+        source_images = sorted((GAME_SPRITES_DIR / asset_name).glob("*.png"))
+        if not source_images:
+            raise FileNotFoundError(f"No exported PNG found for sprite {asset_name}")
+        target = DOC_GAME_SPRITES_DIR / f"{asset_name}.png"
+        shutil.copyfile(source_images[0], target)
+        image_paths[asset_name] = f"assets/game-sprites/{target.name}"
+    return image_paths
 
 
 def format_value(value) -> str:
@@ -337,6 +463,8 @@ def main() -> None:
     }
     resolve_reference = create_reference_resolver(source, documented_references)
     ids = {node["id"] for node in nodes}
+    documented_data = {}
+    image_assets = set()
     for node in nodes:
         if node["parent"] and node["parent"] not in ids:
             raise ValueError(
@@ -344,6 +472,9 @@ def main() -> None:
             )
         data = parse_struct_data(node["body"], resolve_reference)
         validate_node(node, data)
+        documented_data[node["id"]] = data
+        image_assets.update(collect_image_assets(data))
+    image_paths = copy_documented_images(image_assets)
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     for generated_page in GENERATED_DIR.rglob("*.md"):
         generated_page.unlink()
@@ -358,7 +489,7 @@ def main() -> None:
     for node in nodes:
         if node["is_section"]:
             continue
-        write_page(node, parse_struct_data(node["body"], resolve_reference))
+        write_page(node, documented_data[node["id"]], image_paths)
     write_index(nodes)
 
 
