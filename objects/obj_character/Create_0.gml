@@ -3,6 +3,7 @@ isEnemy = false;
 /* Adding this to get the compiler to shut up about an unrecognized character variable */
 if (!variable_instance_exists(id, "character")) {
     character = undefined;
+    slot = undefined;
 }
 newHealth = character.myHealth;
 sprite_index = character.sprite;

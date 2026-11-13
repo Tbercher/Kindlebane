@@ -163,11 +163,52 @@ function handleSelection(){
 	}
 }
 
-function calculateDamage(ability, enemy, character){
-	var physicalDamage = ability.attack * character.attack;
-	var magicalDamage = ability.magicAttack * character.magicAttack;
+function getNeighbors(instance){
+	var neighbors = [];
+	var team = undefined;
+	// Find the neighboring enemies for spray
+	if (instance.isEnemy){
+		team = obj_battleController.village.team;
+		var currentIndex = instance.slot.number - 1; 
+		if (currentIndex > 0 && team[currentIndex - 1] != undefined){
+			array_push(neighbors, currentIndex - 1);
+		}
+		if (currentIndex < array_length(team) - 1 && team[currentIndex + 1] != undefined){
+			array_push(neighbors, currentIndex + 1);
+		}
+	}
+	else{
+		team = obj_battleController.playerTeam.members;
+		var currentIndex = instance.slot.number - 1;
+		if (currentIndex > 0 && team[currentIndex - 1] != undefined){
+			array_push(neighbors, currentIndex - 1);
+		}
+		if (currentIndex < array_length(team) - 1 && team[currentIndex + 1] != undefined){
+			array_push(neighbors, currentIndex + 1);
+		}
+	}
+	return neighbors;
+}
 
-	return max((physicalDamage - enemy.defense), 0) + max((magicalDamage - enemy.magicDefense), 0);
+function calculateDamage(ability, defender, attacker){
+	var physicalDamage = ability.attack * attacker.attack;
+	var magicalDamage = ability.magicAttack * attacker.magicAttack;
+
+	return {
+		damage: max((physicalDamage - defender.defense), 0) + max((magicalDamage - defender.magicDefense), 0),
+		spray: ability.spray
+	};
+}
+
+function handleDamage(ability, attacker, defender){
+	defender.instance.newHealth -= calculateDamage(ability, defender, attacker).damage;
+	var neighbors = getNeighbors(defender.instance);
+	for (var i = 0; i < array_length(neighbors); i++){
+		var neighbor = defender.instance.isEnemy ? obj_battleController.village.team[neighbors[i]] : obj_battleController.playerTeam.members[neighbors[i]];
+		if (neighbor != undefined){
+			neighbor.instance.newHealth -= calculateDamage(ability, neighbor, attacker).spray;
+		}
+	}
 }
 
 function handleTurn(isUserTurn){
@@ -208,7 +249,14 @@ function handleTurn(isUserTurn){
 		var enemy = obj_battleController.enemySelected;
 		var character = obj_battleController.characterSelected;
 
-		enemy.instance.newHealth -= calculateDamage(ability, enemy, character);
+		// Old damage applicaiton method
+		//enemy.instance.newHealth -= calculateDamage(ability, enemy, character).damage;
+		
+		// Use handleDamage to apply damage and spray effects
+		handleDamage(ability, character, enemy);
+
+		// Find neighboring enemies for spray abilities
+
 		obj_battleController.enemySelected.instance.selected = false;
 		obj_battleController.enemySelected = undefined;
 		obj_battleController.abilitySelected.instance.selected = false

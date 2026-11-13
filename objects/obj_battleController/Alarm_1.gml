@@ -9,7 +9,8 @@ for (var abilityIndex = 0; abilityIndex < array_length(character.abilities); abi
     var ability = character.abilities[abilityIndex];
     for (var enemyIndex = 0; enemyIndex < array_length(obj_battleController.playerTeam.members); enemyIndex++){
         var enemy = obj_battleController.playerTeam.members[enemyIndex];
-        var damage = calculateDamage(ability, enemy, character);
+        //var damage = calculateDamage(ability, enemy, character).damage;
+        var damage = calculateDamage(ability, enemy, character).damage;
         if (damage > highestDamage){
             highestDamage = damage;
             bestAbility = ability;

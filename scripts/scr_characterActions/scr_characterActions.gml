@@ -30,6 +30,7 @@ function spawnCharacters(){
         // Spawn a character at the slot's position
         var characterInstance = instance_create_layer(slot.x, slot.y - ((sprite_get_height(character.sprite) * scale) / 2), "Instances", obj_character, {
             character: character,
+            slot: slot
         });
         characterInstance.image_xscale = scale;
         characterInstance.image_yscale = scale;

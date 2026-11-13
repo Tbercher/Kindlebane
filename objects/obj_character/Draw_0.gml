@@ -59,7 +59,7 @@ if (selected){
     ){
         var ability = obj_battleController.abilitySelected;
         var enemy = obj_battleController.enemySelected;
-        var damage = calculateDamage(ability, enemy, character);
+        var damage = calculateDamage(ability, enemy, character).damage;
 
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
