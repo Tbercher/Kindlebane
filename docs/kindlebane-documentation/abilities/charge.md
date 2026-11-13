@@ -1,5 +1,9 @@
 # Charge
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Charge
@@ -27,8 +31,4 @@ Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main
 ## Spray
 
 50.0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

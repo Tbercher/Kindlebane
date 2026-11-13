@@ -1,5 +1,9 @@
 # Punch
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Punch
@@ -27,8 +31,4 @@ A basic physical attack.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

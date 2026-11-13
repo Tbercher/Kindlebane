@@ -1,5 +1,13 @@
 # Woodsman
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+
+## Headshot
+
+![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+
 ## Name
 
 The Woodsman
@@ -53,12 +61,4 @@ Big Ass Shield
 ## Ultimate
 
 [Battle Cry](../abilities/battlecry.md)
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
-
-## Headshot
-
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
 

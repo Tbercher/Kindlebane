@@ -1,5 +1,9 @@
 # Curse
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Curse
@@ -27,8 +31,4 @@ Silences a single target and reduces its defences for 1 turn.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

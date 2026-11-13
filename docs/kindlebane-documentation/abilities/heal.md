@@ -1,5 +1,9 @@
 # Heal
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Heal
@@ -27,8 +31,4 @@ Heals a single ally.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

@@ -1,5 +1,9 @@
 # Fire Ball
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Fire Ball
@@ -27,8 +31,4 @@ Shoots a fireball at a single enemy for magic damage and causes Burn.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

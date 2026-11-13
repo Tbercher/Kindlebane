@@ -1,5 +1,9 @@
 # Stab
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Stab
@@ -27,8 +31,4 @@ Attacks one enemy for physical damage and causes Bleed.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

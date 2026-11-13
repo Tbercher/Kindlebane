@@ -1,5 +1,9 @@
 # Lightning Bolt
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Lightning Bolt
@@ -27,8 +31,4 @@ Fires a lightning bolt at a single enemy that deals massive magic damage.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

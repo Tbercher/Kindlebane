@@ -1,5 +1,9 @@
 # Spell Charge
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Charge
@@ -27,8 +31,4 @@ Prepares a spell and increases its damage.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

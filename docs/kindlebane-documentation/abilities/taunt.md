@@ -1,5 +1,9 @@
 # Taunt
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Taunt
@@ -27,8 +31,4 @@ Taunts a single enemy and reduces all damage taken for 2 turns.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

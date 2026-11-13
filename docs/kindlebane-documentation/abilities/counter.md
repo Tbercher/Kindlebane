@@ -1,5 +1,9 @@
 # Counter
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Counter
@@ -27,8 +31,4 @@ Readies a defensive stance for 1 turn and deals increased physical damage next t
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

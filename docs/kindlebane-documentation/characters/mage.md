@@ -1,5 +1,13 @@
 # Mage
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+
+## Headshot
+
+![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+
 ## Name
 
 Mage
@@ -53,12 +61,4 @@ Grimoire
 ## Ultimate
 
 [Quake](../abilities/quake.md)
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
-
-## Headshot
-
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
 

@@ -1,5 +1,9 @@
 # Cleave
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Cleave
@@ -27,8 +31,4 @@ Attacks a single enemy and hits adjacent enemies for 75% damage.
 ## Spray
 
 112
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

@@ -1,5 +1,9 @@
 # Quake
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Quake
@@ -31,8 +35,4 @@ Yes
 ## Spray
 
 150
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

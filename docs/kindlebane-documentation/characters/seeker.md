@@ -1,5 +1,13 @@
 # Apprentice
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+
+## Headshot
+
+![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+
 ## Name
 
 Apprentice
@@ -53,12 +61,4 @@ Sword
 ## Ultimate
 
 [Reckless Strike](../abilities/recklessstrike.md)
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
-
-## Headshot
-
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
 

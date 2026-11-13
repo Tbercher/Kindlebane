@@ -1,5 +1,9 @@
 # Magic Bolt
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Magic Bolt
@@ -27,8 +31,4 @@ A basic magic attack with a grimoire.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

@@ -330,7 +330,18 @@ def write_page(node: dict, data: dict, image_paths: dict[str, str]) -> None:
     page_path = GENERATED_DIR / node["relative_file"]
     page_path.parent.mkdir(parents=True, exist_ok=True)
     lines = [f"# {node['title']}", ""]
+    rendered_images = set()
     for key, value in data.items():
+        if key in IMAGE_FIELDS and isinstance(value, str) and value in image_paths:
+            lines.extend(
+                render_field(
+                    key, value, level=2, page_node=node, image_paths=image_paths
+                )
+            )
+            rendered_images.add(key)
+    for key, value in data.items():
+        if key in rendered_images:
+            continue
         lines.extend(
             render_field(key, value, level=2, page_node=node, image_paths=image_paths)
         )
@@ -343,7 +354,7 @@ def render_field(
 ) -> list[str]:
     heading = "#" * level
     lines = [f"{heading} {titleize(key)}", ""]
-    if key in IMAGE_FIELDS and value in image_paths:
+    if key in IMAGE_FIELDS and isinstance(value, str) and value in image_paths:
         current = Path("kindlebane-documentation") / Path(page_node["relative_file"]).parent
         relative = posixpath.relpath(image_paths[value], current.as_posix())
         lines += [f"![{titleize(key)}]({relative})", ""]

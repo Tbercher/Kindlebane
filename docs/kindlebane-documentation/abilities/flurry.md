@@ -1,5 +1,9 @@
 # Flurry
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Flurry
@@ -27,8 +31,4 @@ Makes consecutive attacks against a single enemy that deal large physical damage
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

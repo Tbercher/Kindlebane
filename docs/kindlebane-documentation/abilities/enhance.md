@@ -1,5 +1,9 @@
 # Enhance
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
+
 ## Name
 
 Enhance
@@ -27,8 +31,4 @@ Buffs a single ally's damage for 2 turns.
 ## Spray
 
 0
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderAbilitySpecific.png)
 

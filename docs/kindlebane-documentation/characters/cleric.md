@@ -1,5 +1,13 @@
 # Cleric
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+
+## Headshot
+
+![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+
 ## Name
 
 Cleric
@@ -53,12 +61,4 @@ Book
 ## Ultimate
 
 [Vigorate](../abilities/vigorate.md)
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
-
-## Headshot
-
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
 

@@ -1,5 +1,13 @@
 # Lamplighter
 
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+
+## Headshot
+
+![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+
 ## Name
 
 Lamplighter
@@ -43,12 +51,4 @@ Yes
 ## Abilities
 
 - [Magic Bolt](../abilities/magicbolt.md)
-
-## Sprite
-
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
-
-## Headshot
-
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
 
