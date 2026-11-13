@@ -41,8 +41,10 @@ else{
 }
 
 if (selected){
-	obj_battleController.characterSelected = character;	
-    hasNeighborSelected = false;
+    if (!isEnemy){
+        obj_battleController.characterSelected = character;	
+        hasNeighborSelected = false;
+    }
 }
 // If the character is not selected, check if it has a neighboring enemy selected.
 else {
@@ -60,6 +62,6 @@ if (remainingLingeringEffectTurns > 0){
     }
 }
 
-if (isEnemy){
-    //show_debug_message(loweredDefenseTurns > 0 ? "Defenses Lowered " : "Defenses Normal");
+if (slot.number == 1 && isEnemy){
+    show_debug_message(string(loweredDefenseTurns));
 }

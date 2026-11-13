@@ -295,14 +295,14 @@ characters = {
         className: "Apprentice",
         description: "A sword-wielding apprentice.",
         attack: 1,
-        defense: 50,
+        defense: 500,
         magicAttack: 0,
-        magicDefense: 25,
+        magicDefense: 500,
         myHealth: 500,
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall],
+        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.recklessStrike],
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,
         headshot: headshotSprites.apprentice
@@ -445,7 +445,10 @@ villages = {
     },
 };
 
+// Game Save Info
+playerTeam = {
+        members: [characters.apprentice, characters.apprentice, characters.apprentice, characters.apprentice]
+};
 
-
-//Should start as undefined and be changed when you select a village in the menu
+// Should start as undefined and be changed when you select a village in the menu
 currentVillage = "loamvale";

@@ -1,4 +1,4 @@
-applyLingeringEffects();
+handleSpecialAbilityCleanup();
 
 var characterInstance = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance;
 
@@ -13,7 +13,7 @@ for (var abilityIndex = 0; abilityIndex < array_length(character.abilities); abi
         var enemy = obj_battleController.playerTeam.members[enemyIndex];
         //var damage = calculateDamage(ability, enemy, character).damage;
         var damage = calculateDamage(ability, enemy, character).damage;
-        if (damage > highestDamage){
+        if (damage > highestDamage || is_undefined(bestAbility)){
             highestDamage = damage;
             bestAbility = ability;
             bestPlayerTarget = enemy;

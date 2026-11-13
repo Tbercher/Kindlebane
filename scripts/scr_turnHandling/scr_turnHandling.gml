@@ -323,22 +323,13 @@ function applyLingeringEffects(){
 	}
 }
 
-function handleTurn(isUserTurn){
-	if (!isUserTurn){
-		// Make sure AI turn handling is only handled once per turn
-		if (aiTurnStarted == true){
-			return;
-		}
-	}
-	//Handle special abilities before processing the turn
-
+function specialAbilityCleanup(){
 	// Special Ability Cleanups
-	// Lingering effects: Apply damage over multiple turns.
-	if (!isUserTurn){
-		show_debug_message("Processing lingering effects on AI turn...");
-	}
-
+	// Lingering effects: Apply damage over multiple turns. (in the User section and in the AI alarm event)
+	applyLingeringEffects();
 	// Reckless Strike: Deals massive physical damage to one enemy and lowers its defences for 1 turn.
+	// Decrement loweredDefenseTurns for all characters with lowered defenses
+	
 
 	// Charge: Hits one enemy and adjacent enemies, and stuns the main target.
 
@@ -361,6 +352,15 @@ function handleTurn(isUserTurn){
 	// Enhance: Buffs one ally's damage for 2 turns.
 
 	// Vigorate: Heals all allies while the Cleric loses 70% of its health.
+}
+
+function handleTurn(isUserTurn){
+	if (!isUserTurn){
+		// Make sure AI turn handling is only handled once per turn
+		if (aiTurnStarted == true){
+			return;
+		}
+	}
 
 	if (!isUserTurn){
 		// AI Turn Handling
@@ -388,7 +388,7 @@ function handleTurn(isUserTurn){
 		}
 	}
 	else{
-		applyLingeringEffects();
+		handleSpecialAbilityCleanup();
 
 		// Player Turn Handling
 		var ability = obj_battleController.abilitySelected;
