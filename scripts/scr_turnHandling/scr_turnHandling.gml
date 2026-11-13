@@ -213,13 +213,24 @@ function calculateDamage(ability, defender, attacker){
 	}
 	var physicalSpray = ability.spray * physicalRatio;
 	var magicalSpray = ability.spray * magicalRatio;
+	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
 	return {
-		damage: max((physicalDamage - defender.defense), 0) + max((magicalDamage - defender.magicDefense), 0),
+		damage: max((physicalDamage - (defender.defense * defenseNegator)), 0) + max((magicalDamage - (defender.magicDefense * defenseNegator)), 0),
 		spray: physicalSpray + magicalSpray,
 		physicalRatio: physicalRatio,
 		magicalRatio: magicalRatio
 	};
+}
+
+function calculateSprayDamage(ability, attacker, defender){
+	var normalizedPhysicalSpray = calculateDamage(ability, defender, attacker).spray * calculateDamage(ability, defender, attacker).physicalRatio;
+	var normalizedMagicalSpray = calculateDamage(ability, defender, attacker).spray * calculateDamage(ability, defender, attacker).magicalRatio;
+	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
+
+	damage = (max(normalizedPhysicalSpray - (defender.defense * defenseNegator), 0)) + (max(normalizedMagicalSpray - (defender.magicDefense * defenseNegator), 0));
+
+	return damage
 }
 
 function handleDamage(ability, attacker, defender){
@@ -237,7 +248,11 @@ function handleDamage(ability, attacker, defender){
 
 
 	// Reckless Strike: Deals massive physical damage to a single enemy while lowering its defences for 1 turn.
-
+	if (variable_struct_exists(ability, "lowersDefense") && ability.lowersDefense){
+		attacker.instance.defenseLowered = true;
+		attacker.instance.loweredDefenseTurns = 1;
+		show_debug_message("Defense lowered for " + string(attacker.instance) + " for " + string(attacker.instance.loweredDefenseTurns) + " turns.");
+	}
 	// Charge: Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main target.
 
 	// Counter: Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.
@@ -270,6 +285,10 @@ function handleDamage(ability, attacker, defender){
 
 
 	// Actual damage handling
+	
+	// Defense is already negated for main defender. Just need to apply it to neighbors if necessary.
+	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
+
 	defender.instance.newHealth -= calculateDamage(ability, defender, attacker).damage;
 	var neighbors = getNeighbors(defender.instance);
 	for (var i = 0; i < array_length(neighbors); i++){
@@ -279,7 +298,7 @@ function handleDamage(ability, attacker, defender){
 		var magicalSprayDamage = calculateDamage(ability, neighbor, attacker).spray * calculateDamage(ability, neighbor, attacker).magicalRatio;
 
 		if (neighbor != undefined){
-			neighbor.instance.newHealth -= max(physicalSprayDamage - neighbor.defense, 0) + max(magicalSprayDamage - neighbor.magicDefense, 0);
+			neighbor.instance.newHealth -= max(physicalSprayDamage - (neighbor.defense * defenseNegator), 0) + max(magicalSprayDamage - (neighbor.magicDefense * defenseNegator), 0);
 		}
 	}
 
@@ -347,8 +366,6 @@ function handleTurn(isUserTurn){
 		// AI Turn Handling
 
 		aiTurnStarted = true;
-
-		var selectedCharacter = obj_battleController.characterSelected;
 
 		// Get rid of all the selected variables from the player turn
 		if (!is_undefined(obj_battleController.characterSelected)){

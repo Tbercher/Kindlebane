@@ -23,3 +23,4 @@ lingeringEffectDamage = 0;
 loweredDefenseTurns = 0;
 isBleeding = false; 
 isBurning = false;
+attackBuff = 1;

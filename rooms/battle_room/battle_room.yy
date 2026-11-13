@@ -42,6 +42,7 @@
     {"name":"inst_5A4DCCD7","path":"rooms/battle_room/battle_room.yy",},
     {"name":"inst_7EFCDC87","path":"rooms/battle_room/battle_room.yy",},
     {"name":"inst_651ACA3C","path":"rooms/battle_room/battle_room.yy",},
+    {"name":"inst_2F385FC7","path":"rooms/battle_room/battle_room.yy",},
   ],
   "isDnd":false,
   "layers":[
@@ -55,6 +56,7 @@
         {"$GMRInstance":"v4","%Name":"inst_5A4DCCD7","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_5A4DCCD7","objectId":{"name":"obj_resultImage","path":"objects/obj_resultImage/obj_resultImage.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.2243792,"scaleY":1.2243792,"x":683.0,"y":231.09326,},
         {"$GMRInstance":"v4","%Name":"inst_7EFCDC87","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_7EFCDC87","objectId":{"name":"obj_return","path":"objects/obj_return/obj_return.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":0.70642996,"scaleY":0.70643,"x":685.6467,"y":452.6523,},
         {"$GMRInstance":"v4","%Name":"inst_651ACA3C","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_651ACA3C","objectId":{"name":"obj_tryAgain","path":"objects/obj_tryAgain/obj_tryAgain.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":0.7199998,"scaleY":0.7199998,"x":683.0,"y":632.7058,},
+        {"$GMRInstance":"v4","%Name":"inst_2F385FC7","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_2F385FC7","objectId":{"name":"obj_cheatcodes","path":"objects/obj_cheatcodes/obj_cheatcodes.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":1.0,"y":7.0,},
       ],"layers":[],"name":"Instances","properties":[],"resourceType":"GMRInstanceLayer","resourceVersion":"2.0","userdefinedDepth":false,"visible":true,},
     {"$GMRAssetLayer":"","%Name":"UITiles","assets":[
         {"$GMRSpriteGraphic":"v1","%Name":"graphic_272E21F4","animationSpeed":1.0,"colour":4294967295,"frozen":false,"headPosition":0.0,"ignore":false,"inheritedItemId":null,"inheritItemSettings":false,"name":"graphic_272E21F4","resourceType":"GMRSpriteGraphic","resourceVersion":"2.0","rotation":0.0,"scaleX":0.71750724,"scaleY":0.7212111,"spriteId":{"name":"spr_UIBase","path":"sprites/spr_UIBase/spr_UIBase.yy",},"x":687.193,"y":393.45398,},

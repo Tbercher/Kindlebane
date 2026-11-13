@@ -59,3 +59,7 @@ if (remainingLingeringEffectTurns > 0){
         array_push(obj_battleController.charactersWithLingeringEffects, id);
     }
 }
+
+if (isEnemy){
+    //show_debug_message(loweredDefenseTurns > 0 ? "Defenses Lowered " : "Defenses Normal");
+}

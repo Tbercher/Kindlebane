@@ -90,10 +90,11 @@ abilities = {
         cost: 0,
         strength: 3,
         isUltimate: true,
-        attack: 150,
+        attack: 300,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.recklessStrike
+        sprite: abilitySprites.recklessStrike,
+        lowersDefense: true
     },
     /// @doc-abilities-ability Dropkick
     woodsmanDropkick: {

@@ -68,10 +68,7 @@ if (selected || hasNeighborSelected){
         var enemy = obj_battleController.enemySelected;
         var damage = 0;
         if (hasNeighborSelected){
-            var normalizedPhysicalSpray = calculateDamage(ability, enemy, character).spray * calculateDamage(ability, enemy, character).physicalRatio
-            var normalizedMagicalSpray = calculateDamage(ability, enemy, character).spray * calculateDamage(ability, enemy, character).magicalRatio;
-
-            damage = (max(normalizedPhysicalSpray - character.defense, 0)) + (max(normalizedMagicalSpray - character.magicDefense, 0));
+            damage = calculateSprayDamage(ability, enemy, character);
         }
         else {
             damage = calculateDamage(ability, enemy, character).damage;
