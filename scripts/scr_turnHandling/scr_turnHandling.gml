@@ -190,13 +190,30 @@ function getNeighbors(instance){
 	return neighbors;
 }
 
+function areNeighbors(instance1, instance2){
+	var neighbors = getNeighbors(instance1);
+	for (var i = 0; i < array_length(neighbors); i++){
+		var neighbor = instance1.isEnemy ? obj_battleController.village.team[neighbors[i]] : obj_battleController.playerTeam.members[neighbors[i]];
+		if (neighbor != undefined && neighbor.instance == instance2){
+			return true;
+		}
+	}
+	return false;
+}
+
 function calculateDamage(ability, defender, attacker){
 	var physicalDamage = ability.attack * attacker.attack;
 	var magicalDamage = ability.magicAttack * attacker.magicAttack;
+	var physicalRatio = physicalDamage / (physicalDamage + magicalDamage);
+	var magicalRatio = 1 - physicalRatio;
+	var physicalSpray = ability.spray * physicalRatio;
+	var magicalSpray = ability.spray * magicalRatio;
 
 	return {
 		damage: max((physicalDamage - defender.defense), 0) + max((magicalDamage - defender.magicDefense), 0),
-		spray: ability.spray
+		spray: physicalSpray + magicalSpray,
+		physicalRatio: physicalRatio,
+		magicalRatio: magicalRatio
 	};
 }
 
@@ -205,8 +222,12 @@ function handleDamage(ability, attacker, defender){
 	var neighbors = getNeighbors(defender.instance);
 	for (var i = 0; i < array_length(neighbors); i++){
 		var neighbor = defender.instance.isEnemy ? obj_battleController.village.team[neighbors[i]] : obj_battleController.playerTeam.members[neighbors[i]];
+
+		var physicalSprayDamage = calculateDamage(ability, neighbor, attacker).spray * calculateDamage(ability, neighbor, attacker).physicalRatio;
+		var magicalSprayDamage = calculateDamage(ability, neighbor, attacker).spray * calculateDamage(ability, neighbor, attacker).magicalRatio;
+
 		if (neighbor != undefined){
-			neighbor.instance.newHealth -= calculateDamage(ability, neighbor, attacker).spray;
+			neighbor.instance.newHealth -= max(physicalSprayDamage - neighbor.defense, 0) + max(magicalSprayDamage - neighbor.magicDefense, 0);
 		}
 	}
 }

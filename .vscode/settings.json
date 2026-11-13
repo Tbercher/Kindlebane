@@ -1,0 +1,24 @@
+{
+    "folder-customization.folders": [
+        {
+            "path": "Kindlebane\\objects\\obj_battleController\\",
+            "color": "foldercustomization.AnsiColor14"
+        },
+        {
+            "path": "Kindlebane\\objects\\obj_character\\",
+            "color": "foldercustomization.AnsiColor82"
+        },
+        {
+            "path": "Kindlebane\\objects\\obj_gameInfo\\",
+            "color": "foldercustomization.AnsiColor220"
+        },
+        {
+            "path": "Kindlebane\\scripts\\",
+            "color": "foldercustomization.AnsiColor204"
+        },
+        {
+            "path": "Kindlebane\\scripts\\scr_turnHandling\\",
+            "color": "foldercustomization.AnsiColor202"
+        }
+    ]
+}

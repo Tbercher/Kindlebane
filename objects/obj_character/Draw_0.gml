@@ -51,7 +51,14 @@ if (selected){
 
     gpu_set_blendmode(bm_normal);
 
-    //Draw the damage value if an ability and enemy are selected
+}
+
+//Draw the damage value if an ability and enemy are selected
+if (selected || hasNeighborSelected){
+
+    // Get neighbors to draw the spray damage if applicable
+    
+    
     if (!is_undefined(obj_battleController.abilitySelected)
     && !is_undefined(obj_battleController.enemySelected)
     && !is_undefined(obj_battleController.characterSelected)
@@ -59,8 +66,16 @@ if (selected){
     ){
         var ability = obj_battleController.abilitySelected;
         var enemy = obj_battleController.enemySelected;
-        var damage = calculateDamage(ability, enemy, character).damage;
+        var damage = 0;
+        if (hasNeighborSelected){
+            var normalizedPhysicalSpray = calculateDamage(ability, enemy, character).spray * calculateDamage(ability, enemy, character).physicalRatio
+            var normalizedMagicalSpray = calculateDamage(ability, enemy, character).spray * calculateDamage(ability, enemy, character).magicalRatio;
 
+            damage = (max(normalizedPhysicalSpray - character.defense, 0)) + (max(normalizedMagicalSpray - character.magicDefense, 0));
+        }
+        else {
+            damage = calculateDamage(ability, enemy, character).damage;
+        }
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
 
@@ -69,7 +84,6 @@ if (selected){
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     }
-
 }
 
 // Draw Health Bar

@@ -17,3 +17,4 @@ stats =
     + "\nDefense: " + string(character.defense)
     + "\nMagic Attack Multiplier: " + string(character.magicAttack)
     + "\nMagic Defense: " + string(character.magicDefense);
+hasNeighborSelected = false;
