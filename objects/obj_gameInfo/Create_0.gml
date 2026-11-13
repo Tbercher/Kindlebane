@@ -1,3 +1,5 @@
+kindling = 20;
+
 // General Game Information
 dynamicUISprites = {
     winner: spr_placeholderWinner,
@@ -6,7 +8,7 @@ dynamicUISprites = {
 
 abilitySprites = {
     nonSpecific: spr_placeholderAbility,
-    seekerSlash: spr_placeholderAbilitySpecific,
+    apprenticeSlash: spr_placeholderAbilitySpecific,
     flurry: spr_placeholderAbilitySpecific,
     cleave: spr_placeholderAbilitySpecific,
     stab: spr_placeholderAbilitySpecific,
@@ -36,7 +38,7 @@ var _quakeMagicAttack = 150;
 /// @doc-abilities
 abilities = {
     /// @doc-abilities-ability Slash
-    seekerSlash: {
+    apprenticeSlash: {
         name: "Slash",
         description: "A basic physical attack with a sword.",
         cost: 0,
@@ -44,7 +46,7 @@ abilities = {
         attack: 50,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.seekerSlash
+        sprite: abilitySprites.apprenticeSlash
     },
     /// @doc-abilities-ability Flurry
     flurry: {
@@ -77,7 +79,9 @@ abilities = {
         attack: 50,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.stab
+        sprite: abilitySprites.stab,
+        lingeringEffectDamage: 20,
+        effectType: "bleed"
     },
     /// @doc-abilities-ability Reckless Strike
     recklessStrike: {
@@ -167,7 +171,9 @@ abilities = {
         attack: 0,
         magicAttack: 100,
         spray: 0,
-        sprite: abilitySprites.fireBall
+        sprite: abilitySprites.fireBall,
+        lingeringEffectDamage: 30,
+        effectType: "burn"
     },
     /// @doc-abilities-ability Lightning Bolt
     lightningBolt: {
@@ -262,7 +268,6 @@ abilities = {
 }
 
 characterSprites = {
-    seeker: spr_placeholderCharacter,
     woodsman: spr_placeholderCharacter,
     mage: spr_placeholderCharacter,
     cleric: spr_placeholderCharacter,
@@ -273,7 +278,6 @@ characterSprites = {
 
 headshotSprites = {
     nonSpecific: spr_placeholderHeadshot,
-    seeker: spr_placeholderSpecificHeadshot,
     woodsman: spr_placeholderSpecificHeadshot,
     mage: spr_placeholderSpecificHeadshot,
     cleric: spr_placeholderSpecificHeadshot,
@@ -285,7 +289,7 @@ headshotSprites = {
 /// @doc-characters
 characters = {
     /// @doc-characters-character Apprentice
-    seeker: {
+    apprentice: {
         name: "Apprentice",
         className: "Apprentice",
         description: "A sword-wielding apprentice.",
@@ -296,11 +300,11 @@ characters = {
         myHealth: 500,
         isPlaceholder: true,
         weapon: "Sword",
-        basicAttack: abilities.seekerSlash,
-        abilities: [abilities.flurry, abilities.cleave, abilities.stab],
+        basicAttack: abilities.apprenticeSlash,
+        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall],
         ultimate: abilities.recklessStrike,
-		sprite: characterSprites.seeker,
-        headshot: headshotSprites.seeker
+		sprite: characterSprites.apprentice,
+        headshot: headshotSprites.apprentice
     },
     /// @doc-characters-character Woodsman
     woodsman: {
@@ -355,22 +359,6 @@ characters = {
         ultimate: abilities.vigorate,
         sprite: characterSprites.cleric,
         headshot: headshotSprites.cleric
-    },
-    /// @doc-characters-character Apprentice
-    apprentice: {
-        name: "Apprentice",
-        village: "Stonehearth",
-        className: "Apprentice",
-        description: "An Apprentice from Stonehearth.",
-        attack: 1,
-        defense: 50,
-        magicAttack: 0,
-        magicDefense: 25,
-        myHealth: 500,
-        isPlaceholder: true,
-        abilities: [abilities.magicBolt],
-        sprite: characterSprites.apprentice,
-        headshot: headshotSprites.apprentice
     },
     /// @doc-characters-character Condemned
     condemned: {

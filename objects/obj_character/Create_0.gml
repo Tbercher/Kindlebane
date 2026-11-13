@@ -18,3 +18,8 @@ stats =
     + "\nMagic Attack Multiplier: " + string(character.magicAttack)
     + "\nMagic Defense: " + string(character.magicDefense);
 hasNeighborSelected = false;
+remainingLingeringEffectTurns = 0;
+lingeringEffectDamage = 0;
+loweredDefenseTurns = 0;
+isBleeding = false; 
+isBurning = false;

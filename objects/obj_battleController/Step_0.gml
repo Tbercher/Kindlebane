@@ -2,7 +2,7 @@
 if (is_undefined(info) && instance_exists(obj_gameInfo)) {
     info = obj_gameInfo;
     playerTeam = {
-        members: [info.characters.seeker]
+        members: [info.characters.apprentice]
     };
 	village = info.villages[$obj_gameInfo.currentVillage];
 	spawnCharacters()

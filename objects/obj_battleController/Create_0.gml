@@ -13,3 +13,4 @@ enemyTurnSlot = 0;
 playerTurnSlot = 0;
 aiTurnStarted = false;
 hasWon = undefined;
+charactersWithLingeringEffects = [];

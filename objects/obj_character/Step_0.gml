@@ -53,3 +53,9 @@ else {
         hasNeighborSelected = false;
     }
 }
+
+if (remainingLingeringEffectTurns > 0){
+    if (!array_contains(obj_battleController.charactersWithLingeringEffects, id)){
+        array_push(obj_battleController.charactersWithLingeringEffects, id);
+    }
+}

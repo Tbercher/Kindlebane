@@ -204,8 +204,13 @@ function areNeighbors(instance1, instance2){
 function calculateDamage(ability, defender, attacker){
 	var physicalDamage = ability.attack * attacker.attack;
 	var magicalDamage = ability.magicAttack * attacker.magicAttack;
-	var physicalRatio = physicalDamage / (physicalDamage + magicalDamage);
-	var magicalRatio = 1 - physicalRatio;
+	var totalDamage = physicalDamage + magicalDamage;
+	var physicalRatio = 0;
+	var magicalRatio = 0;
+	if (totalDamage > 0){
+		physicalRatio = physicalDamage / totalDamage;
+		magicalRatio = magicalDamage / totalDamage;
+	}
 	var physicalSpray = ability.spray * physicalRatio;
 	var magicalSpray = ability.spray * magicalRatio;
 
@@ -218,6 +223,53 @@ function calculateDamage(ability, defender, attacker){
 }
 
 function handleDamage(ability, attacker, defender){
+	// Handle Special Abilities
+	// Stab: Causes Bleed.
+	if (variable_struct_exists(ability, "effectType") && ability.effectType == "bleed" && ability.lingeringEffectDamage > 0){
+		defender.instance.isBleeding = true;
+		defender.instance.lingeringEffectDamage = ability.lingeringEffectDamage * attacker.attack;
+		defender.instance.remainingLingeringEffectTurns += 3;
+		show_debug_message("Lingering effect applied to " + string(defender.instance) + " for " + string(defender.instance.remainingLingeringEffectTurns) + " turns.");
+		if (!array_contains(obj_battleController.charactersWithLingeringEffects, defender.instance)) {
+			array_push(obj_battleController.charactersWithLingeringEffects, defender.instance);
+		}
+	}
+
+
+	// Reckless Strike: Deals massive physical damage to a single enemy while lowering its defences for 1 turn.
+
+	// Charge: Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main target.
+
+	// Counter: Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.
+
+	// Battle Cry: Taunts all enemies while reducing enemy damage.
+
+	// Taunt: Taunts a single enemy and reduces all damage taken for 2 turns.
+
+	// Fire Ball: Shoots a fireball at a single enemy for magic damage and causes Burn.
+	if (variable_struct_exists(ability, "effectType") && ability.effectType == "burn" && ability.lingeringEffectDamage > 0){
+		defender.instance.isBurning = true;
+		defender.instance.lingeringEffectDamage = ability.lingeringEffectDamage * attacker.magicAttack;
+		defender.instance.remainingLingeringEffectTurns += 3;
+		show_debug_message("Lingering effect applied to " + string(defender.instance) + " for " + string(defender.instance.remainingLingeringEffectTurns) + " turns.");
+		if (!array_contains(obj_battleController.charactersWithLingeringEffects, defender.instance)) {
+			array_push(obj_battleController.charactersWithLingeringEffects, defender.instance);
+		}
+	}
+	// Spell Charge: Prepares a spell and increases its damage.
+
+	// Quake: Splits the ground beneath enemies, dealing area-of-effect magic damage and stunning them.
+
+	// Heal: Heals a single ally.
+
+	// Curse: Silences a single target and reduces its defences for 1 turn.
+
+	// Enhance: Buffs a single ally's damage for 2 turns.
+
+	// Vigorate: Heals all allies while the Cleric loses 70% of its health.
+
+
+	// Actual damage handling
 	defender.instance.newHealth -= calculateDamage(ability, defender, attacker).damage;
 	var neighbors = getNeighbors(defender.instance);
 	for (var i = 0; i < array_length(neighbors); i++){
@@ -230,16 +282,70 @@ function handleDamage(ability, attacker, defender){
 			neighbor.instance.newHealth -= max(physicalSprayDamage - neighbor.defense, 0) + max(magicalSprayDamage - neighbor.magicDefense, 0);
 		}
 	}
+
+}
+
+function applyLingeringEffects(){
+	if (array_length(obj_battleController.charactersWithLingeringEffects) != 0){
+		for (var i = 0; i < array_length(obj_battleController.charactersWithLingeringEffects); i++){
+			var characterInstance = obj_battleController.charactersWithLingeringEffects[i];
+			characterInstance.newHealth -= characterInstance.lingeringEffectDamage;
+			characterInstance.remainingLingeringEffectTurns -= 1;
+			show_debug_message("Lingering effect damage applied to " + string(characterInstance) + ". Remaining turns: " + string(characterInstance.remainingLingeringEffectTurns));
+			if (characterInstance.remainingLingeringEffectTurns <= 0){
+				characterInstance.isBleeding = false;
+				characterInstance.isBurning = false;
+				characterInstance.lingeringEffectDamage = 0;
+				array_delete(obj_battleController.charactersWithLingeringEffects, i, 1);
+				i--;
+				show_debug_message("Lingering effect ended for " + string(characterInstance));
+			}
+		}
+	}
 }
 
 function handleTurn(isUserTurn){
 	if (!isUserTurn){
-		// AI Turn Handling
-
 		// Make sure AI turn handling is only handled once per turn
 		if (aiTurnStarted == true){
 			return;
 		}
+	}
+	//Handle special abilities before processing the turn
+
+	// Special Ability Cleanups
+	// Lingering effects: Apply damage over multiple turns.
+	if (!isUserTurn){
+		show_debug_message("Processing lingering effects on AI turn...");
+	}
+
+	// Reckless Strike: Deals massive physical damage to one enemy and lowers its defences for 1 turn.
+
+	// Charge: Hits one enemy and adjacent enemies, and stuns the main target.
+
+	// Counter: Readies a defensive stance and increases next turn's physical damage based on attacks received.
+
+	// Battle Cry: Taunts all enemies and reduces their damage.
+
+	// Taunt: Taunts one enemy and reduces all damage taken for 2 turns.
+
+	// Fire Ball: Deals magic damage to one enemy and causes Burn.
+
+	// Spell Charge: Prepares a spell and increases its damage.
+
+	// Quake: Deals area-of-effect magic damage to enemies and stuns them.
+
+	// Heal: Heals one ally.
+
+	// Curse: Silences one target and reduces its defences for 1 turn.
+
+	// Enhance: Buffs one ally's damage for 2 turns.
+
+	// Vigorate: Heals all allies while the Cleric loses 70% of its health.
+
+	if (!isUserTurn){
+		// AI Turn Handling
+
 		aiTurnStarted = true;
 
 		var selectedCharacter = obj_battleController.characterSelected;
@@ -265,14 +371,13 @@ function handleTurn(isUserTurn){
 		}
 	}
 	else{
+		applyLingeringEffects();
+
 		// Player Turn Handling
 		var ability = obj_battleController.abilitySelected;
 		var enemy = obj_battleController.enemySelected;
 		var character = obj_battleController.characterSelected;
 
-		// Old damage applicaiton method
-		//enemy.instance.newHealth -= calculateDamage(ability, enemy, character).damage;
-		
 		// Use handleDamage to apply damage and spray effects
 		handleDamage(ability, character, enemy);
 

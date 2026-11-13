@@ -1,3 +1,5 @@
+applyLingeringEffects();
+
 var characterInstance = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance;
 
 // Get all possible damage values for each ability against each enemy
@@ -20,8 +22,7 @@ for (var abilityIndex = 0; abilityIndex < array_length(character.abilities); abi
 }
 
 // Execute the best ability against the best target
-show_debug_message(string(obj_battleController.isPlayerTurn))
-bestPlayerTarget.instance.newHealth -= highestDamage;
+handleDamage(bestAbility, character, bestPlayerTarget);
 characterInstance.selected = false;
 obj_battleController.characterSelected = undefined;
 obj_battleController.abilitySelected = undefined;

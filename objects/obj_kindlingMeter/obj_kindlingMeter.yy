@@ -1,12 +1,12 @@
 {
   "$GMObject":"",
-  "%Name":"obj_bonfireProgression",
+  "%Name":"obj_kindlingMeter",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_bonfireProgression",
+  "name":"obj_kindlingMeter",
   "overriddenProperties":[],
   "parent":{
     "name":"UI",
@@ -31,8 +31,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_bonfireProgression",
-    "path":"sprites/spr_bonfireProgression/spr_bonfireProgression.yy",
+    "name":"spr_kindlingMeter",
+    "path":"sprites/spr_kindlingMeter/spr_kindlingMeter.yy",
   },
   "spriteMaskId":null,
   "visible":true,
