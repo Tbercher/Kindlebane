@@ -18,7 +18,7 @@ An Apprentice from Stonehearth.
 
 ## Attack
 
-50
+1
 
 ## Defense
 
@@ -34,7 +34,7 @@ An Apprentice from Stonehearth.
 
 ## My Health
 
-100
+500
 
 ## Is Placeholder
 
@@ -42,5 +42,13 @@ Yes
 
 ## Abilities
 
-- [Kindleshooter](../abilities/kindleshooter.md)
+- [Magic Bolt](../abilities/magicbolt.md)
+
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+
+## Headshot
+
+![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
 

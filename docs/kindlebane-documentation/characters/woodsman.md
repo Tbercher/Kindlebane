@@ -2,11 +2,7 @@
 
 ## Name
 
-Woodsman
-
-## Village
-
-Loamvale
+The Woodsman
 
 ## Class Name
 
@@ -14,11 +10,11 @@ Woodsman
 
 ## Description
 
-A Woodsman from Loamvale.
+A shield-bearing woodsman.
 
 ## Attack
 
-50
+1
 
 ## Defense
 
@@ -34,13 +30,35 @@ A Woodsman from Loamvale.
 
 ## My Health
 
-100
+500
 
 ## Is Placeholder
 
 Yes
 
+## Weapon
+
+Big Ass Shield
+
+## Basic Attack
+
+[Dropkick](../abilities/woodsmandropkick.md)
+
 ## Abilities
 
-- [Kindleshooter](../abilities/kindleshooter.md)
+- [Charge](../abilities/charge.md)
+- [Counter](../abilities/counter.md)
+- [Taunt](../abilities/taunt.md)
+
+## Ultimate
+
+[Battle Cry](../abilities/battlecry.md)
+
+## Sprite
+
+![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+
+## Headshot
+
+![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
 
