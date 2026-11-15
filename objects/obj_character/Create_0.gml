@@ -24,5 +24,7 @@ loweredDefenseTurns = 0;
 isBleeding = false; 
 isBurning = false;
 attackBuff = 1;
+attackBuffRounds = 0;
+increasedDefenseRounds = 0;
 stunnedRounds = 0;
 delayedEffectTurns = 0;

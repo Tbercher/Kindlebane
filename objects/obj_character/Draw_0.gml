@@ -74,7 +74,7 @@ if (selected || hasNeighborSelected){
             damage = calculateSprayDamage(ability, attacker, defender);
         }
         else {
-            damage = calculateDamage(ability, attacker, defender, 1).damage;
+            damage = calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).damage;
         }
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);

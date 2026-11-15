@@ -14,3 +14,7 @@ playerTurnSlot = 0;
 aiTurnStarted = false;
 hasWon = undefined;
 charactersWithLingeringEffects = [];
+historicalAITurnSelectionTimer = room_speed / 6;
+historicalAITurnDecisionTimer = room_speed;
+aiTurnSelectionTimer = historicalAITurnSelectionTimer;
+aiTurnDecisionTimer = historicalAITurnDecisionTimer;

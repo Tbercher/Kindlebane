@@ -125,7 +125,7 @@ abilities = {
         description: "Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.",
         cost: 2,
         strength: 3,
-        attack: 150,
+        attack: 0,
         magicAttack: 0,
         spray: 0,
         sprite: abilitySprites.counter,
@@ -304,7 +304,7 @@ characters = {
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.charge, abilities.cleave, abilities.stab, abilities.recklessStrike],
+        abilities: [abilities.charge, abilities.cleave, abilities.counter, abilities.recklessStrike],
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,
         headshot: headshotSprites.apprentice

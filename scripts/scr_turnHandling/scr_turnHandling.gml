@@ -209,22 +209,22 @@ function calculateDamage(ability, attacker, defender, multiplier){
 		physicalRatio = physicalDamage / totalDamage;
 		magicalRatio = magicalDamage / totalDamage;
 	}
-	var physicalSpray = ability.spray * physicalRatio;
-	var magicalSpray = ability.spray * magicalRatio;
+	var physicalSpray = ability.spray * physicalRatio * multiplier;
+	var magicalSpray = ability.spray * magicalRatio * multiplier;
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
-	var clampedDamage = max((physicalDamage - (defender.defense * defenseNegator)), 0) + max((magicalDamage - (defender.magicDefense * defenseNegator)), 0)
+	var clampedDamage = max(((physicalDamage * multiplier) - (defender.defense * defenseNegator)), 0) + max(((magicalDamage * multiplier) - (defender.magicDefense * defenseNegator)), 0)
 
 	return {
-		damage: clampedDamage * multiplier,
-		spray: (physicalSpray + magicalSpray) * multiplier,
+		damage: clampedDamage,
+		spray: (physicalSpray + magicalSpray),
 		physicalRatio: physicalRatio,
 		magicalRatio: magicalRatio
 	};
 }
 
 function calculateSprayDamage(ability, attacker, defender){
-	var normalizedPhysicalSpray = calculateDamage(ability, attacker, defender, 1).spray * calculateDamage(ability, attacker, defender, 1).physicalRatio;
-	var normalizedMagicalSpray = calculateDamage(ability, attacker, defender, 1).spray * calculateDamage(ability, attacker, defender, 1).magicalRatio;
+	var normalizedPhysicalSpray = calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).physicalRatio;
+	var normalizedMagicalSpray = calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).magicalRatio;
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
 	var damage = (max(normalizedPhysicalSpray - (defender.defense * defenseNegator), 0)) + (max(normalizedMagicalSpray - (defender.magicDefense * defenseNegator), 0));
@@ -258,7 +258,10 @@ function handleDamage(ability, attacker, defender){
 		defender.instance.stunnedRounds = 1;
 	}
 	// Counter: Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.
-
+	if (variable_struct_exists(ability, "isCounter") && ability.isCounter){
+		attacker.instance.increasedDefenseRounds = 1;
+		attacker.instance.attackBuff = 8;
+	}
 	// Battle Cry: Taunts all enemies while reducing enemy damage.
 
 	// Taunt: Taunts a single enemy and reduces all damage taken for 2 turns.
@@ -291,13 +294,13 @@ function handleDamage(ability, attacker, defender){
 	// Defense is already negated for main defender. Just need to apply it to neighbors if necessary.
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
-	defender.instance.newHealth -= calculateDamage(ability, attacker, defender, 1).damage;
+	defender.instance.newHealth -= calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).damage;
 	var neighbors = getNeighbors(defender.instance);
 	for (var i = 0; i < array_length(neighbors); i++){
 		var neighbor = defender.instance.isEnemy ? obj_battleController.village.team[neighbors[i]] : obj_battleController.playerTeam.members[neighbors[i]];
 
-		var physicalSprayDamage = calculateDamage(ability, attacker, neighbor, 1).spray * calculateDamage(ability, attacker, neighbor, 1).physicalRatio;
-		var magicalSprayDamage = calculateDamage(ability, attacker, neighbor, 1).spray * calculateDamage(ability, attacker, neighbor, 1).magicalRatio;
+		var physicalSprayDamage = calculateDamage(ability, attacker, neighbor, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, neighbor, attacker.instance.attackBuff).physicalRatio;
+		var magicalSprayDamage = calculateDamage(ability, attacker, neighbor, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, neighbor, attacker.instance.attackBuff).magicalRatio;
 		var defenseNegatorNeighbor = neighbor.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
 		if (neighbor != undefined){
@@ -401,7 +404,7 @@ function handleTurn(isUserTurn){
 		
 		// Call the battle controllers alarm 0 for character selection.
 		if (obj_battleController.alarm[0] < 0){
-			obj_battleController.alarm[0] = room_speed / 6;
+			obj_battleController.alarm[0] = aiTurnSelectionTimer;
 		}
 	}
 	else{
@@ -476,11 +479,31 @@ function handleSkippedTurn(characterInstance){
 	return false;
 }
 
+function recklesslyHandleSkippedTurn(){
+	obj_battleController.isPlayerTurn = !obj_battleController.isPlayerTurn;
+	return true;
+}
+
 function playGame(){
+	// Game Over Handling
 	if (obj_battleController.hasWon != undefined){
 		show_debug_message("Game has ended. Restart the game to play again.");
 		toggleHighlightTeam(obj_battleController.playerTeam.members, false);
 		toggleHighlightTeam(obj_battleController.village.team, false);
+		if (!is_undefined(obj_battleController.characterSelected)){
+			obj_battleController.characterSelected.instance.selected = false;
+			obj_battleController.characterSelected = undefined;
+		}
+		if (!is_undefined(obj_battleController.abilitySelected)){
+			obj_battleController.abilitySelected.instance.selected = false;
+			obj_battleController.abilitySelected = undefined;
+		}
+		if (!is_undefined(obj_battleController.enemySelected)){
+			obj_battleController.enemySelected.instance.selected = false;
+			obj_battleController.enemySelected = undefined;
+		}
+		
+
 		if (obj_battleController.hasWon){
 			// Win condition
 			handleWin();

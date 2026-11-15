@@ -1,5 +1,5 @@
-if (keyboard_check_pressed(ord("R"))){
-    // Toggle lowered defense for all enemies
+// Toggle lowered defense for all enemies
+if (keyboard_check_pressed(ord("E"))){
     for (var i = 0; i < array_length(obj_battleController.village.team); i++){
         var enemy = obj_battleController.village.team[i];
         if (enemy != undefined){
@@ -11,4 +11,34 @@ if (keyboard_check_pressed(ord("R"))){
             }
         }
     }
+}
+
+// Deliver fatal damage to one random enemy
+if (keyboard_check_pressed(ord("D"))){
+    var enemies = obj_battleController.village.team;
+    var validEnemies = [];
+    for (var i = 0; i < array_length(enemies); i++){
+        if (enemies[i] != undefined){
+            array_push(validEnemies, enemies[i]);
+        }
+    }
+    if (array_length(validEnemies) > 0){
+        var randomEnemy = validEnemies[irandom(array_length(validEnemies) - 1)];
+        if (randomEnemy != undefined){
+            randomEnemy.instance.newHealth = 0;
+        }
+    }
+}
+
+// Skip a player turn
+if (keyboard_check_pressed(ord("S"))){
+    if (obj_battleController.isPlayerTurn){
+        recklesslyHandleSkippedTurn();
+    }
+}
+
+// Toggle immediate AI turns
+if (keyboard_check_pressed(ord("A"))){
+    obj_battleController.aiTurnSelectionTimer = (obj_battleController.aiTurnSelectionTimer == 1) ? obj_battleController.historicalAITurnSelectionTimer : 1;
+    obj_battleController.aiTurnDecisionTimer = (obj_battleController.aiTurnDecisionTimer == 1) ? obj_battleController.historicalAITurnDecisionTimer : 1;
 }
