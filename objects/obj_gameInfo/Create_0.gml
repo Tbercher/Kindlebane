@@ -128,7 +128,8 @@ abilities = {
         attack: 150,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.counter
+        sprite: abilitySprites.counter,
+        isCounter: true
     },
     /// @doc-abilities-ability Taunt
     taunt: {
@@ -296,14 +297,14 @@ characters = {
         className: "Apprentice",
         description: "A sword-wielding apprentice.",
         attack: 1,
-        defense: 500,
+        defense: 50,
         magicAttack: 0,
-        magicDefense: 500,
+        magicDefense: 50,
         myHealth: 500,
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.recklessStrike],
+        abilities: [abilities.charge, abilities.cleave, abilities.stab, abilities.recklessStrike],
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,
         headshot: headshotSprites.apprentice
@@ -321,7 +322,7 @@ characters = {
         isPlaceholder: true,
         weapon: "Big Ass Shield",
         basicAttack: abilities.woodsmanDropkick,
-        abilities: [abilities.charge], //fake abilities for testing
+        abilities: [abilities.cleave], //fake abilities for testing
         //abilities: [abilities.charge, abilities.counter, abilities.taunt],
         ultimate: abilities.battleCry,
 		sprite: characterSprites.woodsman,

@@ -67,11 +67,14 @@ if (selected || hasNeighborSelected){
         var ability = obj_battleController.abilitySelected;
         var enemy = obj_battleController.enemySelected;
         var damage = 0;
+        var attacker = obj_battleController.characterSelected;
+        var defender = character;
+
         if (hasNeighborSelected){
-            damage = calculateSprayDamage(ability, enemy, character);
+            damage = calculateSprayDamage(ability, attacker, defender);
         }
         else {
-            damage = calculateDamage(ability, enemy, character).damage;
+            damage = calculateDamage(ability, attacker, defender, 1).damage;
         }
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
@@ -83,7 +86,7 @@ if (selected || hasNeighborSelected){
     }
 }
 
-if (stunnedTurns > 0){
+if (stunnedRounds > 0){
     var stunPulse = 0.2 + ((sin(current_time / 180) + 1) * 0.5) * 0.35;
 
     gpu_set_blendmode(bm_add);

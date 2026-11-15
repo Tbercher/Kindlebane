@@ -1,29 +1,28 @@
-// Handle cleanup that should run before AI turn
-handleSpecialAbilityCleanup(true);
-
 var characterInstance = obj_battleController.village.team[obj_battleController.enemyTurnSlot].instance;
 
-// Get all possible damage values for each ability against each enemy
-var highestDamage = 0;
-var bestAbility = undefined;
-var bestPlayerTarget = undefined;
-var character = characterInstance.character;
-for (var abilityIndex = 0; abilityIndex < array_length(character.abilities); abilityIndex++){
-    var ability = character.abilities[abilityIndex];
-    for (var enemyIndex = 0; enemyIndex < array_length(obj_battleController.playerTeam.members); enemyIndex++){
-        var enemy = obj_battleController.playerTeam.members[enemyIndex];
-        //var damage = calculateDamage(ability, enemy, character).damage;
-        var damage = calculateDamage(ability, enemy, character).damage;
-        if (damage > highestDamage || is_undefined(bestAbility)){
-            highestDamage = damage;
-            bestAbility = ability;
-            bestPlayerTarget = enemy;
+if (!handleSkippedTurn(characterInstance)){
+    // Get all possible damage values for each ability against each enemy
+    var highestDamage = 0;
+    var bestAbility = undefined;
+    var bestPlayerTarget = undefined;
+    var character = characterInstance.character;
+    for (var abilityIndex = 0; abilityIndex < array_length(character.abilities); abilityIndex++){
+        var ability = character.abilities[abilityIndex];
+        for (var enemyIndex = 0; enemyIndex < array_length(obj_battleController.playerTeam.members); enemyIndex++){
+            var enemy = obj_battleController.playerTeam.members[enemyIndex];
+            //var damage = calculateDamage(ability, character, enemy, 1).damage;
+            var damage = calculateDamage(ability, character, enemy, 1).damage;
+            if (damage > highestDamage || is_undefined(bestAbility)){
+                highestDamage = damage;
+                bestAbility = ability;
+                bestPlayerTarget = enemy;
+            }
         }
     }
-}
 
-// Execute the best ability against the best target
-handleDamage(bestAbility, character, bestPlayerTarget);
+    // Execute the best ability against the best target
+    handleDamage(bestAbility, character, bestPlayerTarget);
+}
 characterInstance.selected = false;
 obj_battleController.characterSelected = undefined;
 obj_battleController.abilitySelected = undefined;
@@ -31,9 +30,10 @@ obj_battleController.enemySelected = undefined;
 obj_battleController.isPlayerTurn = true;
 obj_battleController.aiTurnStarted = false;
 
-// Handle turn slot incrementing. 
+// Handle turn slot incrementing.
 var playerTeamSize = array_length(obj_battleController.playerTeam.members);
 var enemyTeamSize = array_length(obj_battleController.village.team);
+
 
 if (obj_battleController.enemyTurnSlot >= enemyTeamSize - 1){
     obj_battleController.enemyTurnSlot = 0;
@@ -52,5 +52,6 @@ if (playerTeamSize <= 0){
     obj_battleController.hasWon = false;
 }
 
+
 // Handle cleanup that should run after AI turn
-handleSpecialAbilityCleanup(false);
+handleSpecialAbilityCleanup();

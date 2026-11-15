@@ -165,27 +165,25 @@ function handleSelection(){
 
 function getNeighbors(instance){
 	var neighbors = [];
-	var team = undefined;
+	var team = instance.isEnemy ? obj_battleController.village.team : obj_battleController.playerTeam.members;
 	// Find the neighboring enemies for spray
-	if (instance.isEnemy){
-		team = obj_battleController.village.team;
-		var currentIndex = instance.slot.number - 1; 
-		if (currentIndex > 0 && team[currentIndex - 1] != undefined){
-			array_push(neighbors, currentIndex - 1);
-		}
-		if (currentIndex < array_length(team) - 1 && team[currentIndex + 1] != undefined){
-			array_push(neighbors, currentIndex + 1);
-		}
+	var currentIndex = -1
+	for (var i = 0; i < array_length(team); i++) {
+        if (team[i].instance == instance) {
+            currentIndex = i;
+            break;
+        }
+    }
+
+	if (currentIndex == -1){
+		return neighbors;
 	}
-	else{
-		team = obj_battleController.playerTeam.members;
-		var currentIndex = instance.slot.number - 1;
-		if (currentIndex > 0 && team[currentIndex - 1] != undefined){
-			array_push(neighbors, currentIndex - 1);
-		}
-		if (currentIndex < array_length(team) - 1 && team[currentIndex + 1] != undefined){
-			array_push(neighbors, currentIndex + 1);
-		}
+
+	if (currentIndex > 0 && team[currentIndex - 1] != undefined){
+		array_push(neighbors, currentIndex - 1);
+	}
+	if (currentIndex < array_length(team) - 1 && team[currentIndex + 1] != undefined){
+		array_push(neighbors, currentIndex + 1);
 	}
 	return neighbors;
 }
@@ -201,7 +199,7 @@ function areNeighbors(instance1, instance2){
 	return false;
 }
 
-function calculateDamage(ability, defender, attacker){
+function calculateDamage(ability, attacker, defender, multiplier){
 	var physicalDamage = ability.attack * attacker.attack;
 	var magicalDamage = ability.magicAttack * attacker.magicAttack;
 	var totalDamage = physicalDamage + magicalDamage;
@@ -214,32 +212,36 @@ function calculateDamage(ability, defender, attacker){
 	var physicalSpray = ability.spray * physicalRatio;
 	var magicalSpray = ability.spray * magicalRatio;
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
+	var clampedDamage = max((physicalDamage - (defender.defense * defenseNegator)), 0) + max((magicalDamage - (defender.magicDefense * defenseNegator)), 0)
 
 	return {
-		damage: max((physicalDamage - (defender.defense * defenseNegator)), 0) + max((magicalDamage - (defender.magicDefense * defenseNegator)), 0),
-		spray: physicalSpray + magicalSpray,
+		damage: clampedDamage * multiplier,
+		spray: (physicalSpray + magicalSpray) * multiplier,
 		physicalRatio: physicalRatio,
 		magicalRatio: magicalRatio
 	};
 }
 
 function calculateSprayDamage(ability, attacker, defender){
-	var normalizedPhysicalSpray = calculateDamage(ability, defender, attacker).spray * calculateDamage(ability, defender, attacker).physicalRatio;
-	var normalizedMagicalSpray = calculateDamage(ability, defender, attacker).spray * calculateDamage(ability, defender, attacker).magicalRatio;
+	var normalizedPhysicalSpray = calculateDamage(ability, attacker, defender, 1).spray * calculateDamage(ability, attacker, defender, 1).physicalRatio;
+	var normalizedMagicalSpray = calculateDamage(ability, attacker, defender, 1).spray * calculateDamage(ability, attacker, defender, 1).magicalRatio;
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
-	damage = (max(normalizedPhysicalSpray - (defender.defense * defenseNegator), 0)) + (max(normalizedMagicalSpray - (defender.magicDefense * defenseNegator), 0));
+	var damage = (max(normalizedPhysicalSpray - (defender.defense * defenseNegator), 0)) + (max(normalizedMagicalSpray - (defender.magicDefense * defenseNegator), 0));
 
 	return damage
 }
 
 function handleDamage(ability, attacker, defender){
 	// Handle Special Abilities
+	// CAUTION: Whatever you set here for turn counts will be cleaned up immediately after the turn so if you intend an effect to linger for say, 3 turns after this one, set the value to 4. Round based effects are not affected.
+
 	// Stab: Causes Bleed.
 	if (variable_struct_exists(ability, "effectType") && ability.effectType == "bleed" && ability.lingeringEffectDamage > 0){
 		defender.instance.isBleeding = true;
 		defender.instance.lingeringEffectDamage = ability.lingeringEffectDamage * attacker.attack;
 		defender.instance.remainingLingeringEffectTurns += 3;
+		defender.instance.delayedEffectTurns = 1;
 		show_debug_message("Lingering effect applied to " + string(defender.instance) + " for " + string(defender.instance.remainingLingeringEffectTurns) + " turns.");
 		if (!array_contains(obj_battleController.charactersWithLingeringEffects, defender.instance)) {
 			array_push(obj_battleController.charactersWithLingeringEffects, defender.instance);
@@ -249,11 +251,11 @@ function handleDamage(ability, attacker, defender){
 
 	// Reckless Strike: Deals massive physical damage to a single enemy while lowering its defences for 1 turn.
 	if (variable_struct_exists(ability, "lowersDefense") && ability.lowersDefense){
-		attacker.instance.loweredDefenseTurns = 1;
+		attacker.instance.loweredDefenseTurns = 2;
 	}
 	// Charge: Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main target.
 	if (variable_struct_exists(ability, "stuns") && ability.stuns){
-		defender.instance.stunnedTurns = 1;
+		defender.instance.stunnedRounds = 1;
 	}
 	// Counter: Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.
 
@@ -289,16 +291,17 @@ function handleDamage(ability, attacker, defender){
 	// Defense is already negated for main defender. Just need to apply it to neighbors if necessary.
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
-	defender.instance.newHealth -= calculateDamage(ability, defender, attacker).damage;
+	defender.instance.newHealth -= calculateDamage(ability, attacker, defender, 1).damage;
 	var neighbors = getNeighbors(defender.instance);
 	for (var i = 0; i < array_length(neighbors); i++){
 		var neighbor = defender.instance.isEnemy ? obj_battleController.village.team[neighbors[i]] : obj_battleController.playerTeam.members[neighbors[i]];
 
-		var physicalSprayDamage = calculateDamage(ability, neighbor, attacker).spray * calculateDamage(ability, neighbor, attacker).physicalRatio;
-		var magicalSprayDamage = calculateDamage(ability, neighbor, attacker).spray * calculateDamage(ability, neighbor, attacker).magicalRatio;
+		var physicalSprayDamage = calculateDamage(ability, attacker, neighbor, 1).spray * calculateDamage(ability, attacker, neighbor, 1).physicalRatio;
+		var magicalSprayDamage = calculateDamage(ability, attacker, neighbor, 1).spray * calculateDamage(ability, attacker, neighbor, 1).magicalRatio;
+		var defenseNegatorNeighbor = neighbor.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
 		if (neighbor != undefined){
-			neighbor.instance.newHealth -= max(physicalSprayDamage - (neighbor.defense * defenseNegator), 0) + max(magicalSprayDamage - (neighbor.magicDefense * defenseNegator), 0);
+			neighbor.instance.newHealth -= max(physicalSprayDamage - (neighbor.defense * defenseNegatorNeighbor), 0) + max(magicalSprayDamage - (neighbor.magicDefense * defenseNegatorNeighbor), 0);
 		}
 	}
 
@@ -308,6 +311,10 @@ function applyLingeringEffects(){
 	if (array_length(obj_battleController.charactersWithLingeringEffects) != 0){
 		for (var i = 0; i < array_length(obj_battleController.charactersWithLingeringEffects); i++){
 			var characterInstance = obj_battleController.charactersWithLingeringEffects[i];
+			if (characterInstance.delayedEffectTurns > 0){
+				characterInstance.delayedEffectTurns -= 1;
+				continue;
+			}
 			characterInstance.newHealth -= characterInstance.lingeringEffectDamage;
 			characterInstance.remainingLingeringEffectTurns -= 1;
 			show_debug_message("Lingering effect damage applied to " + string(characterInstance) + ". Remaining turns: " + string(characterInstance.remainingLingeringEffectTurns));
@@ -327,29 +334,20 @@ function getAllCharacters(){
 	return array_union(obj_battleController.playerTeam.members, obj_battleController.village.team);
 }
 
-function handleSpecialAbilityCleanup(isBeforeAI){
+function handleSpecialAbilityCleanup(){
 	// Special Ability Cleanups
 	// Lingering effects: Apply damage over multiple turns. (in the User section and in the AI alarm event)
-	if (!isBeforeAI){
-		applyLingeringEffects();
-	}
-	// Decrement any specialAbility durations for all characters
+	applyLingeringEffects();
+
+	// Decrement any specialAbility durations for all characters (turn based abilities, not round based)
 		for (var i = 0; i < array_length(getAllCharacters()); i++){
 			var characterInstance = getAllCharacters()[i].instance;
 
 			// Reckless Strike: Deals massive physical damage to one enemy and lowers its defences for 1 turn.
-			if (!isBeforeAI){
-				if (characterInstance.loweredDefenseTurns > 0){
-					characterInstance.loweredDefenseTurns -= 1;
-				}
+			if (characterInstance.loweredDefenseTurns > 0){
+				characterInstance.loweredDefenseTurns -= 1;
 			}
-			
-			if (isBeforeAI){
-				// Charge: Hits one enemy and adjacent enemies, and stuns the main target.
-				if (characterInstance.stunnedTurns > 0){
-					characterInstance.stunnedTurns -= 1;
-				}
-			}
+
 		}
 	
 	// Counter: Readies a defensive stance and increases next turn's physical damage based on attacks received.
@@ -407,8 +405,6 @@ function handleTurn(isUserTurn){
 		}
 	}
 	else{
-		handleSpecialAbilityCleanup();
-
 		// Player Turn Handling
 		var ability = obj_battleController.abilitySelected;
 		var enemy = obj_battleController.enemySelected;
@@ -426,6 +422,7 @@ function handleTurn(isUserTurn){
 		obj_battleController.characterSelected.instance.selected = false;
 		obj_battleController.characterSelected = undefined;
 		obj_battleController.isPlayerTurn = false;
+		handleSpecialAbilityCleanup();
 	}
 }
 
@@ -465,6 +462,20 @@ function handleLose(){
 	
 }
 
+function handleSkippedTurn(characterInstance){
+	if (is_undefined(characterInstance) || !instance_exists(characterInstance)){
+		return false;
+	}
+
+	if (characterInstance.stunnedRounds > 0){
+		obj_battleController.isPlayerTurn = !obj_battleController.isPlayerTurn;
+		characterInstance.stunnedRounds -= 1;
+		return true;
+	}
+
+	return false;
+}
+
 function playGame(){
 	if (obj_battleController.hasWon != undefined){
 		show_debug_message("Game has ended. Restart the game to play again.");
@@ -481,12 +492,12 @@ function playGame(){
 		handleSelection();
 		return;
 	}
+
 	if (obj_battleController.isPlayerTurn){
+		// Handle cleanup that should run before user turn
 		preparePlayerTurn();
-		if (obj_battleController.characterSelected.instance.stunnedTurns > 0){
-			// Handle stunned character (skip turn or show message)
-			obj_battleController.isPlayerTurn = false;
-			handleSpecialAbilityCleanup();
+		if (!is_undefined(obj_battleController.characterSelected)){
+			handleSkippedTurn(obj_battleController.characterSelected.instance);
 		}
 
 		// If the player has selected an ability but not an enemy, highlight the enemies and unhighlight the player characters

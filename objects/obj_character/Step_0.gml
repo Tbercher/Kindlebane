@@ -45,6 +45,10 @@ if (selected){
         obj_battleController.characterSelected = character;	
         hasNeighborSelected = false;
     }
+    else{
+        obj_battleController.enemySelected = character;	
+        hasNeighborSelected = false;
+    }
 }
 // If the character is not selected, check if it has a neighboring enemy selected.
 else {
