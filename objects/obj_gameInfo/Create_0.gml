@@ -270,22 +270,22 @@ abilities = {
 }
 
 characterSprites = {
-    woodsman: spr_placeholderCharacter,
+    woodsman: spr_woodsmanIdle,
     mage: spr_placeholderCharacter,
     cleric: spr_placeholderCharacter,
-    apprentice: spr_placeholderCharacter,
-    condemned: spr_placeholderCharacter,
-    lamplighter: spr_placeholderCharacter
+    apprentice: spr_apprenticeIdle,
+    condemned: spr_condemnedIdle,
+    lamplighter: spr_lamplighterIdle
 };
 
 headshotSprites = {
     nonSpecific: spr_placeholderHeadshot,
-    woodsman: spr_placeholderSpecificHeadshot,
+    woodsman: spr_woodsmanPortrait,
     mage: spr_placeholderSpecificHeadshot,
     cleric: spr_placeholderSpecificHeadshot,
-    apprentice: spr_placeholderSpecificHeadshot,
-    condemned: spr_placeholderSpecificHeadshot,
-    lamplighter: spr_placeholderSpecificHeadshot
+    apprentice: spr_apprenticePortrait,
+    condemned: spr_condemnedPortrait,
+    lamplighter: spr_lamplighterPortrait
 };
 
 /// @doc-characters
@@ -449,7 +449,7 @@ villages = {
 
 // Game Save Info
 playerTeam = {
-        members: [characters.apprentice, characters.apprentice, characters.apprentice, characters.apprentice]
+        members: [characters.woodsman, characters.apprentice, characters.condemned, characters.lamplighter]
 };
 
 // Should start as undefined and be changed when you select a village in the menu
