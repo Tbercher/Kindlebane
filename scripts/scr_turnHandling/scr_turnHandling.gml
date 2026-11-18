@@ -285,7 +285,7 @@ function handleDamage(ability, attacker, defender){
 	// Counter: Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.
 	if (variable_struct_exists(ability, "isCounter") && ability.isCounter){
 		attacker.instance.increasedDefenseRounds = 1 + 1;
-		attacker.instance.attackBuff = 10;
+		attacker.instance.attackBuff = 2;
 		attacker.instance.attackBuffRounds = 1;
 	}
 	// Battle Cry: Taunts all enemies while reducing enemy damage.
@@ -326,7 +326,11 @@ function handleDamage(ability, attacker, defender){
 		}
 	}
 	// Spell Charge: Prepares a spell and increases its damage.
-
+	if (variable_struct_exists(ability, "spellCharge") && ability.spellCharge){
+		attacker.instance.attackBuff = 2;
+		attacker.instance.attackBuffRounds = 1;
+	}
+	
 	// Quake: Splits the ground beneath enemies, dealing area-of-effect magic damage and stunning them.
 
 	// Heal: Heals a single ally.
