@@ -72,3 +72,13 @@ if (keyboard_check_pressed(ord("N"))){
         }
     }
 }
+
+// Drop all player character health to half
+if (keyboard_check_pressed(ord("H"))){
+    for (var i = 0; i < array_length(obj_battleController.playerTeam.members); i++){
+        var player = obj_battleController.playerTeam.members[i];
+        if (player != undefined){
+            player.instance.newHealth = floor(player.myHealth / 2);
+        }
+    }
+}

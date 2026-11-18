@@ -33,6 +33,7 @@ abilitySprites = {
 // Attack values for abilities with spray so that spray value can be calculated arithmetically
 var _cleaveAttack = 150;
 var _chargeAttack = 100;
+var _quakeAttack = 150;
 var _quakeMagicAttack = 150;
 
 /// @doc-abilities
@@ -211,9 +212,10 @@ abilities = {
         strength: 3,
         isUltimate: true,
         attack: 0,
+        spray: floor(_quakeAttack * 0.75),
         magicAttack: _quakeMagicAttack,
-        spray: _quakeMagicAttack,
-        sprite: abilitySprites.quake
+        sprite: abilitySprites.quake,
+        stuns: true
     },
     /// @doc-abilities-ability Punch
     punch: {
@@ -235,6 +237,8 @@ abilities = {
         attack: 0,
         magicAttack: 100,
         spray: 0,
+        healAmount: 150,
+        isHeal: true,
         sprite: abilitySprites.heal
     },
     /// @doc-abilities-ability Curse
@@ -292,6 +296,7 @@ headshotSprites = {
     lamplighter: spr_placeholderSpecificHeadshot
 };
 
+// PLEASE NOTE THAT ATTACK VALUES ARE MULTIPLIERS, NOT FLAT DAMAGE VALUES
 /// @doc-characters
 characters = {
     /// @doc-characters-character Apprentice
@@ -301,13 +306,14 @@ characters = {
         description: "A sword-wielding apprentice.",
         attack: 1,
         defense: 50,
-        magicAttack: 0,
+        magicAttack: 1, // Testing magic attack
+        // magicAttack: 0, // Actual magic attack
         magicDefense: 50,
         myHealth: 500,
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.spellCharge, abilities.cleave, abilities.cleave, abilities.cleave], // test abilities
+        abilities: [abilities.heal, abilities.cleave, abilities.cleave, abilities.cleave], // test abilities
         // Original abilities [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall],
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,

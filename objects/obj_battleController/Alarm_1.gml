@@ -44,6 +44,7 @@ obj_battleController.abilitySelected = undefined;
 obj_battleController.enemySelected = undefined;
 obj_battleController.isPlayerTurn = true;
 obj_battleController.aiTurnStarted = false;
+obj_battleController.healingCharacter = undefined;
 
 // Handle turn slot incrementing.
 var playerTeamSize = array_length(obj_battleController.playerTeam.members);

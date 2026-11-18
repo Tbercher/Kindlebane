@@ -19,6 +19,25 @@ function highlightCharacters(playerTurn){
 }
 
 function highlightTeam(team, enabled){
+	var characterSelected = obj_battleController.characterSelected;
+	var abilitySelected = obj_battleController.abilitySelected;
+
+	if (!is_undefined(characterSelected) 
+	&& !is_undefined(abilitySelected)
+	&& abilitySelected.name == "Heal"
+	){
+		// Highlight only the allies that can be healed
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			var currentCharacter = team[characterIndex].instance;
+			if (currentCharacter.newHealth < currentCharacter.character.myHealth){
+				currentCharacter.clickable = enabled;
+			} else {
+				currentCharacter.clickable = false;
+			}
+		}
+		return;
+	}
+
 	var isTaunted = false;
 	if (!is_undefined(obj_battleController.characterSelected)){
 		isTaunted = obj_battleController.characterSelected.instance.isTaunted;
@@ -95,10 +114,14 @@ function handleSelection(){
 					// clickable is an ability image object
 					if (hoveredClickable.object_index == obj_abilityImage){
 						obj_battleController.abilitySelected = hoveredClickable.ability;
+						if (obj_battleController.abilitySelected.name == "Heal") {
+							obj_battleController.healingCharacter = undefined;
+							highlightTeam(obj_battleController.playerTeam.members, true);
+						}
 					}
 					// clickable is a player character object
 					else if (hoveredClickable.object_index == obj_character
-					&& !hoveredClickable.isEnemy) {
+					&& !hoveredClickable.isEnemy && (is_undefined(obj_battleController.abilitySelected) || obj_battleController.abilitySelected.name != "Heal")) {
 					hoveredClickable.selected = true;
 
 					// Unhighlight the enemy characters until an ability is selected
@@ -112,9 +135,16 @@ function handleSelection(){
 					obj_battleController.enemySelected = undefined;
 					obj_battleController.abilitySelected = undefined;
 				}
-					else{
-						obj_battleController.abilitySelected = undefined;
-					}
+				else if (hoveredClickable.object_index == obj_character
+					&& !hoveredClickable.isEnemy && !is_undefined(obj_battleController.abilitySelected)
+					&& obj_battleController.abilitySelected.name == "Heal") {
+					obj_battleController.healingCharacter = hoveredClickable.character;
+					obj_battleController.enemySelected = obj_battleController.healingCharacter
+					highlightTeam(obj_battleController.playerTeam.members, false);
+				}
+				else{
+					obj_battleController.abilitySelected = undefined;
+				}
 				}	
 	    }
 	}
@@ -252,13 +282,20 @@ function calculateSprayDamage(ability, attacker, defender){
 	var normalizedMagicalSpray = calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).magicalRatio;
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
-	var damage = (max(normalizedPhysicalSpray - (defender.defense * defenseNegator), 0)) + (max(normalizedMagicalSpray - (defender.magicDefense * defenseNegator), 0));
+	var damage = (max((normalizedPhysicalSpray * attacker.attack) - (defender.defense * defenseNegator), 0)) + (max((normalizedMagicalSpray * attacker.magicAttack) - (defender.magicDefense * defenseNegator), 0));
 
 	return damage
 }
 
 function handleDamage(ability, attacker, defender){
 	// Handle Special Abilities
+
+	// Heal
+	if (variable_struct_exists(ability, "isHeal") && ability.isHeal){
+		defender.instance.newHealth = min(defender.myHealth, defender.instance.newHealth + ability.healAmount);
+		return;
+	}
+
 	// CAUTION: Whatever you set here for turn counts will be cleaned up immediately after the turn so if you intend an effect to linger for say, 3 turns after this one, set the value to 4. Round based effects are not affected.
 
 	// Stab: Causes Bleed.
@@ -330,9 +367,10 @@ function handleDamage(ability, attacker, defender){
 		attacker.instance.attackBuff = 2;
 		attacker.instance.attackBuffRounds = 1;
 	}
-	
-	// Quake: Splits the ground beneath enemies, dealing area-of-effect magic damage and stunning them.
 
+	// Quake: Splits the ground beneath enemies, dealing area-of-effect magic damage and stunning them.
+	// Handled by spray, and the stun ability above
+	// --------------------------------
 	// Heal: Heals a single ally.
 
 	// Curse: Silences a single target and reduces its defences for 1 turn.
@@ -352,12 +390,8 @@ function handleDamage(ability, attacker, defender){
 	for (var i = 0; i < array_length(neighbors); i++){
 		var neighbor = defender.instance.isEnemy ? obj_battleController.village.team[neighbors[i]] : obj_battleController.playerTeam.members[neighbors[i]];
 
-		var physicalSprayDamage = calculateDamage(ability, attacker, neighbor, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, neighbor, attacker.instance.attackBuff).physicalRatio;
-		var magicalSprayDamage = calculateDamage(ability, attacker, neighbor, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, neighbor, attacker.instance.attackBuff).magicalRatio;
-		var defenseNegatorNeighbor = neighbor.instance.loweredDefenseTurns > 0 ? 0 : 1;
-
 		if (neighbor != undefined){
-			neighbor.instance.newHealth -= max(physicalSprayDamage - (neighbor.defense * defenseNegatorNeighbor), 0) + max(magicalSprayDamage - (neighbor.magicDefense * defenseNegatorNeighbor), 0);
+			neighbor.instance.newHealth -= calculateSprayDamage(ability, attacker, neighbor);
 		}
 	}
 
@@ -497,6 +531,7 @@ function handleTurn(isUserTurn){
 
 		handleSpecialAbilityCleanup();
 
+		obj_battleController.healingCharacter = undefined;
 		obj_battleController.enemySelected.instance.selected = false;
 		obj_battleController.enemySelected = undefined;
 		obj_battleController.abilitySelected.instance.selected = false
