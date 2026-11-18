@@ -1,5 +1,28 @@
+// Handle status updates
 if (newHealth <= 0){
     instance_destroy();
+}
+
+if (increasedDefenseRounds > 0){
+    character.defense = historicalDefense * increasedDefenseRatio;
+}
+else{
+    character.defense = historicalDefense;
+}
+
+if (tauntedRounds > 0){
+    isTaunted = true;
+}
+else{
+    isTaunted = false;
+    tauntor = undefined;
+}
+
+if (tauntingRounds > 0){
+    isTaunting = true;
+}
+else{
+    isTaunting = false;
 }
 
 if (selected &&!renderedAbilities && (!obj_battleController.isHovering || obj_battleController.hoveredInfo == info)){
@@ -67,5 +90,5 @@ if (remainingLingeringEffectTurns > 0){
 }
 
 if (slot.number == 1 && isEnemy){
-    show_debug_message(string(loweredDefenseTurns));
+    //show_debug_message(string(loweredDefenseTurns));
 }

@@ -140,7 +140,8 @@ abilities = {
         attack: 0,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.taunt
+        sprite: abilitySprites.taunt,
+        taunts: true
     },
     /// @doc-abilities-ability Battle Cry
     battleCry: {
@@ -304,7 +305,8 @@ characters = {
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.charge, abilities.cleave, abilities.counter, abilities.recklessStrike],
+        abilities: [abilities.taunt, abilities.cleave, abilities.cleave, abilities.cleave], // test abilities
+        // Original abilities [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall],
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,
         headshot: headshotSprites.apprentice

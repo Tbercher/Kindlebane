@@ -1,7 +1,11 @@
-function toggleHighlightTeam(team, enabled){
+function findTauntors(team){
+	tauntors = [];
 	for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
-			team[characterIndex].instance.clickable = enabled;
+		if (team[characterIndex].instance.isTaunting){
+			array_push(tauntors, team[characterIndex].instance);
+		}
 	}
+	return tauntors;
 }
 
 function highlightCharacters(playerTurn){
@@ -11,8 +15,29 @@ function highlightCharacters(playerTurn){
 	} else {
 		team = obj_battleController.village.team;
 	}
-	for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
-			team[characterIndex].instance.clickable = true;
+	highlightTeam(team, true);
+}
+
+function highlightTeam(team, enabled){
+	var isTaunted = false;
+	if (!is_undefined(obj_battleController.characterSelected)){
+		isTaunted = obj_battleController.characterSelected.instance.isTaunted;
+	}
+	if (isTaunted){
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			var currentCharacter = team[characterIndex].instance;
+			if (!currentCharacter.isTaunting){
+				currentCharacter.clickable = false;
+			}
+			else{
+				currentCharacter.clickable = enabled;
+			}
+		}
+	}
+	else{
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			team[characterIndex].instance.clickable = enabled;
+		}
 	}
 }
 
@@ -77,7 +102,7 @@ function handleSelection(){
 					hoveredClickable.selected = true;
 
 					// Unhighlight the enemy characters until an ability is selected
-					toggleHighlightTeam(obj_battleController.village.team, false);
+					highlightTeam(obj_battleController.village.team, false);
 
 					// if there is an enemy selected while clicking on a player character
 					if (!is_undefined(obj_battleController.enemySelected)) {
@@ -259,12 +284,20 @@ function handleDamage(ability, attacker, defender){
 	}
 	// Counter: Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.
 	if (variable_struct_exists(ability, "isCounter") && ability.isCounter){
-		attacker.instance.increasedDefenseRounds = 1;
-		attacker.instance.attackBuff = 8;
+		attacker.instance.increasedDefenseRounds = 1 + 1;
+		attacker.instance.attackBuff = 10;
+		attacker.instance.attackBuffRounds = 1;
 	}
 	// Battle Cry: Taunts all enemies while reducing enemy damage.
 
 	// Taunt: Taunts a single enemy and reduces all damage taken for 2 turns.
+	if (variable_struct_exists(ability, "taunts") && ability.taunts){
+		defender.instance.tauntedRounds = 2 + 1;
+		defender.instance.isTaunted = true;
+		defender.instance.tauntor = attacker.instance;
+		attacker.instance.isTaunting = true;
+		attacker.instance.tauntingRounds = 2 + 1;
+	}
 
 	// Fire Ball: Shoots a fireball at a single enemy for magic damage and causes Burn.
 	if (variable_struct_exists(ability, "effectType") && ability.effectType == "burn" && ability.lingeringEffectDamage > 0){
@@ -342,7 +375,7 @@ function handleSpecialAbilityCleanup(){
 	// Lingering effects: Apply damage over multiple turns. (in the User section and in the AI alarm event)
 	applyLingeringEffects();
 
-	// Decrement any specialAbility durations for all characters (turn based abilities, not round based)
+	// Decrement any turn based (not round based) specialAbility durations for all characters
 		for (var i = 0; i < array_length(getAllCharacters()); i++){
 			var characterInstance = getAllCharacters()[i].instance;
 
@@ -353,12 +386,38 @@ function handleSpecialAbilityCleanup(){
 
 		}
 	
+	// Round based cleanup
 	// Counter: Readies a defensive stance and increases next turn's physical damage based on attacks received.
 
+	var attacker = obj_battleController.characterSelected
+	var defender = obj_battleController.enemySelected;
+
+	if (attacker.instance.increasedDefenseRounds > 0){
+		attacker.instance.increasedDefenseRounds -= 1;
+	}
+
+	// Attack buff is actually used in the handleDamage calculation while I took a better approach for defense. We instead increase the defense in the character struct based on increasedDefenseRounds.
+	if (attacker.instance.attackBuffRounds > 0){
+		attacker.instance.attackBuffRounds -= 1;
+	}
+
+	else {
+		attacker.instance.attackBuff = 1
+	}
+	
+
 	// Battle Cry: Taunts all enemies and reduces their damage.
+	// The portion of this ability that uses taunt effects has its cleanup handled in the taunt portion. Defense cleanup handled in counter portion
+	// -----------------------
 
 	// Taunt: Taunts one enemy and reduces all damage taken for 2 turns.
+	if (attacker.instance.isTaunted && attacker.instance.tauntedRounds > 0){
+		attacker.instance.tauntedRounds -= 1;
+	}
 
+	if (defender.instance.isTaunting && defender.instance.tauntingRounds > 0){
+		defender.instance.tauntingRounds -= 1;
+	}
 	// Fire Ball: Deals magic damage to one enemy and causes Burn.
 
 	// Spell Charge: Prepares a spell and increases its damage.
@@ -398,7 +457,7 @@ function handleTurn(isUserTurn){
 				obj_battleController.characterSelected.instance.selected = false;
 			}
 			obj_battleController.characterSelected = undefined;
-			toggleHighlightTeam(obj_battleController.village.team, false);
+			highlightTeam(obj_battleController.village.team, false);
 			handleSelection();
 		}
 		
@@ -416,7 +475,7 @@ function handleTurn(isUserTurn){
 		// Use handleDamage to apply damage and spray effects
 		handleDamage(ability, character, enemy);
 
-		// Find neighboring enemies for spray abilities
+		handleSpecialAbilityCleanup();
 
 		obj_battleController.enemySelected.instance.selected = false;
 		obj_battleController.enemySelected = undefined;
@@ -425,7 +484,6 @@ function handleTurn(isUserTurn){
 		obj_battleController.characterSelected.instance.selected = false;
 		obj_battleController.characterSelected = undefined;
 		obj_battleController.isPlayerTurn = false;
-		handleSpecialAbilityCleanup();
 	}
 }
 
@@ -488,8 +546,8 @@ function playGame(){
 	// Game Over Handling
 	if (obj_battleController.hasWon != undefined){
 		show_debug_message("Game has ended. Restart the game to play again.");
-		toggleHighlightTeam(obj_battleController.playerTeam.members, false);
-		toggleHighlightTeam(obj_battleController.village.team, false);
+		highlightTeam(obj_battleController.playerTeam.members, false);
+		highlightTeam(obj_battleController.village.team, false);
 		if (!is_undefined(obj_battleController.characterSelected)){
 			obj_battleController.characterSelected.instance.selected = false;
 			obj_battleController.characterSelected = undefined;
@@ -525,13 +583,13 @@ function playGame(){
 
 		// If the player has selected an ability but not an enemy, highlight the enemies and unhighlight the player characters
 		if (is_undefined(obj_battleController.enemySelected) && !is_undefined(obj_battleController.abilitySelected)){
-			toggleHighlightTeam(obj_battleController.village.team, true);
-			//toggleHighlightTeam(obj_battleController.playerTeam.members, false);
+			highlightTeam(obj_battleController.village.team, true);
+			//highlightTeam(obj_battleController.playerTeam.members, false);
 		}
 		// If the player has selected an enemy, tell the enemy instance that it's selected.
 		else if (!is_undefined(obj_battleController.enemySelected)){
-			//toggleHighlightTeam(obj_battleController.village.team, false);
-			toggleHighlightTeam(obj_battleController.playerTeam.members, false);
+			//highlightTeam(obj_battleController.village.team, false);
+			highlightTeam(obj_battleController.playerTeam.members, false);
 			obj_battleController.enemySelected.instance.selected = true;
 		}
 	}

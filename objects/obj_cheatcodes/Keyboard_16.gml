@@ -42,3 +42,20 @@ if (keyboard_check_pressed(ord("A"))){
     obj_battleController.aiTurnSelectionTimer = (obj_battleController.aiTurnSelectionTimer == 1) ? obj_battleController.historicalAITurnSelectionTimer : 1;
     obj_battleController.aiTurnDecisionTimer = (obj_battleController.aiTurnDecisionTimer == 1) ? obj_battleController.historicalAITurnDecisionTimer : 1;
 }
+
+if (keyboard_check_pressed(ord("R"))){
+    room_restart();
+}
+
+// Enable invincibility for player characters
+if (keyboard_check_pressed(ord("I"))){
+    for (var i = 0; i < array_length(obj_battleController.playerTeam.members); i++){
+        var player = obj_battleController.playerTeam.members[i];
+        if (player != undefined){
+            player.instance.defense = 9999;
+            player.instance.magicDefense = 9999;
+            player.instance.historicalDefense = 9999;
+            player.instance.historicalMagicDefense = 9999;
+        }
+    }
+}
