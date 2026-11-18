@@ -289,10 +289,26 @@ function handleDamage(ability, attacker, defender){
 		attacker.instance.attackBuffRounds = 1;
 	}
 	// Battle Cry: Taunts all enemies while reducing enemy damage.
+	if (variable_struct_exists(ability, "tauntsAll") && ability.tauntsAll){
+		// Apply taunt to all enemies
+		for (var i = 0; i < array_length(obj_battleController.village.team); i++){
+			var enemy = obj_battleController.village.team[i].instance;
+			enemy.tauntedRounds = 2;
+			enemy.isTaunted = true;
+			enemy.tauntor = attacker.instance;
+		}
+
+		// Increase defense
+		attacker.instance.increasedDefenseRounds = 1 + 1;
+
+		// Flag tauntor
+		attacker.instance.isTaunting = true;
+		attacker.instance.tauntingRounds = 1 + 1;
+	}
 
 	// Taunt: Taunts a single enemy and reduces all damage taken for 2 turns.
 	if (variable_struct_exists(ability, "taunts") && ability.taunts){
-		defender.instance.tauntedRounds = 2 + 1;
+		defender.instance.tauntedRounds = 2;
 		defender.instance.isTaunted = true;
 		defender.instance.tauntor = attacker.instance;
 		attacker.instance.isTaunting = true;

@@ -5,9 +5,11 @@ if (newHealth <= 0){
 
 if (increasedDefenseRounds > 0){
     character.defense = historicalDefense * increasedDefenseRatio;
+    character.magicDefense = historicalMagicDefense * increasedDefenseRatio;
 }
 else{
     character.defense = historicalDefense;
+    character.magicDefense = historicalMagicDefense;
 }
 
 if (tauntedRounds > 0){

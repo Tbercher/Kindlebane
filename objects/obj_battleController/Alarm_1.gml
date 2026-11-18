@@ -10,10 +10,10 @@ if (!handleSkippedTurn(characterInstance)){
         var ability = character.abilities[abilityIndex];
         for (var enemyIndex = 0; enemyIndex < array_length(obj_battleController.playerTeam.members); enemyIndex++){
             var enemy = obj_battleController.playerTeam.members[enemyIndex];
-            if (character.instance.isTaunted){
-                if (!enemy.instance.isTaunting){
-                    continue; // Skip enemies that are not taunting when the character is taunted
-                }
+            if (characterInstance.isTaunted
+                && instance_exists(characterInstance.tauntor)
+                && enemy.instance != characterInstance.tauntor) {
+                continue;
             }
             //var damage = calculateDamage(ability, character, enemy, 1).damage;
             var damage = calculateDamage(ability, character, enemy, 1).damage;
@@ -29,7 +29,7 @@ if (!handleSkippedTurn(characterInstance)){
     + " taunted: " + string(characterInstance.isTaunted)
     + " tauntor: " + string(characterInstance.tauntor)
     + " chosen target: " + string(bestPlayerTarget.instance));
-    
+
     // Execute the best ability against the best target
     handleDamage(bestAbility, character, bestPlayerTarget);
 

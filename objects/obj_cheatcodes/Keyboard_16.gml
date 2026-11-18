@@ -59,3 +59,16 @@ if (keyboard_check_pressed(ord("I"))){
         }
     }
 }
+
+// Enable invincibility for enemy characters
+if (keyboard_check_pressed(ord("N"))){
+    for (var i = 0; i < array_length(obj_battleController.village.team); i++){
+        var enemy = obj_battleController.village.team[i];
+        if (enemy != undefined){
+            enemy.instance.defense = 9999;
+            enemy.instance.magicDefense = 9999;
+            enemy.instance.historicalDefense = 9999;
+            enemy.instance.historicalMagicDefense = 9999;
+        }
+    }
+}

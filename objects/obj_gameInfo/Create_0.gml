@@ -153,7 +153,8 @@ abilities = {
         attack: 0,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.battleCry
+        sprite: abilitySprites.battleCry,
+        tauntsAll: true
     },
     /// @doc-abilities-ability Magic Bolt
     magicBolt: {
@@ -305,7 +306,7 @@ characters = {
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.taunt, abilities.cleave, abilities.cleave, abilities.cleave], // test abilities
+        abilities: [abilities.battleCry, abilities.cleave, abilities.cleave, abilities.cleave], // test abilities
         // Original abilities [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall],
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,
@@ -409,10 +410,7 @@ villages = {
         name: "Loamvale",
         conquered: false,
         team: [
-            characters.woodsman,
-			characters.woodsman,
-			characters.woodsman,
-			characters.woodsman
+            characters.woodsman
         ],
     },
     /// @doc-villages-village Stonehearth
