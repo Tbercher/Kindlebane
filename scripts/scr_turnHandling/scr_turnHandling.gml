@@ -148,8 +148,21 @@ function handleSelection(){
 								obj_battleController.enemySelected.instance.selected = false;
 								obj_battleController.enemySelected = undefined;
 							}
-							obj_battleController.supportedCharacter = undefined;
+							if (!is_undefined(obj_battleController.supportedCharacter)){
+								obj_battleController.supportedCharacter.instance.selected = false;
+								obj_battleController.supportedCharacter = undefined;
+							}
 							highlightTeam(obj_battleController.playerTeam.members, true);
+						}
+						else{
+							if (!is_undefined(obj_battleController.enemySelected)){
+								obj_battleController.enemySelected.instance.selected = false;
+								obj_battleController.enemySelected = undefined;
+							}
+							if (!is_undefined(obj_battleController.supportedCharacter)){
+								obj_battleController.supportedCharacter.instance.selected = false;
+								obj_battleController.supportedCharacter = undefined;
+							}
 						}
 					}
 					// clickable is a player character object
