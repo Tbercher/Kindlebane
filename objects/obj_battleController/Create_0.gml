@@ -18,4 +18,4 @@ historicalAITurnSelectionTimer = room_speed / 6;
 historicalAITurnDecisionTimer = room_speed;
 aiTurnSelectionTimer = historicalAITurnSelectionTimer;
 aiTurnDecisionTimer = historicalAITurnDecisionTimer;
-healingCharacter = undefined;
+supportedCharacter = undefined;

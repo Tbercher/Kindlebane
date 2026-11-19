@@ -29,7 +29,22 @@ function highlightTeam(team, enabled){
 		// Highlight only the allies that can be healed
 		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
 			var currentCharacter = team[characterIndex].instance;
-			if (currentCharacter.newHealth < currentCharacter.character.myHealth){
+			if (!currentCharacter.isEnemy && currentCharacter.newHealth < currentCharacter.character.myHealth){
+				currentCharacter.clickable = enabled;
+			} else {
+				currentCharacter.clickable = false;
+			}
+		}
+		return;
+	}
+	else if (!is_undefined(characterSelected) 
+	&& !is_undefined(abilitySelected)
+	&& abilitySelected.name == "Enhance"
+	){
+		// Highlight all allies
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			var currentCharacter = team[characterIndex].instance;
+			if (!currentCharacter.isEnemy){
 				currentCharacter.clickable = enabled;
 			} else {
 				currentCharacter.clickable = false;
@@ -115,13 +130,25 @@ function handleSelection(){
 					if (hoveredClickable.object_index == obj_abilityImage){
 						obj_battleController.abilitySelected = hoveredClickable.ability;
 						if (obj_battleController.abilitySelected.name == "Heal") {
-							obj_battleController.healingCharacter = undefined;
+							if (!is_undefined(obj_battleController.enemySelected)){
+								obj_battleController.enemySelected.instance.selected = false;
+								obj_battleController.enemySelected = undefined;
+							}
+							obj_battleController.supportedCharacter = undefined;
+							highlightTeam(obj_battleController.playerTeam.members, true);
+						}
+						else if (obj_battleController.abilitySelected.name == "Enhance") {
+							if (!is_undefined(obj_battleController.enemySelected)){
+								obj_battleController.enemySelected.instance.selected = false;
+								obj_battleController.enemySelected = undefined;
+							}
+							obj_battleController.supportedCharacter = undefined;
 							highlightTeam(obj_battleController.playerTeam.members, true);
 						}
 					}
 					// clickable is a player character object
 					else if (hoveredClickable.object_index == obj_character
-					&& !hoveredClickable.isEnemy && (is_undefined(obj_battleController.abilitySelected) || obj_battleController.abilitySelected.name != "Heal")) {
+					&& !hoveredClickable.isEnemy && (is_undefined(obj_battleController.abilitySelected) || (obj_battleController.abilitySelected.name != "Heal" && obj_battleController.abilitySelected.name != "Enhance"))) {
 					hoveredClickable.selected = true;
 
 					// Unhighlight the enemy characters until an ability is selected
@@ -137,9 +164,9 @@ function handleSelection(){
 				}
 				else if (hoveredClickable.object_index == obj_character
 					&& !hoveredClickable.isEnemy && !is_undefined(obj_battleController.abilitySelected)
-					&& obj_battleController.abilitySelected.name == "Heal") {
-					obj_battleController.healingCharacter = hoveredClickable.character;
-					obj_battleController.enemySelected = obj_battleController.healingCharacter
+					&& (obj_battleController.abilitySelected.name == "Heal" || obj_battleController.abilitySelected.name == "Enhance")) {
+					obj_battleController.supportedCharacter = hoveredClickable.character;
+					obj_battleController.enemySelected = obj_battleController.supportedCharacter
 					highlightTeam(obj_battleController.playerTeam.members, false);
 				}
 				else{
@@ -295,6 +322,13 @@ function handleDamage(ability, attacker, defender){
 		defender.instance.newHealth = min(defender.myHealth, defender.instance.newHealth + ability.healAmount);
 		return;
 	}
+	
+	// Enhance: Buffs a single ally's damage for 2 turns. // 1 means 2 in this situation since it doesn't get decremented at the end of the current turn
+	if (variable_struct_exists(ability, "isEnhance") && ability.isEnhance){
+		defender.instance.attackBuff = 2;
+		defender.instance.attackBuffRounds = 1;
+		return;
+	}
 
 	// CAUTION: Whatever you set here for turn counts will be cleaned up immediately after the turn so if you intend an effect to linger for say, 3 turns after this one, set the value to 4. Round based effects are not affected.
 
@@ -372,11 +406,15 @@ function handleDamage(ability, attacker, defender){
 	// Handled by spray, and the stun ability above
 	// --------------------------------
 	// Heal: Heals a single ally.
-
+	// Has special circumstances so it's handled in handleSelection and at the top of this function
+	// --------------------------------
 	// Curse: Silences a single target and reduces its defences for 1 turn.
-
+	if (variable_struct_exists(ability, "isCurse") && ability.isCurse){
+		defender.instance.cursedRounds = 1;
+	}
 	// Enhance: Buffs a single ally's damage for 2 turns.
-
+	// Has special circumstances so it's handled in handleSelection and at the top of this function
+	// --------------------------------
 	// Vigorate: Heals all allies while the Cleric loses 70% of its health.
 
 
@@ -531,7 +569,7 @@ function handleTurn(isUserTurn){
 
 		handleSpecialAbilityCleanup();
 
-		obj_battleController.healingCharacter = undefined;
+		obj_battleController.supportedCharacter = undefined;
 		obj_battleController.enemySelected.instance.selected = false;
 		obj_battleController.enemySelected = undefined;
 		obj_battleController.abilitySelected.instance.selected = false
@@ -583,11 +621,19 @@ function handleSkippedTurn(characterInstance){
 		return false;
 	}
 
-	if (characterInstance.stunnedRounds > 0){
+	if (characterInstance.stunnedRounds > 0 || characterInstance.cursedRounds > 0){
 		obj_battleController.isPlayerTurn = !obj_battleController.isPlayerTurn;
-		characterInstance.stunnedRounds -= 1;
+
+		if (characterInstance.cursedRounds > 0){
+			characterInstance.cursedRounds -= 1;
+		}
+
+		if (characterInstance.stunnedRounds > 0){
+			characterInstance.stunnedRounds -= 1;
+		}
 		return true;
 	}
+
 
 	return false;
 }

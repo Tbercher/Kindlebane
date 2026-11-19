@@ -250,6 +250,7 @@ abilities = {
         attack: 0,
         magicAttack: 100,
         spray: 0,
+        isCurse: true,
         sprite: abilitySprites.curse
     },
     /// @doc-abilities-ability Enhance
@@ -261,6 +262,7 @@ abilities = {
         attack: 0,
         magicAttack: 100,
         spray: 0,
+        isEnhance: true,
         sprite: abilitySprites.enhance
     },
     /// @doc-abilities-ability Vigorate
@@ -313,7 +315,7 @@ characters = {
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.heal, abilities.cleave, abilities.cleave, abilities.cleave], // test abilities
+        abilities: [abilities.enhance, abilities.heal, abilities.cleave, abilities.cleave], // test abilities
         // Original abilities [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall],
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,

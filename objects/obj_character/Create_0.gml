@@ -36,3 +36,4 @@ tauntedRounds = 0;
 tauntor = undefined;
 isTaunting = false;
 tauntingRounds = 0;
+cursedRounds = 0;
