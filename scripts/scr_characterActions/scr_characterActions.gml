@@ -1,3 +1,4 @@
+gpu_set_texfilter(true);
 function spawnCharacters(){
     if (!instance_exists(obj_slotNumber)){
 		return; 
@@ -25,13 +26,14 @@ function spawnCharacters(){
             character = variable_clone(sourceCharacter);
             obj_battleController.village.team[slotNumber - 1] = character; // Update the village team member with the cloned character
         }
-        var targetHeight = 160;
+        var targetHeight = 300; //160 was the old resolution
         var scale = targetHeight / sprite_get_height(character.sprite);
         // Spawn a character at the slot's position
         var characterInstance = instance_create_layer(slot.x, slot.y - ((sprite_get_height(character.sprite) * scale) / 2), "Instances", obj_character, {
             character: character,
             slot: slot
         });
+		//Scale characters to the correct size.
         characterInstance.image_xscale = scale;
         characterInstance.image_yscale = scale;
         character.instance = characterInstance;

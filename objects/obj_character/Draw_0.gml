@@ -34,7 +34,7 @@ if (selected){
 
 
 
-    var ring_color = ((isEnemy || !obj_battleController.isPlayerTurn) && !isAttackingAI) ? c_red : c_yellow;
+    var ring_color = ((isEnemy || !obj_battleController.isPlayerTurn) && !isAttackingAI) ? c_red : c_orange;
     var ring_y = y + 75;
     var pulse = 2 + sin(current_time / 180);
 

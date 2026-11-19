@@ -1,6 +1,7 @@
 //resize portrait to scale.
-var target_w = 128;
-var target_h = 128;
+
+var target_w = 370;
+var target_h = 270;
 
 if (sprite_index != -1)
 {

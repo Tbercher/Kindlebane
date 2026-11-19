@@ -34,8 +34,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_slotNumberPlaceholder",
-    "path":"sprites/spr_slotNumberPlaceholder/spr_slotNumberPlaceholder.yy",
+    "name":"spr_selector1",
+    "path":"sprites/spr_selector1/spr_selector1.yy",
   },
   "spriteMaskId":null,
   "visible":true,
