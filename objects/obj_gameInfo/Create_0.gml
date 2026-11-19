@@ -297,8 +297,8 @@ characters = {
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.enhance, abilities.vigorate, abilities.cleave, abilities.cleave], // test abilities
-        // Original abilities [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall],
+        //abilities: [abilities.enhance, abilities.vigorate, abilities.cleave, abilities.cleave], // test abilities
+        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall], // Original abilities
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,
         headshot: headshotSprites.apprentice
@@ -316,8 +316,8 @@ characters = {
         isPlaceholder: true,
         weapon: "Big Ass Shield",
         basicAttack: abilities.woodsmanDropkick,
-        abilities: [abilities.cleave], //fake abilities for testing
-        //abilities: [abilities.charge, abilities.counter, abilities.taunt],
+        //abilities: [abilities.cleave], //fake abilities for testing
+        abilities: [abilities.charge, abilities.counter, abilities.taunt], // Original abilities
         ultimate: abilities.battleCry,
 		sprite: characterSprites.woodsman,
         headshot: headshotSprites.woodsman
