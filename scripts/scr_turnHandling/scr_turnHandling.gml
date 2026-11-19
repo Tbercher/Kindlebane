@@ -53,6 +53,17 @@ function highlightTeam(team, enabled){
 		return;
 	}
 
+	else if (!is_undefined(characterSelected) 
+	&& !is_undefined(abilitySelected)
+	&& abilitySelected.name == "Vigorate"
+	){
+		// Highlight no one
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			team[characterIndex].instance.clickable = false;
+		}
+		return;
+	}
+
 	var isTaunted = false;
 	if (!is_undefined(obj_battleController.characterSelected)){
 		isTaunted = obj_battleController.characterSelected.instance.isTaunted;
@@ -129,15 +140,10 @@ function handleSelection(){
 					// clickable is an ability image object
 					if (hoveredClickable.object_index == obj_abilityImage){
 						obj_battleController.abilitySelected = hoveredClickable.ability;
-						if (obj_battleController.abilitySelected.name == "Heal") {
-							if (!is_undefined(obj_battleController.enemySelected)){
-								obj_battleController.enemySelected.instance.selected = false;
-								obj_battleController.enemySelected = undefined;
-							}
-							obj_battleController.supportedCharacter = undefined;
-							highlightTeam(obj_battleController.playerTeam.members, true);
-						}
-						else if (obj_battleController.abilitySelected.name == "Enhance") {
+						if (obj_battleController.abilitySelected.name == "Heal"
+						|| obj_battleController.abilitySelected.name == "Enhance"
+						|| obj_battleController.abilitySelected.name == "Vigorate"
+						) {
 							if (!is_undefined(obj_battleController.enemySelected)){
 								obj_battleController.enemySelected.instance.selected = false;
 								obj_battleController.enemySelected = undefined;
@@ -148,7 +154,7 @@ function handleSelection(){
 					}
 					// clickable is a player character object
 					else if (hoveredClickable.object_index == obj_character
-					&& !hoveredClickable.isEnemy && (is_undefined(obj_battleController.abilitySelected) || (obj_battleController.abilitySelected.name != "Heal" && obj_battleController.abilitySelected.name != "Enhance"))) {
+					&& !hoveredClickable.isEnemy && (is_undefined(obj_battleController.abilitySelected) || (obj_battleController.abilitySelected.name != "Heal" && obj_battleController.abilitySelected.name != "Enhance" && obj_battleController.abilitySelected.name != "Vigorate"))) {
 					hoveredClickable.selected = true;
 
 					// Unhighlight the enemy characters until an ability is selected
@@ -164,7 +170,7 @@ function handleSelection(){
 				}
 				else if (hoveredClickable.object_index == obj_character
 					&& !hoveredClickable.isEnemy && !is_undefined(obj_battleController.abilitySelected)
-					&& (obj_battleController.abilitySelected.name == "Heal" || obj_battleController.abilitySelected.name == "Enhance")) {
+					&& (obj_battleController.abilitySelected.name == "Heal" || obj_battleController.abilitySelected.name == "Enhance" || obj_battleController.abilitySelected.name == "Vigorate")) {
 					obj_battleController.supportedCharacter = hoveredClickable.character;
 					obj_battleController.enemySelected = obj_battleController.supportedCharacter
 					highlightTeam(obj_battleController.playerTeam.members, false);
@@ -322,6 +328,17 @@ function handleDamage(ability, attacker, defender){
 		defender.instance.newHealth = min(defender.myHealth, defender.instance.newHealth + ability.healAmount);
 		return;
 	}
+
+	// Vigorate
+	if (variable_struct_exists(ability, "isVigorate") && ability.isVigorate){
+		for (var i = 0; i < array_length(obj_battleController.playerTeam.members); i++){
+			var ally = obj_battleController.playerTeam.members[i].instance;
+			ally.newHealth = min(ally.character.myHealth, ally.newHealth + ability.healAmount);
+		}
+		// Reduce user's health by 70%
+		attacker.instance.newHealth = max(0, attacker.instance.newHealth - floor(attacker.myHealth * 0.7));
+		return;
+	}
 	
 	// Enhance: Buffs a single ally's damage for 2 turns. // 1 means 2 in this situation since it doesn't get decremented at the end of the current turn
 	if (variable_struct_exists(ability, "isEnhance") && ability.isEnhance){
@@ -415,8 +432,9 @@ function handleDamage(ability, attacker, defender){
 	// Enhance: Buffs a single ally's damage for 2 turns.
 	// Has special circumstances so it's handled in handleSelection and at the top of this function
 	// --------------------------------
-	// Vigorate: Heals all allies while the Cleric loses 70% of its health.
-
+	// Vigorate: Heals all allies while the user loses 70% of its health.
+	// Has special circumstances so it's handled in handleSelection and at the top of this function
+	// -------------------------------- END
 
 	// Actual damage handling
 	
@@ -507,7 +525,8 @@ function handleSpecialAbilityCleanup(){
 		attacker.instance.tauntedRounds -= 1;
 	}
 
-	if (defender.instance.isTaunting && defender.instance.tauntingRounds > 0){
+	if (!is_undefined(defender) && instance_exists(defender.instance)
+    && defender.instance.isTaunting && defender.instance.tauntingRounds > 0){
 		defender.instance.tauntingRounds -= 1;
 	}
 	// Fire Ball: Deals magic damage to one enemy and causes Burn.
@@ -570,11 +589,17 @@ function handleTurn(isUserTurn){
 		handleSpecialAbilityCleanup();
 
 		obj_battleController.supportedCharacter = undefined;
-		obj_battleController.enemySelected.instance.selected = false;
+		if (!is_undefined(obj_battleController.enemySelected) && instance_exists(obj_battleController.enemySelected.instance)){
+			obj_battleController.enemySelected.instance.selected = false;
+		}
 		obj_battleController.enemySelected = undefined;
-		obj_battleController.abilitySelected.instance.selected = false
+		if (!is_undefined(obj_battleController.abilitySelected) && instance_exists(obj_battleController.abilitySelected.instance)){
+			obj_battleController.abilitySelected.instance.selected = false;
+		}
 		obj_battleController.abilitySelected = undefined;
-		obj_battleController.characterSelected.instance.selected = false;
+		if (!is_undefined(obj_battleController.characterSelected) && instance_exists(obj_battleController.characterSelected.instance)){
+			obj_battleController.characterSelected.instance.selected = false;
+		}
 		obj_battleController.characterSelected = undefined;
 		obj_battleController.isPlayerTurn = false;
 	}
