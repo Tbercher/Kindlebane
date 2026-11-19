@@ -401,10 +401,10 @@ villages = {
         name: "Loamvale",
         conquered: false,
         team: [
-            characters.woodsman,
-            characters.woodsman,
-            characters.woodsman,
-            characters.woodsman
+            characters.apprentice,
+            characters.apprentice,
+            characters.apprentice,
+            characters.apprentice
         ],
     },
     /// @doc-villages-village Stonehearth
