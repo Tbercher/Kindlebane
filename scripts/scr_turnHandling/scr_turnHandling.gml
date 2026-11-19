@@ -321,6 +321,11 @@ function calculateSprayDamage(ability, attacker, defender){
 }
 
 function handleDamage(ability, attacker, defender){
+	// Decrement kindling for ultimates
+	if (variable_struct_exists(ability, "isUltimate") && ability.isUltimate){
+		obj_gameInfo.kindling = max(0, obj_gameInfo.kindling - ability.cost);
+	}
+
 	// Handle Special Abilities
 
 	// Heal
@@ -529,19 +534,28 @@ function handleSpecialAbilityCleanup(){
     && defender.instance.isTaunting && defender.instance.tauntingRounds > 0){
 		defender.instance.tauntingRounds -= 1;
 	}
+
 	// Fire Ball: Deals magic damage to one enemy and causes Burn.
-
+	// Handled by lingering effects
+	// -----------------------------
 	// Spell Charge: Prepares a spell and increases its damage.
-
+	// Handled by attack buff
+	// -----------------------------
 	// Quake: Deals area-of-effect magic damage to enemies and stuns them.
-
+	// Handled by spray and charge 
+	// -----------------------------
 	// Heal: Heals one ally.
-
+	// Does not have a cleanup
+	// -----------------------------
 	// Curse: Silences one target and reduces its defences for 1 turn.
-
+	// Handled with stun handling
+	// -----------------------------
 	// Enhance: Buffs one ally's damage for 2 turns.
-
+	// Handled by attack buff
+	// -----------------------------
 	// Vigorate: Heals all allies while the Cleric loses 70% of its health.
+	// Does not have a cleanup 
+	// -----------------------------
 }
 
 function handleTurn(isUserTurn){

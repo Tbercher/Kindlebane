@@ -14,11 +14,7 @@ Splits the ground beneath enemies, dealing area-of-effect magic damage and stunn
 
 ## Cost
 
-0
-
-## Strength
-
-3
+50
 
 ## Is Ultimate
 

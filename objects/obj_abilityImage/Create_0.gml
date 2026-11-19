@@ -3,3 +3,4 @@ event_inherited();
 
 ability = undefined;
 info = undefined;
+hasLockShowing = false;

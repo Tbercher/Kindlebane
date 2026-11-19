@@ -14,11 +14,7 @@ Deals massive physical damage to a single enemy while lowering its defences for 
 
 ## Cost
 
-0
-
-## Strength
-
-3
+50
 
 ## Is Ultimate
 

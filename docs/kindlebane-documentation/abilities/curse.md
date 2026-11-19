@@ -14,11 +14,7 @@ Silences a single target and reduces its defences for 1 turn.
 
 ## Cost
 
-2
-
-## Strength
-
-2
+0
 
 ## Attack
 

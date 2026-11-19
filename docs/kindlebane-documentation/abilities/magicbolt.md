@@ -16,10 +16,6 @@ A basic magic attack with a grimoire.
 
 0
 
-## Strength
-
-1
-
 ## Attack
 
 0

@@ -14,11 +14,7 @@ Attacks a single enemy and hits adjacent enemies for 75% damage.
 
 ## Cost
 
-3
-
-## Strength
-
-3
+0
 
 ## Attack
 

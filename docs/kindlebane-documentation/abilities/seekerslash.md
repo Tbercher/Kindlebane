@@ -16,10 +16,6 @@ A basic physical attack with a sword.
 
 0
 
-## Strength
-
-1
-
 ## Attack
 
 50

@@ -16,10 +16,6 @@ A basic physical attack.
 
 0
 
-## Strength
-
-1
-
 ## Attack
 
 50

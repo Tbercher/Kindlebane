@@ -14,11 +14,7 @@ Readies a defensive stance for 1 turn and deals increased physical damage next t
 
 ## Cost
 
-2
-
-## Strength
-
-3
+0
 
 ## Attack
 

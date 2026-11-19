@@ -14,11 +14,7 @@ Heals a single ally.
 
 ## Cost
 
-2
-
-## Strength
-
-2
+0
 
 ## Attack
 

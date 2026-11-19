@@ -14,11 +14,7 @@ Heals all allies while the Cleric loses 70% of its health.
 
 ## Cost
 
-0
-
-## Strength
-
-3
+50
 
 ## Is Ultimate
 
