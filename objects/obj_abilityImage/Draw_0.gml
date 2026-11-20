@@ -110,8 +110,7 @@ if (hovered && !is_undefined(ability)){
 		    0.8,
 		    0.8,
 		    0
-		)
-    }
+		);
 
         draw_line(
             box_x + padding + 4,
