@@ -298,7 +298,7 @@ characters = {
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
         //abilities: [abilities.enhance, abilities.vigorate, abilities.cleave, abilities.cleave], // test abilities
-        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall], // Original abilities
+        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.recklessStrike], // Original abilities
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,
         headshot: headshotSprites.apprentice
@@ -317,46 +317,10 @@ characters = {
         weapon: "Big Ass Shield",
         basicAttack: abilities.woodsmanDropkick,
         //abilities: [abilities.cleave], //fake abilities for testing
-        abilities: [abilities.charge, abilities.counter, abilities.taunt], // Original abilities
+        abilities: [abilities.charge, abilities.counter, abilities.taunt, abilities.battleCry], // Original abilities
         ultimate: abilities.battleCry,
 		sprite: characterSprites.woodsman,
         headshot: headshotSprites.woodsman
-    },
-    /// @doc-characters-character Mage
-    mage: {
-        name: "Mage",
-        className: "Mage",
-        description: "A spellcaster wielding a grimoire.",
-        attack: 1,
-        defense: 50,
-        magicAttack: 1,
-        magicDefense: 25,
-        myHealth: 500,
-        isPlaceholder: true,
-        weapon: "Grimoire",
-        basicAttack: abilities.magicBolt,
-        abilities: [abilities.fireBall, abilities.lightningBolt, abilities.spellCharge],
-        ultimate: abilities.quake,
-        sprite: characterSprites.mage,
-        headshot: headshotSprites.mage
-    },
-    /// @doc-characters-character Cleric
-    cleric: {
-        name: "Cleric",
-        className: "Cleric",
-        description: "A support character who empowers and heals allies.",
-        attack: 1,
-        defense: 50,
-        magicAttack: 0.5,
-        magicDefense: 25,
-        myHealth: 500,
-        isPlaceholder: true,
-        weapon: "Book",
-        basicAttack: abilities.punch,
-        abilities: [abilities.heal, abilities.curse, abilities.enhance],
-        ultimate: abilities.vigorate,
-        sprite: characterSprites.cleric,
-        headshot: headshotSprites.cleric
     },
     /// @doc-characters-character Condemned
     condemned: {
@@ -370,7 +334,8 @@ characters = {
         magicDefense: 25,
         myHealth: 500,
         isPlaceholder: true,
-        abilities: [abilities.magicBolt],
+        abilities: [abilities.fireBall, abilities.lightningBolt, abilities.spellCharge, abilities.quake],
+        ultimate: abilities.quake,
         sprite: characterSprites.condemned,
         headshot: headshotSprites.condemned
     },
@@ -386,7 +351,8 @@ characters = {
         magicDefense: 25,
         myHealth: 500,
         isPlaceholder: true,
-        abilities: [abilities.magicBolt],
+        abilities: [abilities.heal, abilities.curse, abilities.enhance, abilities.vigorate],
+        ultimate: abilities.vigorate,
         sprite: characterSprites.lamplighter,
         headshot: headshotSprites.lamplighter
     }
