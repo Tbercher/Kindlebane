@@ -2,11 +2,11 @@
 
 ## Sprite
 
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+![Sprite](../../assets/game-sprites/spr_lamplighterIdle.png)
 
 ## Headshot
 
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+![Headshot](../../assets/game-sprites/spr_lamplighterPortrait.png)
 
 ## Name
 
@@ -50,5 +50,12 @@ Yes
 
 ## Abilities
 
-- [Magic Bolt](../abilities/magicbolt.md)
+- [Heal](../abilities/heal.md)
+- [Curse](../abilities/curse.md)
+- [Enhance](../abilities/enhance.md)
+- [Vigorate](../abilities/vigorate.md)
+
+## Ultimate
+
+[Vigorate](../abilities/vigorate.md)
 

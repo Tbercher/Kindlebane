@@ -24,11 +24,15 @@ Yes
 
 0
 
+## Spray
+
+112
+
 ## Magic Attack
 
 150
 
-## Spray
+## Stuns
 
-150
+Yes
 

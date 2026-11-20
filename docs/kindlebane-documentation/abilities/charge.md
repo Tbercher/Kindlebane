@@ -28,3 +28,7 @@ Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main
 
 50.0
 
+## Stuns
+
+Yes
+

@@ -28,3 +28,7 @@ Taunts a single enemy and reduces all damage taken for 2 turns.
 
 0
 
+## Taunts
+
+Yes
+

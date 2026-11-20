@@ -409,6 +409,7 @@ villages = {
 };
 
 // Game Save Info
+/// @doc-team Initial Player Team
 playerTeam = {
         members: [characters.woodsman, characters.apprentice, characters.condemned, characters.lamplighter]
 };

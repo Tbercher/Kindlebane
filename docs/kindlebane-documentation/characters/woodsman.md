@@ -2,11 +2,11 @@
 
 ## Sprite
 
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+![Sprite](../../assets/game-sprites/spr_woodsmanIdle.png)
 
 ## Headshot
 
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+![Headshot](../../assets/game-sprites/spr_woodsmanPortrait.png)
 
 ## Name
 
@@ -57,6 +57,7 @@ Big Ass Shield
 - [Charge](../abilities/charge.md)
 - [Counter](../abilities/counter.md)
 - [Taunt](../abilities/taunt.md)
+- [Battle Cry](../abilities/battlecry.md)
 
 ## Ultimate
 

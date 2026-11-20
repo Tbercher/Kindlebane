@@ -28,3 +28,11 @@ Shoots a fireball at a single enemy for magic damage and causes Burn.
 
 0
 
+## Lingering Effect Damage
+
+30
+
+## Effect Type
+
+burn
+

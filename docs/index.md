@@ -5,6 +5,10 @@ stats, and other game information.
 
 ## Documentation
 
+### Initial Player Team
+
+- [Initial Player Team](kindlebane-documentation/playerteam.md)
+
 ### Villages
 
 - [Lumenhall](kindlebane-documentation/villages/lumenhall.md)
@@ -16,11 +20,8 @@ stats, and other game information.
 
 - [Lamplighter](kindlebane-documentation/characters/lamplighter.md)
 - [Condemned](kindlebane-documentation/characters/condemned.md)
-- [Apprentice](kindlebane-documentation/characters/apprentice.md)
-- [Cleric](kindlebane-documentation/characters/cleric.md)
-- [Mage](kindlebane-documentation/characters/mage.md)
 - [Woodsman](kindlebane-documentation/characters/woodsman.md)
-- [Apprentice](kindlebane-documentation/characters/seeker.md)
+- [Apprentice](kindlebane-documentation/characters/apprentice.md)
 
 ### Abilities
 
@@ -43,4 +44,4 @@ stats, and other game information.
 - [Stab](kindlebane-documentation/abilities/stab.md)
 - [Cleave](kindlebane-documentation/abilities/cleave.md)
 - [Flurry](kindlebane-documentation/abilities/flurry.md)
-- [Slash](kindlebane-documentation/abilities/seekerslash.md)
+- [Slash](kindlebane-documentation/abilities/apprenticeslash.md)

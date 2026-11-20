@@ -28,3 +28,7 @@ Prepares a spell and increases its damage.
 
 0
 
+## Spell Charge
+
+Yes
+

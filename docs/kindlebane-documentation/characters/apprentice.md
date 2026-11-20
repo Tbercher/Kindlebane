@@ -2,19 +2,15 @@
 
 ## Sprite
 
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+![Sprite](../../assets/game-sprites/spr_apprenticeIdle.png)
 
 ## Headshot
 
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+![Headshot](../../assets/game-sprites/spr_apprenticePortrait.png)
 
 ## Name
 
 Apprentice
-
-## Village
-
-Stonehearth
 
 ## Class Name
 
@@ -22,7 +18,7 @@ Apprentice
 
 ## Description
 
-An Apprentice from Stonehearth.
+A sword-wielding apprentice.
 
 ## Attack
 
@@ -34,11 +30,11 @@ An Apprentice from Stonehearth.
 
 ## Magic Attack
 
-0
+1
 
 ## Magic Defense
 
-25
+50
 
 ## My Health
 
@@ -48,7 +44,22 @@ An Apprentice from Stonehearth.
 
 Yes
 
+## Weapon
+
+Sword
+
+## Basic Attack
+
+[Slash](../abilities/apprenticeslash.md)
+
 ## Abilities
 
-- [Magic Bolt](../abilities/magicbolt.md)
+- [Flurry](../abilities/flurry.md)
+- [Cleave](../abilities/cleave.md)
+- [Stab](../abilities/stab.md)
+- [Reckless Strike](../abilities/recklessstrike.md)
+
+## Ultimate
+
+[Reckless Strike](../abilities/recklessstrike.md)
 

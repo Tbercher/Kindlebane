@@ -32,3 +32,11 @@ Yes
 
 0
 
+## Is Vigorate
+
+Yes
+
+## Heal Amount
+
+100
+

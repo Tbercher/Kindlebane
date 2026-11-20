@@ -28,3 +28,7 @@ Silences a single target and reduces its defences for 1 turn.
 
 0
 
+## Is Curse
+
+Yes
+

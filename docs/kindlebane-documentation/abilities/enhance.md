@@ -28,3 +28,7 @@ Buffs a single ally's damage for 2 turns.
 
 0
 
+## Is Enhance
+
+Yes
+

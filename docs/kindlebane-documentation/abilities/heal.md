@@ -28,3 +28,11 @@ Heals a single ally.
 
 0
 
+## Heal Amount
+
+150
+
+## Is Heal
+
+Yes
+

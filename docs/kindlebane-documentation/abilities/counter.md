@@ -18,7 +18,7 @@ Readies a defensive stance for 1 turn and deals increased physical damage next t
 
 ## Attack
 
-150
+0
 
 ## Magic Attack
 
@@ -27,4 +27,8 @@ Readies a defensive stance for 1 turn and deals increased physical damage next t
 ## Spray
 
 0
+
+## Is Counter
+
+Yes
 

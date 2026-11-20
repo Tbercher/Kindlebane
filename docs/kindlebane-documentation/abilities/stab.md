@@ -28,3 +28,11 @@ Attacks one enemy for physical damage and causes Bleed.
 
 0
 
+## Lingering Effect Damage
+
+20
+
+## Effect Type
+
+bleed
+

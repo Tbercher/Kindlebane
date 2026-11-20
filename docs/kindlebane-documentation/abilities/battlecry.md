@@ -32,3 +32,7 @@ Yes
 
 0
 
+## Taunts All
+
+Yes
+

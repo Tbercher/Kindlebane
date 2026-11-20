@@ -22,7 +22,7 @@ Yes
 
 ## Attack
 
-150
+300
 
 ## Magic Attack
 
@@ -31,4 +31,8 @@ Yes
 ## Spray
 
 0
+
+## Lowers Defense
+
+Yes
 

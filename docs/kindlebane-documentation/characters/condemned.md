@@ -2,11 +2,11 @@
 
 ## Sprite
 
-![Sprite](../../assets/game-sprites/spr_placeholderCharacter.png)
+![Sprite](../../assets/game-sprites/spr_condemnedIdle.png)
 
 ## Headshot
 
-![Headshot](../../assets/game-sprites/spr_placeholderSpecificHeadshot.png)
+![Headshot](../../assets/game-sprites/spr_condemnedPortrait.png)
 
 ## Name
 
@@ -50,5 +50,12 @@ Yes
 
 ## Abilities
 
-- [Magic Bolt](../abilities/magicbolt.md)
+- [Fire Ball](../abilities/fireball.md)
+- [Lightning Bolt](../abilities/lightningbolt.md)
+- [Spell Charge](../abilities/spellcharge.md)
+- [Quake](../abilities/quake.md)
+
+## Ultimate
+
+[Quake](../abilities/quake.md)
 

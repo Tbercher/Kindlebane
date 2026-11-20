@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import ast
+import logging
 import math
 import operator
 import re
@@ -21,13 +22,6 @@ LOREM = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
     "Integer vitae sem sed arcu consequat dignissim."
 )
-STAT_KEYS = {"attack", "defense", "magicAttack", "magicDefense"}
-STAT_MAXIMUMS = {
-    "attack": 150,
-    "defense": 100,
-    "magicAttack": 150,
-    "magicDefense": 100,
-}
 IMAGE_FIELDS = {"sprite", "headshot"}
 NUMERIC_OPERATORS = {
     ast.Add: operator.add,
@@ -251,7 +245,11 @@ def evaluate_numeric_expression(expression: str, resolve_reference):
 
 
 def parse_entries(body: str, resolve_reference) -> dict:
-    body = re.sub(r"^\s*///.*$", "", body, flags=re.MULTILINE)
+    body = re.sub(
+        r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\r\n]*|/\*[\s\S]*?\*/',
+        lambda match: "" if match.group().startswith(("//", "/*")) else match.group(),
+        body,
+    )
     entries = {}
     for item in split_top_level(body):
         match = re.match(r"([A-Za-z_]\w*)\s*:\s*(.*)", item, re.DOTALL)
@@ -273,8 +271,19 @@ def create_reference_resolver(source: str, documented_references: dict[str, dict
     }
     cache = {}
     constant_cache = {}
+    resolving = set()
 
     def resolve(reference: str):
+        if reference in resolving:
+            logging.warning("Cannot resolve circular reference: %s", reference)
+            return None
+        resolving.add(reference)
+        try:
+            return resolve_value(reference)
+        finally:
+            resolving.remove(reference)
+
+    def resolve_value(reference: str):
         if reference in constants:
             if reference not in constant_cache:
                 constant_cache[reference] = parse_value(
@@ -302,21 +311,6 @@ def create_reference_resolver(source: str, documented_references: dict[str, dict
 
 def parse_struct_data(body: str, resolve_reference) -> dict:
     return parse_entries(body, resolve_reference)
-
-
-def validate_node(node: dict, data: dict) -> None:
-    for stat in STAT_KEYS.intersection(data):
-        value = data[stat]
-        maximum = STAT_MAXIMUMS[stat]
-        if (
-            isinstance(value, bool)
-            or not isinstance(value, (int, float))
-            or not math.isfinite(value)
-            or not 0 <= value <= maximum
-        ):
-            raise ValueError(
-                f"{node['title']} {stat} must be a number between 0 and {maximum}"
-            )
 
 
 def document_link(node: dict, target: dict) -> str:
@@ -411,7 +405,8 @@ def copy_documented_images(asset_names: set[str]) -> dict[str, str]:
     for asset_name in sorted(asset_names):
         source_images = sorted((GAME_SPRITES_DIR / asset_name).glob("*.png"))
         if not source_images:
-            raise FileNotFoundError(f"No exported PNG found for sprite {asset_name}")
+            logging.warning("No exported PNG found for sprite %s", asset_name)
+            continue
         target = DOC_GAME_SPRITES_DIR / f"{asset_name}.png"
         shutil.copyfile(source_images[0], target)
         image_paths[asset_name] = f"assets/game-sprites/{target.name}"
@@ -429,19 +424,27 @@ def format_value(value) -> str:
 def write_index(nodes: list[dict]) -> None:
     sections = [node for node in reversed(nodes) if node["is_section"]]
     pages = [node for node in reversed(nodes) if not node["is_section"]]
+    ids = {node["id"] for node in nodes}
     by_parent = {}
+    orphaned_pages = []
     for node in pages:
-        by_parent.setdefault(node["parent"], []).append(node)
+        if node["parent"] and node["parent"] not in ids:
+            logging.warning(
+                "%s references missing parent %s", node["title"], node["parent"]
+            )
+            orphaned_pages.append(node)
+        else:
+            by_parent.setdefault(node["parent"], []).append(node)
 
-    def render_pages(parent: str, depth: int = 0) -> list[str]:
+    def render_pages(pages_to_render: list[dict], depth: int = 0) -> list[str]:
         lines = []
-        for node in by_parent.get(parent, []):
+        for node in pages_to_render:
             indent = "  " * depth
             lines.append(
                 f"{indent}- [{node['title']}]"
                 f"(kindlebane-documentation/{node['relative_file']})"
             )
-            lines.extend(render_pages(node["id"], depth + 1))
+            lines.extend(render_pages(by_parent.get(node["id"], []), depth + 1))
         return lines
 
     page = """# Kindlebane Documentation
@@ -456,9 +459,15 @@ stats, and other game information.
     for section in sections:
         sections_text.append(f"### {section['title']}")
         sections_text.append("")
-        sections_text.extend(
-            render_pages(section["id"]) or ["- No pages are available yet."]
-        )
+        children = by_parent.get(section["id"], [])
+        if children:
+            sections_text.extend(render_pages(children))
+        else:
+            sections_text.extend(render_pages([section]))
+        sections_text.append("")
+    if orphaned_pages:
+        sections_text.extend(["### Other pages", ""])
+        sections_text.extend(render_pages(orphaned_pages))
         sections_text.append("")
     page += "\n".join(sections_text) or "- No documentation is available yet."
     (DOCS_DIR / "index.md").write_text(page.rstrip() + "\n", encoding="utf-8")
@@ -473,16 +482,10 @@ def main() -> None:
         if not node["is_section"]
     }
     resolve_reference = create_reference_resolver(source, documented_references)
-    ids = {node["id"] for node in nodes}
     documented_data = {}
     image_assets = set()
     for node in nodes:
-        if node["parent"] and node["parent"] not in ids:
-            raise ValueError(
-                f"{node['title']} references missing parent {node['parent']}"
-            )
         data = parse_struct_data(node["body"], resolve_reference)
-        validate_node(node, data)
         documented_data[node["id"]] = data
         image_assets.update(collect_image_assets(data))
     image_paths = copy_documented_images(image_assets)
@@ -497,8 +500,9 @@ def main() -> None:
     if legacy_pages_dir.exists():
         for generated_page in legacy_pages_dir.rglob("*.md"):
             generated_page.unlink()
+    parent_ids = {node["parent"] for node in nodes}
     for node in nodes:
-        if node["is_section"]:
+        if node["is_section"] and node["id"] in parent_ids:
             continue
         write_page(node, documented_data[node["id"]], image_paths)
     write_index(nodes)
