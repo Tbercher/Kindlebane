@@ -4,8 +4,8 @@ draw_set_valign(fa_top);
 draw_set_color(c_white);
 
 draw_text_ext_transformed(
-    x,
-    y,
+    x + 630,
+    y + 200,
     !is_undefined(obj_battleController.hoveredStats)
         ? obj_battleController.hoveredStats
         : "",

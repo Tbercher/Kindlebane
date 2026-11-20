@@ -35,7 +35,7 @@ if (selected){
 
 
     var ring_color = ((isEnemy || !obj_battleController.isPlayerTurn) && !isAttackingAI) ? c_red : c_orange;
-    var ring_y = y + 75;
+    var ring_y = y + 115;
     var pulse = 2 + sin(current_time / 180);
 
     draw_set_color(ring_color);
@@ -106,7 +106,7 @@ var bar_width = 80;
 var bar_height = 8;
 
 var bar_x = x - bar_width / 2;
-var bar_y = y - 100;
+var bar_y = y - 150;
 
 var health_percent = clamp((newHealth / character.myHealth) * 100, 0, 100);
 
