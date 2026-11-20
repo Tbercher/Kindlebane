@@ -14,11 +14,7 @@ Prepares a spell and increases its damage.
 
 ## Cost
 
-1
-
-## Strength
-
-1
+0
 
 ## Attack
 

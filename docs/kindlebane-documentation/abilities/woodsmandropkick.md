@@ -16,10 +16,6 @@ A basic physical attack with a shield.
 
 0
 
-## Strength
-
-1
-
 ## Attack
 
 50

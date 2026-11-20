@@ -14,11 +14,7 @@ Shoots a fireball at a single enemy for magic damage and causes Burn.
 
 ## Cost
 
-2
-
-## Strength
-
-2
+0
 
 ## Attack
 

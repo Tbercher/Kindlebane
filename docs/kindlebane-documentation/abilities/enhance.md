@@ -14,11 +14,7 @@ Buffs a single ally's damage for 2 turns.
 
 ## Cost
 
-2
-
-## Strength
-
-2
+0
 
 ## Attack
 

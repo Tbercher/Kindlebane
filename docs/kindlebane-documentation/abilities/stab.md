@@ -14,11 +14,7 @@ Attacks one enemy for physical damage and causes Bleed.
 
 ## Cost
 
-2
-
-## Strength
-
-1
+0
 
 ## Attack
 

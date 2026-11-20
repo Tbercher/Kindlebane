@@ -14,11 +14,7 @@ Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main
 
 ## Cost
 
-2
-
-## Strength
-
-2
+0
 
 ## Attack
 

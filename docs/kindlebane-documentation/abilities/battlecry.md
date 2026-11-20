@@ -14,11 +14,7 @@ Taunts all enemies while reducing enemy damage.
 
 ## Cost
 
-0
-
-## Strength
-
-3
+50
 
 ## Is Ultimate
 

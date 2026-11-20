@@ -14,11 +14,7 @@ Taunts a single enemy and reduces all damage taken for 2 turns.
 
 ## Cost
 
-1
-
-## Strength
-
-1
+0
 
 ## Attack
 

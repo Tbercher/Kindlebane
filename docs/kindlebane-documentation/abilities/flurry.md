@@ -14,11 +14,7 @@ Makes consecutive attacks against a single enemy that deal large physical damage
 
 ## Cost
 
-2
-
-## Strength
-
-2
+0
 
 ## Attack
 

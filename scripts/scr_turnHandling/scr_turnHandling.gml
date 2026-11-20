@@ -1,7 +1,11 @@
-function toggleHighlightTeam(team, enabled){
+function findTauntors(team){
+	tauntors = [];
 	for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
-			team[characterIndex].instance.clickable = enabled;
+		if (team[characterIndex].instance.isTaunting){
+			array_push(tauntors, team[characterIndex].instance);
+		}
 	}
+	return tauntors;
 }
 
 function highlightCharacters(playerTurn){
@@ -11,8 +15,74 @@ function highlightCharacters(playerTurn){
 	} else {
 		team = obj_battleController.village.team;
 	}
-	for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
-			team[characterIndex].instance.clickable = true;
+	highlightTeam(team, true);
+}
+
+function highlightTeam(team, enabled){
+	var characterSelected = obj_battleController.characterSelected;
+	var abilitySelected = obj_battleController.abilitySelected;
+
+	if (!is_undefined(characterSelected) 
+	&& !is_undefined(abilitySelected)
+	&& abilitySelected.name == "Heal"
+	){
+		// Highlight only the allies that can be healed
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			var currentCharacter = team[characterIndex].instance;
+			if (!currentCharacter.isEnemy && currentCharacter.newHealth < currentCharacter.character.myHealth){
+				currentCharacter.clickable = enabled;
+			} else {
+				currentCharacter.clickable = false;
+			}
+		}
+		return;
+	}
+	else if (!is_undefined(characterSelected) 
+	&& !is_undefined(abilitySelected)
+	&& abilitySelected.name == "Enhance"
+	){
+		// Highlight all allies
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			var currentCharacter = team[characterIndex].instance;
+			if (!currentCharacter.isEnemy){
+				currentCharacter.clickable = enabled;
+			} else {
+				currentCharacter.clickable = false;
+			}
+		}
+		return;
+	}
+
+	else if (!is_undefined(characterSelected) 
+	&& !is_undefined(abilitySelected)
+	&& abilitySelected.name == "Vigorate"
+	){
+		// Highlight no one
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			team[characterIndex].instance.clickable = false;
+		}
+		return;
+	}
+
+	var isTaunted = false;
+	if (!is_undefined(obj_battleController.characterSelected)){
+		isTaunted = obj_battleController.characterSelected.instance.isTaunted;
+	}
+	if (isTaunted){
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			var currentCharacter = team[characterIndex].instance;
+			if (!currentCharacter.isTaunting){
+				currentCharacter.clickable = false;
+			}
+			else{
+				currentCharacter.clickable = enabled;
+			}
+		}
+	}
+	else{
+		for (var characterIndex = 0; characterIndex < array_length(team); characterIndex++){
+			team[characterIndex].instance.clickable = enabled;
+		}
 	}
 }
 
@@ -70,14 +140,38 @@ function handleSelection(){
 					// clickable is an ability image object
 					if (hoveredClickable.object_index == obj_abilityImage){
 						obj_battleController.abilitySelected = hoveredClickable.ability;
+						if (obj_battleController.abilitySelected.name == "Heal"
+						|| obj_battleController.abilitySelected.name == "Enhance"
+						|| obj_battleController.abilitySelected.name == "Vigorate"
+						) {
+							if (!is_undefined(obj_battleController.enemySelected)){
+								obj_battleController.enemySelected.instance.selected = false;
+								obj_battleController.enemySelected = undefined;
+							}
+							if (!is_undefined(obj_battleController.supportedCharacter)){
+								obj_battleController.supportedCharacter.instance.selected = false;
+								obj_battleController.supportedCharacter = undefined;
+							}
+							highlightTeam(obj_battleController.playerTeam.members, true);
+						}
+						else{
+							if (!is_undefined(obj_battleController.enemySelected)){
+								obj_battleController.enemySelected.instance.selected = false;
+								obj_battleController.enemySelected = undefined;
+							}
+							if (!is_undefined(obj_battleController.supportedCharacter)){
+								obj_battleController.supportedCharacter.instance.selected = false;
+								obj_battleController.supportedCharacter = undefined;
+							}
+						}
 					}
 					// clickable is a player character object
 					else if (hoveredClickable.object_index == obj_character
-					&& !hoveredClickable.isEnemy) {
+					&& !hoveredClickable.isEnemy && (is_undefined(obj_battleController.abilitySelected) || (obj_battleController.abilitySelected.name != "Heal" && obj_battleController.abilitySelected.name != "Enhance" && obj_battleController.abilitySelected.name != "Vigorate"))) {
 					hoveredClickable.selected = true;
 
 					// Unhighlight the enemy characters until an ability is selected
-					toggleHighlightTeam(obj_battleController.village.team, false);
+					highlightTeam(obj_battleController.village.team, false);
 
 					// if there is an enemy selected while clicking on a player character
 					if (!is_undefined(obj_battleController.enemySelected)) {
@@ -87,9 +181,16 @@ function handleSelection(){
 					obj_battleController.enemySelected = undefined;
 					obj_battleController.abilitySelected = undefined;
 				}
-					else{
-						obj_battleController.abilitySelected = undefined;
-					}
+				else if (hoveredClickable.object_index == obj_character
+					&& !hoveredClickable.isEnemy && !is_undefined(obj_battleController.abilitySelected)
+					&& (obj_battleController.abilitySelected.name == "Heal" || obj_battleController.abilitySelected.name == "Enhance" || obj_battleController.abilitySelected.name == "Vigorate")) {
+					obj_battleController.supportedCharacter = hoveredClickable.character;
+					obj_battleController.enemySelected = obj_battleController.supportedCharacter
+					highlightTeam(obj_battleController.playerTeam.members, false);
+				}
+				else{
+					obj_battleController.abilitySelected = undefined;
+				}
 				}	
 	    }
 	}
@@ -165,27 +266,25 @@ function handleSelection(){
 
 function getNeighbors(instance){
 	var neighbors = [];
-	var team = undefined;
+	var team = instance.isEnemy ? obj_battleController.village.team : obj_battleController.playerTeam.members;
 	// Find the neighboring enemies for spray
-	if (instance.isEnemy){
-		team = obj_battleController.village.team;
-		var currentIndex = instance.slot.number - 1; 
-		if (currentIndex > 0 && team[currentIndex - 1] != undefined){
-			array_push(neighbors, currentIndex - 1);
-		}
-		if (currentIndex < array_length(team) - 1 && team[currentIndex + 1] != undefined){
-			array_push(neighbors, currentIndex + 1);
-		}
+	var currentIndex = -1
+	for (var i = 0; i < array_length(team); i++) {
+        if (team[i].instance == instance) {
+            currentIndex = i;
+            break;
+        }
+    }
+
+	if (currentIndex == -1){
+		return neighbors;
 	}
-	else{
-		team = obj_battleController.playerTeam.members;
-		var currentIndex = instance.slot.number - 1;
-		if (currentIndex > 0 && team[currentIndex - 1] != undefined){
-			array_push(neighbors, currentIndex - 1);
-		}
-		if (currentIndex < array_length(team) - 1 && team[currentIndex + 1] != undefined){
-			array_push(neighbors, currentIndex + 1);
-		}
+
+	if (currentIndex > 0 && team[currentIndex - 1] != undefined){
+		array_push(neighbors, currentIndex - 1);
+	}
+	if (currentIndex < array_length(team) - 1 && team[currentIndex + 1] != undefined){
+		array_push(neighbors, currentIndex + 1);
 	}
 	return neighbors;
 }
@@ -201,7 +300,7 @@ function areNeighbors(instance1, instance2){
 	return false;
 }
 
-function calculateDamage(ability, defender, attacker){
+function calculateDamage(ability, attacker, defender, multiplier){
 	var physicalDamage = ability.attack * attacker.attack;
 	var magicalDamage = ability.magicAttack * attacker.magicAttack;
 	var totalDamage = physicalDamage + magicalDamage;
@@ -211,35 +310,69 @@ function calculateDamage(ability, defender, attacker){
 		physicalRatio = physicalDamage / totalDamage;
 		magicalRatio = magicalDamage / totalDamage;
 	}
-	var physicalSpray = ability.spray * physicalRatio;
-	var magicalSpray = ability.spray * magicalRatio;
+	var physicalSpray = ability.spray * physicalRatio * multiplier;
+	var magicalSpray = ability.spray * magicalRatio * multiplier;
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
+	var clampedDamage = max(((physicalDamage * multiplier) - (defender.defense * defenseNegator)), 0) + max(((magicalDamage * multiplier) - (defender.magicDefense * defenseNegator)), 0)
 
 	return {
-		damage: max((physicalDamage - (defender.defense * defenseNegator)), 0) + max((magicalDamage - (defender.magicDefense * defenseNegator)), 0),
-		spray: physicalSpray + magicalSpray,
+		damage: clampedDamage,
+		spray: (physicalSpray + magicalSpray),
 		physicalRatio: physicalRatio,
 		magicalRatio: magicalRatio
 	};
 }
 
 function calculateSprayDamage(ability, attacker, defender){
-	var normalizedPhysicalSpray = calculateDamage(ability, defender, attacker).spray * calculateDamage(ability, defender, attacker).physicalRatio;
-	var normalizedMagicalSpray = calculateDamage(ability, defender, attacker).spray * calculateDamage(ability, defender, attacker).magicalRatio;
+	var normalizedPhysicalSpray = calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).physicalRatio;
+	var normalizedMagicalSpray = calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).spray * calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).magicalRatio;
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
-	damage = (max(normalizedPhysicalSpray - (defender.defense * defenseNegator), 0)) + (max(normalizedMagicalSpray - (defender.magicDefense * defenseNegator), 0));
+	var damage = (max((normalizedPhysicalSpray * attacker.attack) - (defender.defense * defenseNegator), 0)) + (max((normalizedMagicalSpray * attacker.magicAttack) - (defender.magicDefense * defenseNegator), 0));
 
 	return damage
 }
 
 function handleDamage(ability, attacker, defender){
+	// Decrement kindling for ultimates
+	if (variable_struct_exists(ability, "isUltimate") && ability.isUltimate){
+		obj_gameInfo.kindling = max(0, obj_gameInfo.kindling - ability.cost);
+	}
+
 	// Handle Special Abilities
+
+	// Heal
+	if (variable_struct_exists(ability, "isHeal") && ability.isHeal){
+		defender.instance.newHealth = min(defender.myHealth, defender.instance.newHealth + ability.healAmount);
+		return;
+	}
+
+	// Vigorate
+	if (variable_struct_exists(ability, "isVigorate") && ability.isVigorate){
+		for (var i = 0; i < array_length(obj_battleController.playerTeam.members); i++){
+			var ally = obj_battleController.playerTeam.members[i].instance;
+			ally.newHealth = min(ally.character.myHealth, ally.newHealth + ability.healAmount);
+		}
+		// Reduce user's health by 70%
+		attacker.instance.newHealth = max(0, attacker.instance.newHealth - floor(attacker.myHealth * 0.7));
+		return;
+	}
+	
+	// Enhance: Buffs a single ally's damage for 2 turns. // 1 means 2 in this situation since it doesn't get decremented at the end of the current turn
+	if (variable_struct_exists(ability, "isEnhance") && ability.isEnhance){
+		defender.instance.attackBuff = 2;
+		defender.instance.attackBuffRounds = 1;
+		return;
+	}
+
+	// CAUTION: Whatever you set here for turn counts will be cleaned up immediately after the turn so if you intend an effect to linger for say, 3 turns after this one, set the value to 4. Round based effects are not affected.
+
 	// Stab: Causes Bleed.
 	if (variable_struct_exists(ability, "effectType") && ability.effectType == "bleed" && ability.lingeringEffectDamage > 0){
 		defender.instance.isBleeding = true;
 		defender.instance.lingeringEffectDamage = ability.lingeringEffectDamage * attacker.attack;
 		defender.instance.remainingLingeringEffectTurns += 3;
+		defender.instance.delayedEffectTurns = 1;
 		show_debug_message("Lingering effect applied to " + string(defender.instance) + " for " + string(defender.instance.remainingLingeringEffectTurns) + " turns.");
 		if (!array_contains(obj_battleController.charactersWithLingeringEffects, defender.instance)) {
 			array_push(obj_battleController.charactersWithLingeringEffects, defender.instance);
@@ -249,17 +382,44 @@ function handleDamage(ability, attacker, defender){
 
 	// Reckless Strike: Deals massive physical damage to a single enemy while lowering its defences for 1 turn.
 	if (variable_struct_exists(ability, "lowersDefense") && ability.lowersDefense){
-		attacker.instance.loweredDefenseTurns = 1;
+		attacker.instance.loweredDefenseTurns = 2;
 	}
 	// Charge: Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main target.
 	if (variable_struct_exists(ability, "stuns") && ability.stuns){
-		defender.instance.stunnedTurns = 1;
+		defender.instance.stunnedRounds = 1;
 	}
 	// Counter: Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.
-
+	if (variable_struct_exists(ability, "isCounter") && ability.isCounter){
+		attacker.instance.increasedDefenseRounds = 1 + 1;
+		attacker.instance.attackBuff = 2;
+		attacker.instance.attackBuffRounds = 1;
+	}
 	// Battle Cry: Taunts all enemies while reducing enemy damage.
+	if (variable_struct_exists(ability, "tauntsAll") && ability.tauntsAll){
+		// Apply taunt to all enemies
+		for (var i = 0; i < array_length(obj_battleController.village.team); i++){
+			var enemy = obj_battleController.village.team[i].instance;
+			enemy.tauntedRounds = 2;
+			enemy.isTaunted = true;
+			enemy.tauntor = attacker.instance;
+		}
+
+		// Increase defense
+		attacker.instance.increasedDefenseRounds = 1 + 1;
+
+		// Flag tauntor
+		attacker.instance.isTaunting = true;
+		attacker.instance.tauntingRounds = 1 + 1;
+	}
 
 	// Taunt: Taunts a single enemy and reduces all damage taken for 2 turns.
+	if (variable_struct_exists(ability, "taunts") && ability.taunts){
+		defender.instance.tauntedRounds = 2;
+		defender.instance.isTaunted = true;
+		defender.instance.tauntor = attacker.instance;
+		attacker.instance.isTaunting = true;
+		attacker.instance.tauntingRounds = 2 + 1;
+	}
 
 	// Fire Ball: Shoots a fireball at a single enemy for magic damage and causes Burn.
 	if (variable_struct_exists(ability, "effectType") && ability.effectType == "burn" && ability.lingeringEffectDamage > 0){
@@ -272,33 +432,40 @@ function handleDamage(ability, attacker, defender){
 		}
 	}
 	// Spell Charge: Prepares a spell and increases its damage.
+	if (variable_struct_exists(ability, "spellCharge") && ability.spellCharge){
+		attacker.instance.attackBuff = 2;
+		attacker.instance.attackBuffRounds = 1;
+	}
 
 	// Quake: Splits the ground beneath enemies, dealing area-of-effect magic damage and stunning them.
-
+	// Handled by spray, and the stun ability above
+	// --------------------------------
 	// Heal: Heals a single ally.
-
+	// Has special circumstances so it's handled in handleSelection and at the top of this function
+	// --------------------------------
 	// Curse: Silences a single target and reduces its defences for 1 turn.
-
+	if (variable_struct_exists(ability, "isCurse") && ability.isCurse){
+		defender.instance.cursedRounds = 1;
+	}
 	// Enhance: Buffs a single ally's damage for 2 turns.
-
-	// Vigorate: Heals all allies while the Cleric loses 70% of its health.
-
+	// Has special circumstances so it's handled in handleSelection and at the top of this function
+	// --------------------------------
+	// Vigorate: Heals all allies while the user loses 70% of its health.
+	// Has special circumstances so it's handled in handleSelection and at the top of this function
+	// -------------------------------- END
 
 	// Actual damage handling
 	
 	// Defense is already negated for main defender. Just need to apply it to neighbors if necessary.
 	var defenseNegator = defender.instance.loweredDefenseTurns > 0 ? 0 : 1;
 
-	defender.instance.newHealth -= calculateDamage(ability, defender, attacker).damage;
+	defender.instance.newHealth -= calculateDamage(ability, attacker, defender, attacker.instance.attackBuff).damage;
 	var neighbors = getNeighbors(defender.instance);
 	for (var i = 0; i < array_length(neighbors); i++){
 		var neighbor = defender.instance.isEnemy ? obj_battleController.village.team[neighbors[i]] : obj_battleController.playerTeam.members[neighbors[i]];
 
-		var physicalSprayDamage = calculateDamage(ability, neighbor, attacker).spray * calculateDamage(ability, neighbor, attacker).physicalRatio;
-		var magicalSprayDamage = calculateDamage(ability, neighbor, attacker).spray * calculateDamage(ability, neighbor, attacker).magicalRatio;
-
 		if (neighbor != undefined){
-			neighbor.instance.newHealth -= max(physicalSprayDamage - (neighbor.defense * defenseNegator), 0) + max(magicalSprayDamage - (neighbor.magicDefense * defenseNegator), 0);
+			neighbor.instance.newHealth -= calculateSprayDamage(ability, attacker, neighbor);
 		}
 	}
 
@@ -308,6 +475,10 @@ function applyLingeringEffects(){
 	if (array_length(obj_battleController.charactersWithLingeringEffects) != 0){
 		for (var i = 0; i < array_length(obj_battleController.charactersWithLingeringEffects); i++){
 			var characterInstance = obj_battleController.charactersWithLingeringEffects[i];
+			if (characterInstance.delayedEffectTurns > 0){
+				characterInstance.delayedEffectTurns -= 1;
+				continue;
+			}
 			characterInstance.newHealth -= characterInstance.lingeringEffectDamage;
 			characterInstance.remainingLingeringEffectTurns -= 1;
 			show_debug_message("Lingering effect damage applied to " + string(characterInstance) + ". Remaining turns: " + string(characterInstance.remainingLingeringEffectTurns));
@@ -327,50 +498,77 @@ function getAllCharacters(){
 	return array_union(obj_battleController.playerTeam.members, obj_battleController.village.team);
 }
 
-function handleSpecialAbilityCleanup(isBeforeAI){
+function handleSpecialAbilityCleanup(){
 	// Special Ability Cleanups
 	// Lingering effects: Apply damage over multiple turns. (in the User section and in the AI alarm event)
-	if (!isBeforeAI){
-		applyLingeringEffects();
-	}
-	// Decrement any specialAbility durations for all characters
+	applyLingeringEffects();
+
+	// Decrement any turn based (not round based) specialAbility durations for all characters
 		for (var i = 0; i < array_length(getAllCharacters()); i++){
 			var characterInstance = getAllCharacters()[i].instance;
 
 			// Reckless Strike: Deals massive physical damage to one enemy and lowers its defences for 1 turn.
-			if (!isBeforeAI){
-				if (characterInstance.loweredDefenseTurns > 0){
-					characterInstance.loweredDefenseTurns -= 1;
-				}
+			if (characterInstance.loweredDefenseTurns > 0){
+				characterInstance.loweredDefenseTurns -= 1;
 			}
-			
-			if (isBeforeAI){
-				// Charge: Hits one enemy and adjacent enemies, and stuns the main target.
-				if (characterInstance.stunnedTurns > 0){
-					characterInstance.stunnedTurns -= 1;
-				}
-			}
+
 		}
 	
+	// Round based cleanup
 	// Counter: Readies a defensive stance and increases next turn's physical damage based on attacks received.
 
+	var attacker = obj_battleController.characterSelected
+	var defender = obj_battleController.enemySelected;
+
+	if (attacker.instance.increasedDefenseRounds > 0){
+		attacker.instance.increasedDefenseRounds -= 1;
+	}
+
+	// Attack buff is actually used in the handleDamage calculation while I took a better approach for defense. We instead increase the defense in the character struct based on increasedDefenseRounds.
+	if (attacker.instance.attackBuffRounds > 0){
+		attacker.instance.attackBuffRounds -= 1;
+	}
+
+	else {
+		attacker.instance.attackBuff = 1
+	}
+	
+
 	// Battle Cry: Taunts all enemies and reduces their damage.
+	// The portion of this ability that uses taunt effects has its cleanup handled in the taunt portion. Defense cleanup handled in counter portion
+	// -----------------------
 
 	// Taunt: Taunts one enemy and reduces all damage taken for 2 turns.
+	if (attacker.instance.isTaunted && attacker.instance.tauntedRounds > 0){
+		attacker.instance.tauntedRounds -= 1;
+	}
+
+	if (!is_undefined(defender) && instance_exists(defender.instance)
+    && defender.instance.isTaunting && defender.instance.tauntingRounds > 0){
+		defender.instance.tauntingRounds -= 1;
+	}
 
 	// Fire Ball: Deals magic damage to one enemy and causes Burn.
-
+	// Handled by lingering effects
+	// -----------------------------
 	// Spell Charge: Prepares a spell and increases its damage.
-
+	// Handled by attack buff
+	// -----------------------------
 	// Quake: Deals area-of-effect magic damage to enemies and stuns them.
-
+	// Handled by spray and charge 
+	// -----------------------------
 	// Heal: Heals one ally.
-
+	// Does not have a cleanup
+	// -----------------------------
 	// Curse: Silences one target and reduces its defences for 1 turn.
-
+	// Handled with stun handling
+	// -----------------------------
 	// Enhance: Buffs one ally's damage for 2 turns.
-
+	// Handled by attack buff
+	// -----------------------------
 	// Vigorate: Heals all allies while the Cleric loses 70% of its health.
+	// Does not have a cleanup 
+	// -----------------------------
 }
 
 function handleTurn(isUserTurn){
@@ -397,18 +595,16 @@ function handleTurn(isUserTurn){
 				obj_battleController.characterSelected.instance.selected = false;
 			}
 			obj_battleController.characterSelected = undefined;
-			toggleHighlightTeam(obj_battleController.village.team, false);
+			highlightTeam(obj_battleController.village.team, false);
 			handleSelection();
 		}
 		
 		// Call the battle controllers alarm 0 for character selection.
 		if (obj_battleController.alarm[0] < 0){
-			obj_battleController.alarm[0] = room_speed / 6;
+			obj_battleController.alarm[0] = aiTurnSelectionTimer;
 		}
 	}
 	else{
-		handleSpecialAbilityCleanup();
-
 		// Player Turn Handling
 		var ability = obj_battleController.abilitySelected;
 		var enemy = obj_battleController.enemySelected;
@@ -417,13 +613,20 @@ function handleTurn(isUserTurn){
 		// Use handleDamage to apply damage and spray effects
 		handleDamage(ability, character, enemy);
 
-		// Find neighboring enemies for spray abilities
+		handleSpecialAbilityCleanup();
 
-		obj_battleController.enemySelected.instance.selected = false;
+		obj_battleController.supportedCharacter = undefined;
+		if (!is_undefined(obj_battleController.enemySelected) && instance_exists(obj_battleController.enemySelected.instance)){
+			obj_battleController.enemySelected.instance.selected = false;
+		}
 		obj_battleController.enemySelected = undefined;
-		obj_battleController.abilitySelected.instance.selected = false
+		if (!is_undefined(obj_battleController.abilitySelected) && instance_exists(obj_battleController.abilitySelected.instance)){
+			obj_battleController.abilitySelected.instance.selected = false;
+		}
 		obj_battleController.abilitySelected = undefined;
-		obj_battleController.characterSelected.instance.selected = false;
+		if (!is_undefined(obj_battleController.characterSelected) && instance_exists(obj_battleController.characterSelected.instance)){
+			obj_battleController.characterSelected.instance.selected = false;
+		}
 		obj_battleController.characterSelected = undefined;
 		obj_battleController.isPlayerTurn = false;
 	}
@@ -465,11 +668,53 @@ function handleLose(){
 	
 }
 
+function handleSkippedTurn(characterInstance){
+	if (is_undefined(characterInstance) || !instance_exists(characterInstance)){
+		return false;
+	}
+
+	if (characterInstance.stunnedRounds > 0 || characterInstance.cursedRounds > 0){
+		obj_battleController.isPlayerTurn = !obj_battleController.isPlayerTurn;
+
+		if (characterInstance.cursedRounds > 0){
+			characterInstance.cursedRounds -= 1;
+		}
+
+		if (characterInstance.stunnedRounds > 0){
+			characterInstance.stunnedRounds -= 1;
+		}
+		return true;
+	}
+
+
+	return false;
+}
+
+function recklesslyHandleSkippedTurn(){
+	obj_battleController.isPlayerTurn = !obj_battleController.isPlayerTurn;
+	return true;
+}
+
 function playGame(){
+	// Game Over Handling
 	if (obj_battleController.hasWon != undefined){
 		show_debug_message("Game has ended. Restart the game to play again.");
-		toggleHighlightTeam(obj_battleController.playerTeam.members, false);
-		toggleHighlightTeam(obj_battleController.village.team, false);
+		highlightTeam(obj_battleController.playerTeam.members, false);
+		highlightTeam(obj_battleController.village.team, false);
+		if (!is_undefined(obj_battleController.characterSelected)){
+			obj_battleController.characterSelected.instance.selected = false;
+			obj_battleController.characterSelected = undefined;
+		}
+		if (!is_undefined(obj_battleController.abilitySelected)){
+			obj_battleController.abilitySelected.instance.selected = false;
+			obj_battleController.abilitySelected = undefined;
+		}
+		if (!is_undefined(obj_battleController.enemySelected)){
+			obj_battleController.enemySelected.instance.selected = false;
+			obj_battleController.enemySelected = undefined;
+		}
+		
+
 		if (obj_battleController.hasWon){
 			// Win condition
 			handleWin();
@@ -481,23 +726,23 @@ function playGame(){
 		handleSelection();
 		return;
 	}
+
 	if (obj_battleController.isPlayerTurn){
+		// Handle cleanup that should run before user turn
 		preparePlayerTurn();
-		if (obj_battleController.characterSelected.instance.stunnedTurns > 0){
-			// Handle stunned character (skip turn or show message)
-			obj_battleController.isPlayerTurn = false;
-			handleSpecialAbilityCleanup();
+		if (!is_undefined(obj_battleController.characterSelected)){
+			handleSkippedTurn(obj_battleController.characterSelected.instance);
 		}
 
 		// If the player has selected an ability but not an enemy, highlight the enemies and unhighlight the player characters
 		if (is_undefined(obj_battleController.enemySelected) && !is_undefined(obj_battleController.abilitySelected)){
-			toggleHighlightTeam(obj_battleController.village.team, true);
-			//toggleHighlightTeam(obj_battleController.playerTeam.members, false);
+			highlightTeam(obj_battleController.village.team, true);
+			//highlightTeam(obj_battleController.playerTeam.members, false);
 		}
 		// If the player has selected an enemy, tell the enemy instance that it's selected.
 		else if (!is_undefined(obj_battleController.enemySelected)){
-			//toggleHighlightTeam(obj_battleController.village.team, false);
-			toggleHighlightTeam(obj_battleController.playerTeam.members, false);
+			//highlightTeam(obj_battleController.village.team, false);
+			highlightTeam(obj_battleController.playerTeam.members, false);
 			obj_battleController.enemySelected.instance.selected = true;
 		}
 	}

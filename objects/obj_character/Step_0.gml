@@ -1,5 +1,30 @@
+// Handle status updates
 if (newHealth <= 0){
     instance_destroy();
+}
+
+if (increasedDefenseRounds > 0){
+    character.defense = historicalDefense * increasedDefenseRatio;
+    character.magicDefense = historicalMagicDefense * increasedDefenseRatio;
+}
+else{
+    character.defense = historicalDefense;
+    character.magicDefense = historicalMagicDefense;
+}
+
+if (tauntedRounds > 0){
+    isTaunted = true;
+}
+else{
+    isTaunted = false;
+    tauntor = undefined;
+}
+
+if (tauntingRounds > 0){
+    isTaunting = true;
+}
+else{
+    isTaunting = false;
 }
 
 if (selected &&!renderedAbilities && (!obj_battleController.isHovering || obj_battleController.hoveredInfo == info)){
@@ -45,10 +70,14 @@ if (selected){
         obj_battleController.characterSelected = character;	
         hasNeighborSelected = false;
     }
+    else{
+        obj_battleController.enemySelected = character;	
+        hasNeighborSelected = false;
+    }
 }
 // If the character is not selected, check if it has a neighboring enemy selected.
 else {
-    if (!is_undefined(obj_battleController.enemySelected) && areNeighbors(self, obj_battleController.enemySelected.instance)){
+    if (!is_undefined(obj_battleController.enemySelected) && areNeighbors(id, obj_battleController.enemySelected.instance)){
         hasNeighborSelected = true;
     }
     else{
@@ -63,5 +92,5 @@ if (remainingLingeringEffectTurns > 0){
 }
 
 if (slot.number == 1 && isEnemy){
-    show_debug_message(string(loweredDefenseTurns));
+    //show_debug_message(string(loweredDefenseTurns));
 }

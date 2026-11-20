@@ -14,11 +14,7 @@ Fires a lightning bolt at a single enemy that deals massive magic damage.
 
 ## Cost
 
-3
-
-## Strength
-
-3
+0
 
 ## Attack
 

@@ -1,4 +1,4 @@
-kindling = 20;
+kindling = 60;
 
 // General Game Information
 dynamicUISprites = {
@@ -33,6 +33,7 @@ abilitySprites = {
 // Attack values for abilities with spray so that spray value can be calculated arithmetically
 var _cleaveAttack = 150;
 var _chargeAttack = 100;
+var _quakeAttack = 150;
 var _quakeMagicAttack = 150;
 
 /// @doc-abilities
@@ -42,7 +43,6 @@ abilities = {
         name: "Slash",
         description: "A basic physical attack with a sword.",
         cost: 0,
-        strength: 1,
         attack: 50,
         magicAttack: 0,
         spray: 0,
@@ -52,8 +52,7 @@ abilities = {
     flurry: {
         name: "Flurry",
         description: "Makes consecutive attacks against a single enemy that deal large physical damage.",
-        cost: 2,
-        strength: 2,
+        cost: 0,
         attack: 100,
         magicAttack: 0,
         spray: 0,
@@ -63,8 +62,7 @@ abilities = {
     cleave: {
         name: "Cleave",
         description: "Attacks a single enemy and hits adjacent enemies for 75% damage.",
-        cost: 3,
-        strength: 3,
+        cost: 0,
         attack: _cleaveAttack,
         magicAttack: 0,
         spray: floor(_cleaveAttack * 0.75),
@@ -74,8 +72,7 @@ abilities = {
     stab: {
         name: "Stab",
         description: "Attacks one enemy for physical damage and causes Bleed.",
-        cost: 2,
-        strength: 1,
+        cost: 0,
         attack: 50,
         magicAttack: 0,
         spray: 0,
@@ -87,8 +84,7 @@ abilities = {
     recklessStrike: {
         name: "Reckless Strike",
         description: "Deals massive physical damage to a single enemy while lowering its defences for 1 turn.",
-        cost: 0,
-        strength: 3,
+        cost: 50,
         isUltimate: true,
         attack: 300,
         magicAttack: 0,
@@ -101,7 +97,6 @@ abilities = {
         name: "Dropkick",
         description: "A basic physical attack with a shield.",
         cost: 0,
-        strength: 1,
         attack: 50,
         magicAttack: 0,
         spray: 0,
@@ -111,8 +106,7 @@ abilities = {
     charge: {
         name: "Charge",
         description: "Charges a single enemy, hits adjacent enemies for 50% damage, and stuns the main target.",
-        cost: 2,
-        strength: 2,
+        cost: 0,
         attack: _chargeAttack,
         magicAttack: 0,
         spray: _chargeAttack * 0.5,
@@ -123,42 +117,41 @@ abilities = {
     counter: {
         name: "Counter",
         description: "Readies a defensive stance for 1 turn and deals increased physical damage next turn based on attacks received.",
-        cost: 2,
-        strength: 3,
-        attack: 150,
+        cost: 0,
+        attack: 0,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.counter
+        sprite: abilitySprites.counter,
+        isCounter: true
     },
     /// @doc-abilities-ability Taunt
     taunt: {
         name: "Taunt",
         description: "Taunts a single enemy and reduces all damage taken for 2 turns.",
-        cost: 1,
-        strength: 1,
+        cost: 0,
         attack: 0,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.taunt
+        sprite: abilitySprites.taunt,
+        taunts: true
     },
     /// @doc-abilities-ability Battle Cry
     battleCry: {
         name: "Battle Cry",
         description: "Taunts all enemies while reducing enemy damage.",
-        cost: 0,
-        strength: 3,
+        cost: 50,
         isUltimate: true,
         attack: 0,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.battleCry
+        sprite: abilitySprites.battleCry,
+        tauntsAll: true
     },
     /// @doc-abilities-ability Magic Bolt
     magicBolt: {
         name: "Magic Bolt",
         description: "A basic magic attack with a grimoire.",
         cost: 0,
-        strength: 1,
         attack: 0,
         magicAttack: 50,
         spray: 0,
@@ -168,8 +161,7 @@ abilities = {
     fireBall: {
         name: "Fire Ball",
         description: "Shoots a fireball at a single enemy for magic damage and causes Burn.",
-        cost: 2,
-        strength: 2,
+        cost: 0,
         attack: 0,
         magicAttack: 100,
         spray: 0,
@@ -181,8 +173,7 @@ abilities = {
     lightningBolt: {
         name: "Lightning Bolt",
         description: "Fires a lightning bolt at a single enemy that deals massive magic damage.",
-        cost: 3,
-        strength: 3,
+        cost: 0,
         attack: 0,
         magicAttack: 150,
         spray: 0,
@@ -192,31 +183,30 @@ abilities = {
     spellCharge: {
         name: "Charge",
         description: "Prepares a spell and increases its damage.",
-        cost: 1,
-        strength: 1,
+        cost: 0,
         attack: 0,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.spellCharge
+        sprite: abilitySprites.spellCharge,
+        spellCharge: true
     },
     /// @doc-abilities-ability Quake
     quake: {
         name: "Quake",
         description: "Splits the ground beneath enemies, dealing area-of-effect magic damage and stunning them.",
-        cost: 0,
-        strength: 3,
+        cost: 50,
         isUltimate: true,
         attack: 0,
+        spray: floor(_quakeAttack * 0.75),
         magicAttack: _quakeMagicAttack,
-        spray: _quakeMagicAttack,
-        sprite: abilitySprites.quake
+        sprite: abilitySprites.quake,
+        stuns: true
     },
     /// @doc-abilities-ability Punch
     punch: {
         name: "Punch",
         description: "A basic physical attack.",
         cost: 0,
-        strength: 1,
         attack: 50,
         magicAttack: 0,
         spray: 0,
@@ -226,45 +216,47 @@ abilities = {
     heal: {
         name: "Heal",
         description: "Heals a single ally.",
-        cost: 2,
-        strength: 2,
+        cost: 0,
         attack: 0,
         magicAttack: 100,
         spray: 0,
+        healAmount: 150,
+        isHeal: true,
         sprite: abilitySprites.heal
     },
     /// @doc-abilities-ability Curse
     curse: {
         name: "Curse",
         description: "Silences a single target and reduces its defences for 1 turn.",
-        cost: 2,
-        strength: 2,
+        cost: 0,
         attack: 0,
         magicAttack: 100,
         spray: 0,
+        isCurse: true,
         sprite: abilitySprites.curse
     },
     /// @doc-abilities-ability Enhance
     enhance: {
         name: "Enhance",
         description: "Buffs a single ally's damage for 2 turns.",
-        cost: 2,
-        strength: 2,
+        cost: 0,
         attack: 0,
         magicAttack: 100,
         spray: 0,
+        isEnhance: true,
         sprite: abilitySprites.enhance
     },
     /// @doc-abilities-ability Vigorate
     vigorate: {
         name: "Vigorate",
         description: "Heals all allies while the Cleric loses 70% of its health.",
-        cost: 0,
-        strength: 3,
+        cost: 50,
         isUltimate: true,
         attack: 0,
         magicAttack: 150,
         spray: 0,
+        isVigorate: true,
+        healAmount: 100,
         sprite: abilitySprites.vigorate
     },
 }
@@ -288,6 +280,7 @@ headshotSprites = {
     lamplighter: spr_lamplighterPortrait
 };
 
+// PLEASE NOTE THAT ATTACK VALUES ARE MULTIPLIERS, NOT FLAT DAMAGE VALUES
 /// @doc-characters
 characters = {
     /// @doc-characters-character Apprentice
@@ -296,14 +289,16 @@ characters = {
         className: "Apprentice",
         description: "A sword-wielding apprentice.",
         attack: 1,
-        defense: 500,
-        magicAttack: 0,
-        magicDefense: 500,
+        defense: 50,
+        magicAttack: 1, // Testing magic attack
+        // magicAttack: 0, // Actual magic attack
+        magicDefense: 50,
         myHealth: 500,
         isPlaceholder: true,
         weapon: "Sword",
         basicAttack: abilities.apprenticeSlash,
-        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.recklessStrike],
+        //abilities: [abilities.enhance, abilities.vigorate, abilities.cleave, abilities.cleave], // test abilities
+        abilities: [abilities.flurry, abilities.cleave, abilities.stab, abilities.fireBall], // Original abilities
         ultimate: abilities.recklessStrike,
 		sprite: characterSprites.apprentice,
         headshot: headshotSprites.apprentice
@@ -321,8 +316,8 @@ characters = {
         isPlaceholder: true,
         weapon: "Big Ass Shield",
         basicAttack: abilities.woodsmanDropkick,
-        abilities: [abilities.charge], //fake abilities for testing
-        //abilities: [abilities.charge, abilities.counter, abilities.taunt],
+        //abilities: [abilities.cleave], //fake abilities for testing
+        abilities: [abilities.charge, abilities.counter, abilities.taunt], // Original abilities
         ultimate: abilities.battleCry,
 		sprite: characterSprites.woodsman,
         headshot: headshotSprites.woodsman
@@ -406,10 +401,10 @@ villages = {
         name: "Loamvale",
         conquered: false,
         team: [
-            characters.woodsman,
-			characters.woodsman,
-			characters.woodsman,
-			characters.woodsman
+            characters.apprentice,
+            characters.apprentice,
+            characters.apprentice,
+            characters.apprentice
         ],
     },
     /// @doc-villages-village Stonehearth
