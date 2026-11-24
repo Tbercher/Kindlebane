@@ -612,7 +612,12 @@ function handleTurn(isUserTurn){
 
 		// Use handleDamage to apply damage and spray effects
 		handleDamage(ability, character, enemy);
-
+		
+		//temp
+		playAbilitySplash(character, ability);
+		handleDamage(ability, character, enemy);
+		//temp
+	
 		handleSpecialAbilityCleanup();
 
 		obj_battleController.supportedCharacter = undefined;
