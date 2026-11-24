@@ -30,6 +30,30 @@ abilitySprites = {
     vigorate: spr_placeholderAbilitySpecific
 };
 
+abilitySplashSprites = {
+	nonSpecific: spr_placeholderAbility,
+    apprenticeSlash: spr_apprenticeSlash,
+    flurry: spr_placeholderAbilitySpecific,
+    cleave: spr_placeholderAbilitySpecific,
+    stab: spr_placeholderAbilitySpecific,
+    recklessStrike: spr_placeholderAbilitySpecific,
+    woodsmanDropkick: spr_placeholderAbilitySpecific,
+    charge: spr_woodsmanCharge,
+    counter: spr_placeholderAbilitySpecific,
+    taunt: spr_placeholderAbilitySpecific,
+    battleCry: spr_placeholderAbilitySpecific,
+    magicBolt: spr_placeholderAbilitySpecific,
+    fireBall: spr_placeholderAbilitySpecific,
+    lightningBolt: spr_placeholderAbilitySpecific,
+    spellCharge: spr_placeholderAbilitySpecific,
+    quake: spr_placeholderAbilitySpecific,
+    punch: spr_placeholderAbilitySpecific,
+    heal: spr_placeholderAbilitySpecific,
+    curse: spr_placeholderAbilitySpecific,
+    enhance: spr_placeholderAbilitySpecific,
+    vigorate: spr_placeholderAbilitySpecific
+}
+
 // Attack values for abilities with spray so that spray value can be calculated arithmetically
 var _cleaveAttack = 150;
 var _chargeAttack = 100;
@@ -46,7 +70,14 @@ abilities = {
         attack: 50,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.apprenticeSlash
+
+        sprite: abilitySprites.apprenticeSlash,
+		//splash art for the ability
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		//art location and scale settings for each splash image
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.4
     },
     /// @doc-abilities-ability Flurry
     flurry: {
@@ -56,7 +87,11 @@ abilities = {
         attack: 100,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.flurry
+        sprite: abilitySprites.flurry,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Cleave
     cleave: {
@@ -66,7 +101,11 @@ abilities = {
         attack: _cleaveAttack,
         magicAttack: 0,
         spray: floor(_cleaveAttack * 0.75),
-        sprite: abilitySprites.cleave
+        sprite: abilitySprites.cleave,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Stab
     stab: {
@@ -78,7 +117,11 @@ abilities = {
         spray: 0,
         sprite: abilitySprites.stab,
         lingeringEffectDamage: 20,
-        effectType: "bleed"
+        effectType: "bleed",
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Reckless Strike
     recklessStrike: {
@@ -90,7 +133,11 @@ abilities = {
         magicAttack: 0,
         spray: 0,
         sprite: abilitySprites.recklessStrike,
-        lowersDefense: true
+        lowersDefense: true,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Dropkick
     woodsmanDropkick: {
@@ -100,7 +147,11 @@ abilities = {
         attack: 50,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.woodsmanDropkick
+        sprite: abilitySprites.woodsmanDropkick,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Charge
     charge: {
@@ -111,7 +162,11 @@ abilities = {
         magicAttack: 0,
         spray: _chargeAttack * 0.5,
         sprite: abilitySprites.charge,
-        stuns: true
+        stuns: true,
+		splashSprite: abilitySplashSprites.charge,
+		splashX: 500,
+	    splashY: 400,
+	    splashScale: 0.25
     },
     /// @doc-abilities-ability Counter
     counter: {
@@ -122,7 +177,11 @@ abilities = {
         magicAttack: 0,
         spray: 0,
         sprite: abilitySprites.counter,
-        isCounter: true
+        isCounter: true,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Taunt
     taunt: {
@@ -133,7 +192,11 @@ abilities = {
         magicAttack: 0,
         spray: 0,
         sprite: abilitySprites.taunt,
-        taunts: true
+        taunts: true,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Battle Cry
     battleCry: {
@@ -145,7 +208,11 @@ abilities = {
         magicAttack: 0,
         spray: 0,
         sprite: abilitySprites.battleCry,
-        tauntsAll: true
+        tauntsAll: true,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Magic Bolt
     magicBolt: {
@@ -155,7 +222,11 @@ abilities = {
         attack: 0,
         magicAttack: 50,
         spray: 0,
-        sprite: abilitySprites.magicBolt
+        sprite: abilitySprites.magicBolt,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Fire Ball
     fireBall: {
@@ -167,7 +238,11 @@ abilities = {
         spray: 0,
         sprite: abilitySprites.fireBall,
         lingeringEffectDamage: 30,
-        effectType: "burn"
+        effectType: "burn",
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Lightning Bolt
     lightningBolt: {
@@ -177,7 +252,11 @@ abilities = {
         attack: 0,
         magicAttack: 150,
         spray: 0,
-        sprite: abilitySprites.lightningBolt
+        sprite: abilitySprites.lightningBolt,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Spell Charge
     spellCharge: {
@@ -188,7 +267,11 @@ abilities = {
         magicAttack: 0,
         spray: 0,
         sprite: abilitySprites.spellCharge,
-        spellCharge: true
+        spellCharge: true,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Quake
     quake: {
@@ -200,7 +283,11 @@ abilities = {
         spray: floor(_quakeAttack * 0.75),
         magicAttack: _quakeMagicAttack,
         sprite: abilitySprites.quake,
-        stuns: true
+        stuns: true,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Punch
     punch: {
@@ -210,7 +297,11 @@ abilities = {
         attack: 50,
         magicAttack: 0,
         spray: 0,
-        sprite: abilitySprites.punch
+        sprite: abilitySprites.punch,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Heal
     heal: {
@@ -222,7 +313,11 @@ abilities = {
         spray: 0,
         healAmount: 150,
         isHeal: true,
-        sprite: abilitySprites.heal
+        sprite: abilitySprites.heal,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Curse
     curse: {
@@ -233,7 +328,11 @@ abilities = {
         magicAttack: 100,
         spray: 0,
         isCurse: true,
-        sprite: abilitySprites.curse
+        sprite: abilitySprites.curse,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Enhance
     enhance: {
@@ -244,7 +343,11 @@ abilities = {
         magicAttack: 100,
         spray: 0,
         isEnhance: true,
-        sprite: abilitySprites.enhance
+        sprite: abilitySprites.enhance,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
     },
     /// @doc-abilities-ability Vigorate
     vigorate: {
@@ -257,7 +360,12 @@ abilities = {
         spray: 0,
         isVigorate: true,
         healAmount: 100,
-        sprite: abilitySprites.vigorate
+        sprite: abilitySprites.vigorate,
+		splashSprite: abilitySplashSprites.apprenticeSlash,
+		splashX: 960,
+	    splashY: 300,
+	    splashScale: 0.18
+		
     },
 }
 
